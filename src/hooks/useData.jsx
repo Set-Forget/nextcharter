@@ -2,7 +2,7 @@ import axios from "axios"
 import { makeUseAxios } from "axios-hooks"
 
 const useAxios = makeUseAxios({
-  axios: axios.create({ baseURL: 'https://script.google.com/macros/s/AKfycby0ndwOPl1IuC3_Ht049HhGGg8xKBm-ZiEnC1XwYx1eGWz_wPORviQv4635IdUHewc0' })
+  axios: axios.create({ baseURL: 'https://script.google.com/macros/s/AKfycbxwb3WLIgdG5bnG457NBtttUq89PMC9Q85umX3EeStfd3jTFLn8uClvPdTI3hAfXU7K' })
 })
 
 export default function useData() {

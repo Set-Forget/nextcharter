@@ -27,6 +27,7 @@ function sumCreditValues(data) {
 }
 
 export default function App() {
+  const [postLoading, setPostLoading] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [selectedDomain, setSelectedDomain] = useState({ name: 'Select' })
   const [selectedCourse, setSelectedCourse] = useState([])
@@ -36,7 +37,6 @@ export default function App() {
   })
 
   const [{ students, domains, courses, competencies, loading, error }] = useData()
-
   
   const handleAdd = () => {
     setFormData(prevState => {
@@ -86,7 +86,17 @@ export default function App() {
     setSelectedStudent(e)
   }
 
-  if (loading) return <Spinner />
+  function clearForm() {
+    setSelectedStudent(null)
+    setSelectedDomain({ name: 'Select' })
+    setSelectedCourse([])
+    setFormData({
+      selectedStudent: null,
+      list: []
+    })
+  }
+
+  if (loading || postLoading) return <Spinner />
   if (error) return <p>Error!</p>
 
   const coursesFiltered = selectedDomain?.name !== "Select" ? courses.data.filter(i => i.domain_id === selectedDomain.id) : courses.data
@@ -97,9 +107,13 @@ export default function App() {
   })
 
   const handleSubmit = () => {
-    axios.post("https://script.google.com/macros/s/AKfycby0ndwOPl1IuC3_Ht049HhGGg8xKBm-ZiEnC1XwYx1eGWz_wPORviQv4635IdUHewc0/exec", formData)
-      .then(result => {
-        console.log("Result: ", result)
+    setPostLoading(true)
+    axios.post("https://script.google.com/macros/s/AKfycbxwb3WLIgdG5bnG457NBtttUq89PMC9Q85umX3EeStfd3jTFLn8uClvPdTI3hAfXU7K/exec", JSON.stringify(formData))
+      .then(({ data }) => {
+        if (data.result === 'success') {
+          clearForm()
+          setPostLoading(false)
+        }
       })
   }
 
