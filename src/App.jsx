@@ -1,73 +1,185 @@
-import Header from './components/Header'
+import { useState } from 'react'
 
+// COMPONENTS
+import Header from './components/Header'
+import SelectWithCheck from './components/SelectWithCheck'
+import Fieldset from './components/Fieldset'
+import ComboBoxSimple from './components/ComboBoxSimple'
+import ResumeItem from './components/ResumeItem'
+import Spinner from './components/Spinner'
+
+// HOOKS
+import useData from './hooks/useData'
+import axios from 'axios'
+
+// CONSTANTS
 const navigation = [
-  { name: 'Product', href: '#' },
-  { name: 'Features', href: '#' },
-  { name: 'Marketplace', href: '#' },
-  { name: 'Company', href: '#' },
+  { name: 'Loading Form', href: '#' },
+  { name: 'Uploaded', href: '#' },
 ]
 
+function sumCreditValues(data) {
+  return data.reduce((total, currentArray) => {
+    return total + currentArray.reduce((subTotal, item) => {
+      return subTotal + item.credit_value;
+    }, 0);
+  }, 0);
+}
+
 export default function App() {
+  const [selectedStudent, setSelectedStudent] = useState(null)
+  const [selectedDomain, setSelectedDomain] = useState({ name: 'Select' })
+  const [selectedCourse, setSelectedCourse] = useState([])
+  const [formData, setFormData] = useState({
+    selectedStudent: null,
+    list: []
+  })
+
+  const [{ students, domains, courses, competencies, loading, error }] = useData()
+
+  
+  const handleAdd = () => {
+    setFormData(prevState => {
+      if (prevState.selectedStudent) {
+        return ({
+          ...prevState,
+          list: [
+            ...prevState.list,
+            {
+              selectedDomain,
+              selectedCourse
+            }
+          ]
+        })
+      } else {
+        return ({
+          ...prevState,
+          selectedStudent,
+          list: [
+            ...prevState.list,
+            {
+              selectedDomain,
+              selectedCourse
+            }
+          ]
+        })
+      }
+    })
+  }
+  
+  function deleteDomainFromList(index) {
+    setFormData((prevState) => ({
+      ...prevState,
+      selectedStudent: prevState.list.length === 1 ? null : prevState.selectedStudent,
+      list: [...prevState.list.slice(0, index), ...prevState.list.slice(index + 1)]
+    }))
+  }
+
+  function handleSetDomain(e) {
+    setSelectedCourse([])
+    setSelectedDomain(e)
+  }
+
+  function handleSetStudent(e) {
+    setSelectedDomain({ name: 'Select' })
+    setSelectedCourse([])
+    setSelectedStudent(e)
+  }
+
+  if (loading) return <Spinner />
+  if (error) return <p>Error!</p>
+
+  const coursesFiltered = selectedDomain?.name !== "Select" ? courses.data.filter(i => i.domain_id === selectedDomain.id) : courses.data
+
+  const compentenciesArrayFiltered =  selectedCourse.map((item) => {
+    const competenciesFiltered = competencies.data.filter(i => i.course_id == item.id)
+    return competenciesFiltered
+  })
+
+  const handleSubmit = () => {
+    axios.post("https://script.google.com/macros/s/AKfycby0ndwOPl1IuC3_Ht049HhGGg8xKBm-ZiEnC1XwYx1eGWz_wPORviQv4635IdUHewc0/exec", formData)
+      .then(result => {
+        console.log("Result: ", result)
+      })
+  }
+
   return (
     <div className="flex flex-col h-screen">
-      
       <Header navItems={navigation} />
-
-      <main className="flex-1 overflow-y-auto bg-gray-100 dark:bg-slate-700 dark:text-white place-items-center p-4 relative">
-        <div
-          className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
-          aria-hidden="true"
-        >
-          <div
-            className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
-            style={{
-              clipPath:
-                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
-            }}
-          />
-        </div>
-        <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-          <div className="hidden sm:mb-8 sm:flex sm:justify-center">
-            <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600  dark:text-slate-200 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
-              Announcing our next round of funding.{' '}
-              <a href="#" className="font-semibold text-indigo-600 dark:text-blue-400">
-                <span className="absolute inset-0" aria-hidden="true" />
-                Read more <span aria-hidden="true">&rarr;</span>
-              </a>
+      <main className="flex-1 overflow-y-auto bg-gray-100 place-items-center p-4 relative">
+        <div className='bg-white h-[calc(100vh-96px)] max-w-7xl mt-16 m-auto rounded-lg shadow flex'>
+          <div className="flex flex-col flex-1 p-8">
+            <form className='mb-8'>
+                <ComboBoxSimple
+                  label="Student"
+                  disabled={formData.selectedStudent}
+                  people={students.data}
+                  selectedPerson={selectedStudent}
+                  setSelectedPerson={handleSetStudent} />
+                <br />
+                <SelectWithCheck
+                  label="Domains"
+                  people={domains.data}
+                  selected={selectedDomain}
+                  setSelected={handleSetDomain} />
+                <br />
+                <SelectWithCheck
+                  label="Course"
+                  people={coursesFiltered}
+                  selected={selectedCourse}
+                  setSelected={setSelectedCourse}
+                  multiple />
+                <br />
+                <label className='block text-sm font-medium leading-6 text-gray-900 mb-4'>Compentencies</label>
+                {compentenciesArrayFiltered.map((filters, index) => (
+                  <Fieldset key={index}
+                    items={filters}
+                    label="Competencies" />
+                ))
+                }
+            </form>
+            {selectedDomain.name !== "Select" && (
+              <>
+                <p className='block text-sm font-medium leading-6 text-gray-600'>{selectedDomain.name} credits required: {selectedDomain.credit_required}</p>
+                <p className='block text-sm font-medium leading-6 text-gray-900'>{selectedDomain.name} credits attached: {sumCreditValues(compentenciesArrayFiltered)}</p>
+              </>
+            )}
+            <br />
+            <div className='flex justify-end'>
+              <button
+                disabled={selectedDomain.name === "Select" || sumCreditValues(compentenciesArrayFiltered) < selectedDomain.credit_required}
+                type="button"
+                onClick={handleAdd}
+                className="rounded-full bg-indigo-600 p-2 disabled:opacity-50 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+                </svg>
+              </button>
             </div>
           </div>
-          <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl">
-              Data to enrich your online business
-            </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-slate-400">
-              Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet
-              fugiat veniam occaecat fugiat aliqua.
-            </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
-              <a
-                href="#"
-                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Get started
-              </a>
-              <a href="#" className="text-sm font-semibold leading-6 text-gray-900  dark:text-slate-100">
-                Learn more <span aria-hidden="true">→</span>
-              </a>
+          <div className='flex flex-col flex-1 p-4 bg-gray-100 shadow h-full rounded'>
+            <div className='flex-1'>
+              <ul role="list" className="mt-3 grid grid-cols-1 gap-3">
+                {formData.selectedStudent && formData.list.map((obj, i) => (
+                  <ResumeItem
+                    key={i}
+                    selectedStudent={formData.selectedStudent}
+                    onDelete={() => deleteDomainFromList(i)}
+                    domainName={obj.selectedDomain.name}
+                    selectedCourse={obj.selectedCourse}
+                  />
+                ))}
+              </ul>
             </div>
+            <button
+              type="button"
+              disabled={!formData.selectedStudent}
+              onClick={handleSubmit}
+              className="disabled:opacity-50 h-12 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              {"Submit"}
+            </button>
           </div>
-        </div>
-        <div
-          className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
-          aria-hidden="true"
-        >
-          <div
-            className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
-            style={{
-              clipPath:
-                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
-            }}
-          />
         </div>
       </main>
     </div>

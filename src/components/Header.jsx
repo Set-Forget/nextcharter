@@ -31,15 +31,15 @@ export default function Header({navItems}) {
           </div>
           <div className="hidden lg:flex lg:gap-x-12">
             {navItems.map((item) => (
-              <a key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-gray-900  dark:text-slate-200">
+              <a key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-gray-900">
                 {item.name}
               </a>
             ))}
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <a href="#" className="text-sm font-semibold leading-6 text-gray- dark:text-slate-200">
+            {/* <a href="#" className="text-sm font-semibold leading-6 text-gray-">
               Log in <span aria-hidden="true">&rarr;</span>
-            </a>
+            </a> */}
           </div>
         </nav>
         <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
@@ -63,7 +63,7 @@ export default function Header({navItems}) {
                 <XMarkIcon className="h-6 w-6" aria-hidden="true" />
               </button>
             </div>
-            <div className="mt-6 flow-root">
+            {/* <div className="mt-6 flow-root">
               <div className="-my-6 divide-y divide-gray-500/10">
                 <div className="space-y-2 py-6">
                   {navItems.map((item) => (
@@ -85,7 +85,7 @@ export default function Header({navItems}) {
                   </a>
                 </div>
               </div>
-            </div>
+            </div> */}
           </Dialog.Panel>
         </Dialog>
       </header>
