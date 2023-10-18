@@ -1,8 +1,5 @@
-const people = [
-  { name: 'Lindsay Walton', domain: 'Front-end Developer', course: 'lindsay.walton@example.com', compentencies: 'Member' },
-  // More people...
-]
 
+// eslint-disable-next-line react/prop-types
 export default function Table({ people }) {
   return (
     <div className="px-4 sm:px-6 lg:px-8">
