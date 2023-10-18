@@ -3,8 +3,8 @@ import Header from "../components/Header"
 
 // CONSTANTS
 const navigation = [
-  { name: 'Loading Form', href: '/nextcharter/' },
-  { name: 'Uploaded Students', href: '/nextcharter/dashboard' },
+  { name: 'Form', href: '/nextcharter/' },
+  { name: 'Student data', href: '/nextcharter/dashboard' },
 ]
 
 export default function Layout() {
