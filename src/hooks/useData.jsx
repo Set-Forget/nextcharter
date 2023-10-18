@@ -1,8 +1,10 @@
 import axios from "axios"
 import { makeUseAxios } from "axios-hooks"
 
-const useAxios = makeUseAxios({
-  axios: axios.create({ baseURL: 'https://script.google.com/macros/s/AKfycbxwb3WLIgdG5bnG457NBtttUq89PMC9Q85umX3EeStfd3jTFLn8uClvPdTI3hAfXU7K' })
+import { host } from "../constants"
+
+export const useAxios = makeUseAxios({
+  axios: axios.create({ baseURL: host })
 })
 
 export default function useData() {
