@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { NavLink } from 'react-router-dom'
 
 export default function Header({navItems}) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -31,9 +32,9 @@ export default function Header({navItems}) {
           </div>
           <div className="hidden lg:flex lg:gap-x-12">
             {navItems.map((item) => (
-              <a key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-gray-900">
+              <NavLink to={item.href} key={item.name} className="text-sm font-semibold leading-6 text-gray-900">
                 {item.name}
-              </a>
+              </NavLink>
             ))}
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
