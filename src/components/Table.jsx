@@ -1,6 +1,8 @@
+import SelectWithCheck from "./SelectWithCheck";
 
 // eslint-disable-next-line react/prop-types
-export default function Table({ people }) {
+export default function Table({ people, criteria, setCriteria, value, setvalue }) {
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -9,6 +11,10 @@ export default function Table({ people }) {
           <p className="mt-2 text-sm text-gray-700">
             A list of all the students in your account including their name, domain, course and compentencies.
           </p>
+        </div>
+        <div>
+          <input value={value} onChange={e => setvalue(e.target.value)} />
+          <SelectWithCheck label="" people={[{ name: 'name' }, { name: 'domain' }, { name: 'course' }]} selected={criteria} setSelected={setCriteria} />
         </div>
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           {/* <button
