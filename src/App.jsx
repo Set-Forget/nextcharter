@@ -42,7 +42,8 @@ export default function App() {
             ...prevState.list,
             {
               selectedDomain,
-              selectedCourse
+              selectedCourse,
+              competencies: compentenciesArrayFiltered
             }
           ]
         })
@@ -54,7 +55,8 @@ export default function App() {
             ...prevState.list,
             {
               selectedDomain,
-              selectedCourse
+              selectedCourse,
+              competencies: compentenciesArrayFiltered
             }
           ]
         })
@@ -93,7 +95,7 @@ export default function App() {
 
   const handleSubmit = () => {
     setPostLoading(true)
-    axios.post(host + "/exec", JSON.stringify(formData))
+    axios.post(host + "/exec?action=registrations", JSON.stringify(formData))
       .then(({ data }) => {
         if (data.result === 'success') {
           clearForm()

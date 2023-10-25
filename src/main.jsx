@@ -5,6 +5,7 @@ import { createHashRouter, RouterProvider } from "react-router-dom";
 import App from './App.jsx'
 import TableView from './pages/TableView.jsx';
 import Layout from './pages/Layout.jsx';
+import Vista from './pages/Vista.jsx';
 
 import './index.css'
 
@@ -18,6 +19,9 @@ const router = createHashRouter([
     {
       path: "/dashboard",
       element: <TableView />,
+    },{
+      path: "/vista",
+      element: <Vista />,
     }]
   }
 ]);

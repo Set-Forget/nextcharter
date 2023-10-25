@@ -1,1 +1,1 @@
-export const host = 'https://script.google.com/macros/s/AKfycbw2oSI9zvZJ0Ev7KpxyCg20y2otC2YX5A2YoIHcVFLZAWSuqbzbfWZGLsK6kGKcJUeV'
+export const host = 'https://script.google.com/macros/s/AKfycbxWzNKDWrjtj4yOKYbtaFU_EpGphwDy1WyHSza8qV18-aGtbhBazzXpgQeyc7rVpTI_' // v8
