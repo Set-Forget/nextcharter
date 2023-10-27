@@ -6,7 +6,7 @@ import { useState } from "react"
 
 
 export default function TableView() {
-  const [{ data: students, loading: studentLoading, error: studentError }] = useAxios("/exec?action=uploadedList")
+  const [{ data: students, loading: studentLoading, error: studentError }] = useAxios("/exec?action=registrations")
   const [criteriaV, setCriteria] = useState('')
   const [valuev, setvalue] = useState('')
   

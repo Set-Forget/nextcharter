@@ -116,7 +116,7 @@ export default function App() {
 
   return (
     <main className="flex-1 overflow-y-auto bg-gray-100 place-items-center p-4 relative">
-      <div className='bg-white h-[calc(100vh-96px)] max-w-7xl mt-16 m-auto rounded-lg shadow flex'>
+      <div className='bg-white h-[calc(100vh-100px)] max-w-7xl mt-20 m-auto rounded-lg shadow flex'>
         <div className="flex flex-col flex-1 p-8">
           <form className='mb-8'>
               <ComboBoxSimple

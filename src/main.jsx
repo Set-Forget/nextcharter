@@ -5,7 +5,7 @@ import { createHashRouter, RouterProvider } from "react-router-dom";
 import App from './App.jsx'
 import TableView from './pages/TableView.jsx';
 import Layout from './pages/Layout.jsx';
-import Vista from './pages/Vista.jsx';
+import StudentProgress from './pages/StudentProgress.jsx';
 
 import './index.css'
 
@@ -17,11 +17,11 @@ const router = createHashRouter([
       element: <App />,
     },
     {
-      path: "/dashboard",
+      path: "/registrations",
       element: <TableView />,
     },{
-      path: "/vista",
-      element: <Vista />,
+      path: "/student-progress",
+      element: <StudentProgress />,
     }]
   }
 ]);

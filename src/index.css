@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.tooltip:hover .tooltip-item {
+  visibility: visible;
+}
