@@ -123,8 +123,8 @@ export default function StudentProgress() {
       </div>
       {competencyBystudent && domainNameList.map(key => {
         return (
-          <div key={key} className="shadow p-2 mb-8 rounded-l bg-white border-indigo-300 border-[0.5px] border-opacity-50">
-            <h2 className="mb-6 text-center text-white uppercase rounded w-[calc(6rem*3)] -mt-4 mx-auto bg-indigo-600">{key}</h2>
+          <div key={key} className="shadow-md p-2 mb-8 rounded-l bg-white border-indigo-300 border-[0.5px] border-opacity-70">
+            <h2 className="mb-6 text-center text-indigo-500 font-semibold uppercase rounded w-[calc(6rem*3)] -mt-5 mx-auto bg-white border-indigo-300 border-[0.5px] border-opacity-70">{key}</h2>
             { groupedByDomainName[key].map(courseItem => {
                 const courseName = courseItem.course_name
                 const { competencies } = courseItem
@@ -143,7 +143,7 @@ export default function StudentProgress() {
                   <div key={courseName} className="flex gap-2 justify-center mb-4 bg-">
                     {noCompetents.map(ptm =>
                       <div className="relative inline-block tooltip" key={ptm.id}>
-                        <div className={`w-24 h-16 ${colorPallete[ptm.status].bg} ${colorPallete[ptm.status].text} flex justify-center items-center rounded-md`}>
+                        <div className={`w-20 h-16 ${colorPallete[ptm.status].bg} ${colorPallete[ptm.status].text} flex justify-center items-center rounded-md`}>
                           {ptm.competency_name}
                         </div>
                         {ptm.status !== 'blank' && (
@@ -161,7 +161,7 @@ export default function StudentProgress() {
                     <div className="w-24 h-16 bg-slate-600 text-white flex justify-center items-center text-center">{courseName}</div>
                     {competents.map(ptm =>
                       <div className="relative inline-block tooltip" key={ptm.id}>
-                        <div className={`w-24 h-16 ${colorPallete[ptm.status].bg} ${colorPallete[ptm.status].text} flex justify-center items-center rounded-md`}>
+                        <div className={`w-20 h-16 ${colorPallete[ptm.status].bg} ${colorPallete[ptm.status].text} flex justify-center items-center rounded-md`}>
                           {ptm.competency_name}
                         </div>
                         {ptm.status !== 'blank' && (
