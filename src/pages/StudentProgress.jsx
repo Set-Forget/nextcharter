@@ -130,7 +130,8 @@ export default function StudentProgress() {
                 const { competencies } = courseItem
                 const noCompetents = competencies.filter(i => i.status !== 'competent' && i.status !== 'transfer')
                 const competents = competencies.filter(i => i.status == 'competent' || i.status == 'transfer')
-                
+                const completed = competents.length
+
                 while (noCompetents.length < 8) {
                   noCompetents.unshift({ compentecy_name: '', status: 'blank' })
                 }
@@ -149,6 +150,7 @@ export default function StudentProgress() {
                           <div className={`flex ${colorPallete[ptm.status].bg} ${colorPallete[ptm.status].text} flex-col p-2 w-52 rounded-lg z-20 absolute right-0 invisible tooltip-item mt-2`}>
                             <p className="text-sm capitalize"><span className="font-semibold">Status</span>: {ptm.status}</p>
                             <p className="text-sm capitalize"><span className="font-semibold">Belongs to</span>: {courseName}</p>
+                            <p className="text-sm capitalize">{`(${completed}/${competencies.length})`}</p>
                             <svg className={`absolute ${colorPallete[ptm.status].tp} -top-3 h-8 right-0 mr-3`} x="0px" y="0px" viewBox="0 0 255 255" xmlSpace="preserve">
                               <polygon className="fill-current" points="50,0 100,100 0,100"/>
                             </svg>
@@ -166,6 +168,7 @@ export default function StudentProgress() {
                           <div className={`flex ${colorPallete[ptm.status].bg} ${colorPallete[ptm.status].text} flex-col p-2 w-56 rounded-lg z-20 absolute right-0 invisible tooltip-item mt-2`}>
                             <p className="text-sm capitalize"><span className="font-semibold">Status</span>: {ptm.status}</p>
                             <p className="text-sm capitalize"><span className="font-semibold">Belongs to</span>: {courseName}</p>
+                            <p className="text-sm capitalize">{`(${completed}/${competencies.length})`}</p>
                             <svg className={`absolute ${colorPallete[ptm.status].tp} -top-3 h-8 right-0 mr-3`} x="0px" y="0px" viewBox="0 0 255 255" xmlSpace="preserve">
                               <polygon className="fill-current" points="50,0 100,100 0,100"/>
                             </svg>

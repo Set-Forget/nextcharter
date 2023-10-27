@@ -115,7 +115,7 @@ export default function App() {
   })
 
   return (
-    <main className="flex-1 overflow-y-auto bg-gray-100 place-items-center p-4 relative">
+    <main className="flex-1 bg-gray-100 place-items-center p-4 relative">
       <div className='bg-white h-[calc(100vh-100px)] max-w-7xl mt-20 m-auto rounded-lg shadow flex'>
         <div className="flex flex-col flex-1 p-8">
           <form className='mb-8'>
@@ -167,7 +167,7 @@ export default function App() {
           </div>
         </div>
         <div className='flex flex-col flex-1 p-4 bg-gray-100 shadow h-full rounded'>
-          <div className='flex-1'>
+          <div className='flex-1 overflow-scroll pb-4'>
             <ul role="list" className="mt-3 grid grid-cols-1 gap-3">
               {formData.selectedStudent && formData.list.map((obj, i) => (
                 <ResumeItem
