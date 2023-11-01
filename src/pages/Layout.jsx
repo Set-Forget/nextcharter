@@ -5,7 +5,7 @@ import Header from "../components/Header"
 const navigation = [
   { name: 'Form', href: '/' },
   { name: 'Registrations', href: '/registrations' },
-  { name: 'Progress by Student', href: '/student-progress' },
+  { name: 'Profile', href: '/profile' },
 ]
 
 export default function Layout() {

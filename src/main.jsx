@@ -6,6 +6,7 @@ import App from './App.jsx'
 import TableView from './pages/TableView.jsx';
 import Layout from './pages/Layout.jsx';
 import StudentProgress from './pages/StudentProgress.jsx';
+import Profile from './pages/Profile.jsx';
 
 import './index.css'
 
@@ -19,8 +20,11 @@ const router = createHashRouter([
     {
       path: "/registrations",
       element: <TableView />,
+    }, {
+      path: "/profile",
+      element: <Profile />,
     },{
-      path: "/student-progress",
+      path: "/profile/:id",
       element: <StudentProgress />,
     }]
   }

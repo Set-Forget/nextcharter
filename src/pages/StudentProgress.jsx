@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import ComboBoxSimple from "../components/ComboBoxSimple";
 import Spinner from "../components/Spinner";
 
 import useData, { useAxios } from "../hooks/useData"
+import { useParams } from "react-router-dom";
 
 function groupByDomainAndCourse(arr) {
   return arr.reduce((acc, item) => {
@@ -74,6 +75,7 @@ const colorPallete = {
 }
 
 export default function StudentProgress() {
+  const { id } = useParams()
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [params, setParams] = useState({ studentId: null })
 
@@ -96,6 +98,18 @@ export default function StudentProgress() {
     refetch()
   }
 
+  useEffect(() => {
+    if (id) {
+      setParams({ studentId: id })
+    }
+
+    const timer = setTimeout(() => {
+      refetch()
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [id])
+
   if (studentLoading || loading) return <Spinner />
 
   const groupedByDomainAndCourse = competencyBystudent && Object.values(groupByDomainAndCourse(competencyBystudent.data));
@@ -104,7 +118,7 @@ export default function StudentProgress() {
   
   return(
     <main className="flex-1 overflow-y-auto bg-slate-50 place-items-center pt-20 pr-4 pl-4">
-      <div className="w-[320px] mb-8 mt-8 flex items-end">
+      <div className="mb-8 mt-8 flex items-end">
         <ComboBoxSimple
           label="STUDENT"
           // disabled={formData.selectedStudent}
@@ -119,6 +133,14 @@ export default function StudentProgress() {
           className="disabled:opacity-50 h-9 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2"
         >
           search
+        </button>
+        <button
+          type="button"
+          disabled={!params.studentId}
+          onClick={handleFetch}
+          className="disabled:opacity-50 h-9 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2 right-0"
+        >
+          Edit
         </button>
       </div>
       {competencyBystudent && domainNameList.map(key => {
