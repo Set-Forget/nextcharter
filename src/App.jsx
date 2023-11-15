@@ -114,6 +114,17 @@ export default function App() {
     return competenciesFiltered
   })
 
+  const totalCredits = formData.list.reduce((total, domain) => {
+    const domainTotal = domain.competencies.reduce((domainSum, competencyList) => {
+      return domainSum + competencyList.reduce((compSum, competency) => {
+        return compSum + competency.credit_value;
+      }, 0);
+    }, 0);
+    return total + domainTotal;
+  }, 0);
+  
+  console.log("FormData: ", totalCredits)
+
   return (
     <main className="flex-1 bg-gray-100 place-items-center p-4 relative">
       <div className='bg-white h-[calc(100vh-100px)] max-w-7xl mt-20 m-auto rounded-lg shadow flex'>
@@ -167,7 +178,7 @@ export default function App() {
           </div>
         </div>
         <div className='flex flex-col flex-1 p-4 bg-gray-100 shadow h-full rounded'>
-          <div className='flex-1 overflow-scroll pb-4'>
+          <div className='flex-1 no-scrollbar overflow-y-auto pb-4'>
             <ul role="list" className="mt-3 grid grid-cols-1 gap-3">
               {formData.selectedStudent && formData.list.map((obj, i) => (
                 <ResumeItem
@@ -179,6 +190,11 @@ export default function App() {
                 />
               ))}
             </ul>
+          </div>
+          <div className='flex'>
+            <h3 className={`${totalCredits >= 20 ? 'text-green-500' : 'text-red-500'} p-2 font-semibold rounded-xl mb-2 shadow-md bg-white`}>
+              Total credits: {totalCredits} / 20
+            </h3>
           </div>
           <button
             type="button"

@@ -6,6 +6,8 @@ import Spinner from "../components/Spinner";
 import useData, { useAxios } from "../hooks/useData"
 import { useParams } from "react-router-dom";
 
+import './StudentProgress.css'
+
 function groupByDomainAndCourse(arr) {
   return arr.reduce((acc, item) => {
       // Creamos una clave única para agrupar por domain_name y course_name
@@ -41,6 +43,20 @@ const groupByDomainName = (students) => {
       acc[domain].push(student);
       return acc;
   }, {});
+}
+
+const returnPercent = (groupedByDomainName) => {
+  const lista = []
+  Object.keys(groupedByDomainName).forEach(clave => {
+    groupedByDomainName[clave].forEach(item => {
+      lista.push(...item.competencies)
+    })
+  })
+
+  const totalCompetent = lista.filter(com => ['competent', 'transfer'].includes(com.status))
+  const totalPercent =  (totalCompetent.length * 100) / lista.length
+  
+  return Math.round(totalPercent)
 }
 
 const colorPallete = {
@@ -115,6 +131,7 @@ export default function StudentProgress() {
   const groupedByDomainAndCourse = competencyBystudent && Object.values(groupByDomainAndCourse(competencyBystudent.data));
   const groupedByDomainName = competencyBystudent && groupByDomainName(groupedByDomainAndCourse)
   const domainNameList = competencyBystudent && Object.keys(groupedByDomainName)
+  const percentProgress = competencyBystudent && returnPercent(groupedByDomainName)
   
   return(
     <main className="flex-1 overflow-y-auto bg-slate-50 place-items-center pt-20 pr-4 pl-4">
@@ -142,6 +159,14 @@ export default function StudentProgress() {
         >
           Edit
         </button>
+        {competencyBystudent && percentProgress &&
+          <div className="ml-auto">
+            <p>% of plan completed</p>
+            <div className="shadow-md bg-grey-light w-[30rem] border-emerald-400 border-[0.5px] rounded">
+              <div className="bg-teal-500 text-xs leading-none py-[0.35rem] text-center text-white" style={{ width: `${percentProgress}%` }}>{percentProgress}%</div>
+            </div>
+          </div>
+        }
       </div>
       {competencyBystudent && domainNameList.map(key => {
         return (
@@ -180,7 +205,7 @@ export default function StudentProgress() {
                         )}
                       </div>
                     )}
-                    <div className="w-[6rem] rounded-sm h-16 bg-slate-600 text-white flex justify-center items-center text-center">{courseName}</div>
+                    <div className="min-w-[6rem] w-[6rem] rounded-md h-16 bg-white border-2 border-indigo-600 text-indigo-600 flex justify-center items-center text-center font-bold">{courseName}</div>
                     {competents.map(ptm =>
                       <div className="relative inline-block tooltip" key={ptm.id}>
                         <div className={`w-[4.6rem] h-16 ${colorPallete[ptm.status].bg} ${colorPallete[ptm.status].text} flex justify-center items-center rounded-md`}>

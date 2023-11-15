@@ -1,4 +1,5 @@
 export default function ResumeItem({ domainName, selectedCourse, onDelete, selectedStudent }) {
+  console.log("SelectedCourse: ", selectedCourse)
   return (
     <li className="col-span-1 flex rounded-md shadow-sm">
       <div className="flex w-32 flex-shrink-0 items-center justify-center bg-indigo-600 rounded-l-md text-sm font-medium text-white">{selectedStudent.name.split(',')}</div>

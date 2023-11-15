@@ -1,0 +1,10 @@
+.overflow-x-auto::-webkit-scrollbar {
+  display: none;
+  overflow-y:inherit;
+}
+
+/* Para Firefox */
+.overflow-x-auto {
+  scrollbar-width: none;
+  overflow-x: visible;
+}
