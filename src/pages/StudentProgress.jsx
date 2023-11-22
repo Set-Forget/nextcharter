@@ -61,7 +61,7 @@ const returnPercent = (groupedByDomainName) => {
 
 const colorPallete = {
   blank: {
-    bg: 'bg-slate-200',
+    bg: 'bg-white',
   },
   "plan to meet": {
     bg: 'bg-blue-500',
