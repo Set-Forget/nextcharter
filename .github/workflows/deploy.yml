@@ -7,6 +7,9 @@ on:
 
 jobs:
   build:
+    env:
+      VITE_APP_SUPABASE_URL: ${{ secrets.VITE_APP_SUPABASE_URL }}
+      VITE_APP_SUPABASE_KEY: ${{ secrets.VITE_APP_SUPABASE_KEY }}
     name: Build
     runs-on: ubuntu-latest
 

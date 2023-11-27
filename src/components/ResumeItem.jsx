@@ -1,8 +1,7 @@
-export default function ResumeItem({ domainName, selectedCourse, onDelete, selectedStudent }) {
-  console.log("SelectedCourse: ", selectedCourse)
+export default function ResumeItem({ domainName, selectedCourse, onDelete, selectedStudent, exist }) {
   return (
     <li className="col-span-1 flex rounded-md shadow-sm">
-      <div className="flex w-32 flex-shrink-0 items-center justify-center bg-indigo-600 rounded-l-md text-sm font-medium text-white">{selectedStudent.name.split(',')}</div>
+      <div className={`flex w-32 flex-shrink-0 items-center justify-center ${exist ? "bg-indigo-400" : "bg-indigo-600" } rounded-l-md text-sm font-medium text-white`}>{selectedStudent.name.split(',')}</div>
       <div className="flex flex-1 items-center justify-between truncate rounded-r-md border-b border-r border-t border-gray-200 bg-white">
         <div className="flex-1 truncate px-4 py-2 text-sm">
           <a href="#" className="font-medium text-gray-900 hover:text-gray-600">{domainName}</a>

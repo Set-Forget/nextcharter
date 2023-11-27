@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import axios from 'axios'
 
 // COMPONENTS
@@ -9,29 +9,64 @@ import ResumeItem from './components/ResumeItem'
 import Spinner from './components/Spinner'
 
 // HOOKS
-import useData from './hooks/useData'
-
-import { host } from './constants'
+import useInfo from './hooks/useInfo'
 
 function sumCreditValues(data) {
-  return data.reduce((total, currentArray) => {
-    return total + currentArray.reduce((subTotal, item) => {
-      return subTotal + item.credit_value;
-    }, 0);
-  }, 0);
+  const creditTotal = data.reduce((accumulator, item) => accumulator + item.credit_value, 0)
+  return creditTotal
+}
+
+function groupByCourseId(data) {
+  const grouped = data.reduce((acc, obj) => {
+    if (!acc[obj.course_id]) {
+      acc[obj.course_id] = [];
+    }
+    acc[obj.course_id].push(obj);
+    return acc;
+  }, {});
+
+  return Object.values(grouped);
+}
+
+const initialFormData = {
+  selectedStudent: null,
+  list: []
 }
 
 export default function App() {
   const [postLoading, setPostLoading] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
+  const [selectedInstitution, setSelectedInstitution] = useState(null)
   const [selectedDomain, setSelectedDomain] = useState({ name: 'Select' })
   const [selectedCourse, setSelectedCourse] = useState([])
-  const [formData, setFormData] = useState({
-    selectedStudent: null,
-    list: []
-  })
+  const [formData, setFormData] = useState(initialFormData)
+  const [registered, setRegistered] = useState([])
 
-  const [{ students, domains, courses, competencies, loading, error }] = useData()
+  const {
+    students,
+    institutions,
+    domains,
+    courses,
+    competencies,
+    getDomains,
+    getCourses,
+    getCompetencies,
+    insertCompetencies,
+    getRegisters,
+    isLoading,
+    error
+   } = useInfo()
+
+  const competenciesGrouped = useMemo(() => groupByCourseId(competencies), [competencies])
+
+  const totalCredits = useMemo(() => {
+    return formData.list.reduce((total, domain) => {
+      const domainTotal = domain.competencies.reduce((domainSum, competency) => {
+        return domainSum + competency.credit_value
+      }, 0);
+      return total + domainTotal;
+    }, 0);
+  }, [formData]) 
   
   const handleAdd = () => {
     setFormData(prevState => {
@@ -43,7 +78,7 @@ export default function App() {
             {
               selectedDomain,
               selectedCourse,
-              competencies: compentenciesArrayFiltered
+              competencies
             }
           ]
         })
@@ -56,12 +91,14 @@ export default function App() {
             {
               selectedDomain,
               selectedCourse,
-              competencies: compentenciesArrayFiltered
+              competencies
             }
           ]
         })
       }
     })
+    setSelectedDomain({ name: 'Select' })
+    setSelectedCourse([])
   }
   
   function deleteDomainFromList(index) {
@@ -75,6 +112,7 @@ export default function App() {
   function handleSetDomain(e) {
     setSelectedCourse([])
     setSelectedDomain(e)
+    getCourses(e.inst_domain_id)
   }
 
   function handleSetStudent(e) {
@@ -83,47 +121,87 @@ export default function App() {
     setSelectedStudent(e)
   }
 
+  function handleSetInstitution(e) {
+    setSelectedDomain({ name: 'Select' })
+    setSelectedCourse([])
+    setSelectedInstitution(e)
+    getDomains(e.id)
+  }
+
   function clearForm() {
     setSelectedStudent(null)
     setSelectedDomain({ name: 'Select' })
     setSelectedCourse([])
-    setFormData({
-      selectedStudent: null,
-      list: []
-    })
+    setFormData(initialFormData)
   }
 
-  const handleSubmit = () => {
-    setPostLoading(true)
-    axios.post(host + "/exec?action=registrations", JSON.stringify(formData))
-      .then(({ data }) => {
-        if (data.result === 'success') {
-          clearForm()
-          setPostLoading(false)
-        }
+  const handleSubmit = async () => {
+    const list = []
+    formData.list.forEach(item => {
+      item.selectedCourse.forEach(course => {
+        const competenciesFiltered = item.competencies.filter(competency => competency.course_id === course.id)
+        competenciesFiltered.forEach(competency => {
+          const element = {
+            student_id: formData.selectedStudent.id,
+            student_code: formData.selectedStudent.code,
+            domain_name: item.selectedDomain.name,
+            course_name: course.name,
+            competency_name: competency.name,
+            competency_id: competency.competency_id,
+            competency_course_id: competency.id
+          }
+          list.push(element)
+        })
       })
+    })
+    setPostLoading(true)
+    const { error, status } = await insertCompetencies(list)
+    setPostLoading(false)
+    if (status >= 200 && status < 300) {
+      clearForm()
+    }
   }
 
-  if (loading || postLoading) return <Spinner />
+  useEffect(() => {
+    if (selectedCourse.length) {
+      const ids = selectedCourse.map(item => item.id)
+      getCompetencies(ids)
+    } else {
+      getCompetencies([])
+    }
+  }, [selectedCourse, getCompetencies])
+
+  useEffect(() => {
+    if (selectedStudent) {
+      getRegisters(selectedStudent.id).then(result => {
+        const groupedByDomain = result.reduce((acc, item) => {
+          // Si el dominio no está en el acumulador, lo inicializamos
+          if (!acc[item.domain_name]) {
+              acc[item.domain_name] = {
+                  selectedDomain: {
+                      name: item.domain_name
+                  },
+                  selectedCourses: []
+              };
+          }
+      
+          // Agregamos el curso si aún no está en la lista
+          if (!acc[item.domain_name].selectedCourses.some(course => course.name === item.course_name)) {
+              acc[item.domain_name].selectedCourses.push({ name: item.course_name });
+          }
+      
+          return acc;
+      }, {});
+        const list = Object.values(groupedByDomain)
+        setRegistered(list)
+      })
+    }
+  }, [selectedStudent])
+
+  if (postLoading || isLoading) return <Spinner />
   if (error) return <p>Error!</p>
 
-  const coursesFiltered = selectedDomain?.name !== "Select" ? courses.data.filter(i => i.domain_id === selectedDomain.id) : courses.data
-
-  const compentenciesArrayFiltered =  selectedCourse.map((item) => {
-    const competenciesFiltered = competencies.data.filter(i => i.course_id == item.id)
-    return competenciesFiltered
-  })
-
-  const totalCredits = formData.list.reduce((total, domain) => {
-    const domainTotal = domain.competencies.reduce((domainSum, competencyList) => {
-      return domainSum + competencyList.reduce((compSum, competency) => {
-        return compSum + competency.credit_value;
-      }, 0);
-    }, 0);
-    return total + domainTotal;
-  }, 0);
-  
-  console.log("FormData: ", totalCredits)
+  console.log("registered: ", registered)
 
   return (
     <main className="flex-1 bg-gray-100 place-items-center p-4 relative">
@@ -133,25 +211,32 @@ export default function App() {
               <ComboBoxSimple
                 label="Student"
                 disabled={formData.selectedStudent}
-                people={students.data}
+                people={students}
                 selectedPerson={selectedStudent}
                 setSelectedPerson={handleSetStudent} />
               <br />
+              <ComboBoxSimple
+                label="Institution"
+                // disabled={formData.selectedStudent}
+                people={institutions}
+                selectedPerson={selectedInstitution}
+                setSelectedPerson={handleSetInstitution} />
+              <br />
               <SelectWithCheck
                 label="Domains"
-                people={domains.data}
+                people={domains || []}
                 selected={selectedDomain}
                 setSelected={handleSetDomain} />
               <br />
               <SelectWithCheck
                 label="Course"
-                people={coursesFiltered}
+                people={courses || []}
                 selected={selectedCourse}
                 setSelected={setSelectedCourse}
                 multiple />
               <br />
               <label className='block text-sm font-medium leading-6 text-gray-900 mb-4'>Compentencies</label>
-              {compentenciesArrayFiltered.map((filters, index) => (
+              {competenciesGrouped.map((filters, index) => (
                 <Fieldset key={index}
                   items={filters}
                   label="Competencies" />
@@ -160,14 +245,14 @@ export default function App() {
           </form>
           {selectedDomain.name !== "Select" && (
             <>
-              <p className='block text-sm font-medium leading-6 text-gray-600'>{selectedDomain.name} credits required: {selectedDomain.credit_required}</p>
-              <p className='block text-sm font-medium leading-6 text-gray-900'>{selectedDomain.name} credits attached: {sumCreditValues(compentenciesArrayFiltered)}</p>
+              {/* <p className='block text-sm font-medium leading-6 text-gray-600'>{selectedDomain.name} credits required: {selectedDomain.credit_required}</p> */}
+              <p className='block text-sm font-medium leading-6 text-gray-900'>{selectedDomain.name} credits attached: {sumCreditValues(competencies)}</p>
             </>
           )}
           <br />
           <div className='flex justify-end'>
             <button
-              disabled={selectedDomain.name === "Select" || sumCreditValues(compentenciesArrayFiltered) < selectedDomain.credit_required}
+              disabled={selectedDomain.name === "Select" || sumCreditValues(competencies) < selectedDomain.credit_required}
               type="button"
               onClick={handleAdd}
               className="rounded-full bg-indigo-600 p-2 disabled:opacity-50 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
@@ -180,6 +265,16 @@ export default function App() {
         <div className='flex flex-col flex-1 p-4 bg-gray-100 shadow h-full rounded'>
           <div className='flex-1 no-scrollbar overflow-y-auto pb-4'>
             <ul role="list" className="mt-3 grid grid-cols-1 gap-3">
+              {registered.length && registered.map((obj, i) => (
+                <ResumeItem
+                  key={i}
+                  selectedStudent={selectedStudent}
+                  onDelete={() => deleteDomainFromList(i)}
+                  domainName={obj.selectedDomain.name}
+                  selectedCourse={obj.selectedCourses}
+                  exist
+                />
+              ))}
               {formData.selectedStudent && formData.list.map((obj, i) => (
                 <ResumeItem
                   key={i}
