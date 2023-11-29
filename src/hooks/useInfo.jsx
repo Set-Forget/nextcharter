@@ -76,13 +76,21 @@ export default function useInfo() {
   }, [])
 
   async function getRegisters(student_id) {
-    const { data, error } = await supabase.from('registers').select().eq('student_id', student_id)
+    const { data, error } = await supabase.from('registers')
+      .select(`*, competency_course(credit_value)`)
+      .eq('student_id', student_id)
+      .eq("is_deleted", false)
     if (error) throw error
     return data
   }
 
   async function insertCompetencies(competencies) {
     return await supabase.from('registers').insert(competencies).select()
+  }
+
+  async function deleteCompetencies(competencyIds) {
+    return await supabase.from('registers').update({ is_deleted: true })
+      .in('id', competencyIds)
   }
 
   useEffect(() => {
@@ -102,6 +110,7 @@ export default function useInfo() {
     getCourses,
     getCompetencies,
     insertCompetencies,
+    deleteCompetencies,
     getRegisters,
   }
 }

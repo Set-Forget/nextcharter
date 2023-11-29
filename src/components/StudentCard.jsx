@@ -15,7 +15,7 @@ export default function StudentCard({ people }) {
         <li
           key={person.email}
           className="relative flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6"
-          onClick={() => handleNavigate(person.id)}
+          onClick={() => handleNavigate(person.code)}
         >
           <div className="flex min-w-0 gap-x-4">
             <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"} alt="" />

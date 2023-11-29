@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import jsPDF from "jspdf"
 
 import ComboBoxSimple from "../components/ComboBoxSimple";
 import Spinner from "../components/Spinner";
@@ -94,6 +95,7 @@ export default function StudentProgress() {
   const { id } = useParams()
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [params, setParams] = useState({ studentId: null })
+  const reportToPDF = useRef(null)
 
   const [{ students, loading, error }] = useData()
   const [{ data: competencyBystudent, loading: studentLoading, error: studentError }, refetch] = useAxios({
@@ -112,6 +114,23 @@ export default function StudentProgress() {
 
   function handleFetch() {
     refetch()
+  }
+
+  const handleGeneratePDF = () => {
+    let srcwidth = reportToPDF.current.scrollWidth
+    const doc = new jsPDF('p', "pt", "a4")
+    
+    //doc.setFont('Inter-Regular', 'normal');
+
+    doc.html(reportToPDF.current, {
+      html2canvas: {
+        scale: 600 / srcwidth
+      },
+      callback(doc) {
+        doc.save("Student_report")
+        // window.open(doc.output('bloburl'))  
+      },
+    })
   }
 
   useEffect(() => {
@@ -159,7 +178,15 @@ export default function StudentProgress() {
         >
           Edit
         </button>
-        {competencyBystudent && percentProgress &&
+        <button
+          type="button"
+          disabled={!params.studentId}
+          onClick={handleGeneratePDF}
+          className="disabled:opacity-50 h-9 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2 right-0"
+        >
+          Download PDF
+        </button>
+        {(competencyBystudent?.data.length !== 0 && percentProgress !== 0) &&
           <div className="ml-auto">
             <p>% of plan completed</p>
             <div className="shadow-md bg-grey-light w-[30rem] border-emerald-400 border-[0.5px] rounded">
@@ -168,69 +195,71 @@ export default function StudentProgress() {
           </div>
         }
       </div>
-      {competencyBystudent && domainNameList.map(key => {
-        return (
-          <div key={key} className="shadow-md p-2 mb-8 rounded-l bg-white border-indigo-300 border-[0.5px] border-opacity-70">
-            <h2 className="mb-6 text-center text-indigo-500 font-semibold uppercase rounded w-[calc(6rem*3)] -mt-5 mx-auto bg-white border-indigo-300 border-[0.5px] border-opacity-70">{key}</h2>
-            { groupedByDomainName[key].map(courseItem => {
-                const courseName = courseItem.course_name
-                const { competencies } = courseItem
-                const noCompetents = competencies.filter(i => i.status !== 'competent' && i.status !== 'transfer')
-                const competents = competencies.filter(i => i.status == 'competent' || i.status == 'transfer')
-                const completed = competents.length
+      <div ref={reportToPDF}>
+        {competencyBystudent && domainNameList.map(key => {
+          return (
+            <div key={key} className="shadow-md p-2 mb-8 rounded-l bg-white border-indigo-300 border-[0.5px] border-opacity-70">
+              <h2 className="mb-6 text-center text-indigo-500 font-semibold uppercase rounded w-[calc(6rem*3)] -mt-5 mx-auto bg-white border-indigo-300 border-[0.5px] border-opacity-70">{key}</h2>
+              { groupedByDomainName[key].map(courseItem => {
+                  const courseName = courseItem.course_name
+                  const { competencies } = courseItem
+                  const noCompetents = competencies.filter(i => i.status !== 'competent' && i.status !== 'transfer')
+                  const competents = competencies.filter(i => i.status == 'competent' || i.status == 'transfer')
+                  const completed = competents.length
 
-                while (noCompetents.length < 8) {
-                  noCompetents.unshift({ compentecy_name: '', status: 'blank' })
-                }
-                while (competents.length < 8) {
-                  competents.push({ compentecy_name: '', status: 'blank' })
-                }
+                  while (noCompetents.length < 8) {
+                    noCompetents.unshift({ compentecy_name: '', status: 'blank' })
+                  }
+                  while (competents.length < 8) {
+                    competents.push({ compentecy_name: '', status: 'blank' })
+                  }
 
-                return(
-                  <div key={courseName} className="flex gap-2 justify-center mb-4">
-                    {noCompetents.map(ptm =>
-                      <div className="relative inline-block tooltip" key={ptm.id}>
-                        <div className={`w-[4.6rem] h-16 ${colorPallete[ptm.status].bg} ${colorPallete[ptm.status].text} flex justify-center items-center rounded-md`}>
-                          {ptm.competency_name}
-                        </div>
-                        {ptm.status !== 'blank' && (
-                          <div className={`flex ${colorPallete[ptm.status].bg} ${colorPallete[ptm.status].text} flex-col p-2 w-52 rounded-lg z-20 absolute right-0 invisible tooltip-item mt-2`}>
-                            <p className="text-sm capitalize"><span className="font-semibold">Status</span>: {ptm.status}</p>
-                            <p className="text-sm capitalize"><span className="font-semibold">Belongs to</span>: {courseName}</p>
-                            <p className="text-sm capitalize">{`(${completed}/${competencies.length})`}</p>
-                            <svg className={`absolute ${colorPallete[ptm.status].tp} -top-3 h-8 right-0 mr-3`} x="0px" y="0px" viewBox="0 0 255 255" xmlSpace="preserve">
-                              <polygon className="fill-current" points="50,0 100,100 0,100"/>
-                            </svg>
+                  return(
+                    <div key={courseName} className="flex gap-2 justify-center mb-4">
+                      {noCompetents.map(ptm =>
+                        <div className="relative inline-block tooltip" key={ptm.id}>
+                          <div className={`w-[4.6rem] h-16 ${colorPallete[ptm.status].bg} ${colorPallete[ptm.status].text} flex justify-center items-center rounded-md`}>
+                            {ptm.competency_name}
                           </div>
-                        )}
-                      </div>
-                    )}
-                    <div className="min-w-[6rem] w-[6rem] rounded-md h-16 bg-white border-2 border-indigo-600 text-indigo-600 flex justify-center items-center text-center font-bold">{courseName}</div>
-                    {competents.map(ptm =>
-                      <div className="relative inline-block tooltip" key={ptm.id}>
-                        <div className={`w-[4.6rem] h-16 ${colorPallete[ptm.status].bg} ${colorPallete[ptm.status].text} flex justify-center items-center rounded-md`}>
-                          {ptm.competency_name}
+                          {ptm.status !== 'blank' && (
+                            <div className={`flex ${colorPallete[ptm.status].bg} ${colorPallete[ptm.status].text} flex-col p-2 w-52 rounded-lg z-20 absolute right-0 invisible tooltip-item mt-2`}>
+                              <p className="text-sm capitalize"><span className="font-semibold">Status</span>: {ptm.status}</p>
+                              <p className="text-sm capitalize"><span className="font-semibold">Belongs to</span>: {courseName}</p>
+                              <p className="text-sm capitalize">{`(${completed}/${competencies.length})`}</p>
+                              <svg className={`absolute ${colorPallete[ptm.status].tp} -top-3 h-8 right-0 mr-3`} x="0px" y="0px" viewBox="0 0 255 255" xmlSpace="preserve">
+                                <polygon className="fill-current" points="50,0 100,100 0,100"/>
+                              </svg>
+                            </div>
+                          )}
                         </div>
-                        {ptm.status !== 'blank' && (
-                          <div className={`flex ${colorPallete[ptm.status].bg} ${colorPallete[ptm.status].text} flex-col p-2 w-56 rounded-lg z-20 absolute right-0 invisible tooltip-item mt-2`}>
-                            <p className="text-sm capitalize"><span className="font-semibold">Status</span>: {ptm.status}</p>
-                            <p className="text-sm capitalize"><span className="font-semibold">Belongs to</span>: {courseName}</p>
-                            <p className="text-sm capitalize">{`(${completed}/${competencies.length})`}</p>
-                            <svg className={`absolute ${colorPallete[ptm.status].tp} -top-3 h-8 right-0 mr-3`} x="0px" y="0px" viewBox="0 0 255 255" xmlSpace="preserve">
-                              <polygon className="fill-current" points="50,0 100,100 0,100"/>
-                            </svg>
+                      )}
+                      <div className="min-w-[6rem] w-[6rem] rounded-md h-16 bg-white border-2 border-indigo-600 text-indigo-600 flex justify-center items-center text-center font-bold">{courseName}</div>
+                      {competents.map(ptm =>
+                        <div className="relative inline-block tooltip" key={ptm.id}>
+                          <div className={`w-[4.6rem] h-16 ${colorPallete[ptm.status].bg} ${colorPallete[ptm.status].text} flex justify-center items-center rounded-md`}>
+                            {ptm.competency_name}
                           </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )
-              })
-            }
-          </div>
-        )
-      })
-      }
+                          {ptm.status !== 'blank' && (
+                            <div className={`flex ${colorPallete[ptm.status].bg} ${colorPallete[ptm.status].text} flex-col p-2 w-56 rounded-lg z-20 absolute right-0 invisible tooltip-item mt-2`}>
+                              <p className="text-sm capitalize"><span className="font-semibold">Status</span>: {ptm.status}</p>
+                              <p className="text-sm capitalize"><span className="font-semibold">Belongs to</span>: {courseName}</p>
+                              <p className="text-sm capitalize">{`(${completed}/${competencies.length})`}</p>
+                              <svg className={`absolute ${colorPallete[ptm.status].tp} -top-3 h-8 right-0 mr-3`} x="0px" y="0px" viewBox="0 0 255 255" xmlSpace="preserve">
+                                <polygon className="fill-current" points="50,0 100,100 0,100"/>
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })
+              }
+            </div>
+          )
+        })
+        }
+      </div>
     </main>
   )
 }
