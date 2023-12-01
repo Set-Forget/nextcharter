@@ -18,7 +18,9 @@ export default function StudentCard({ people }) {
           onClick={() => handleNavigate(person.code)}
         >
           <div className="flex min-w-0 gap-x-4">
-            <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={"https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"} alt="" />
+            <span className="h-12 w-12 flex justify-center items-center rounded-full bg-indigo-500 text-white">
+              {person.name.split(" ")[0].charAt(0)}  {person.name.split(" ")[1].charAt(0)}
+            </span>
             <div className="min-w-0 flex-auto">
               <p className="text-sm font-semibold leading-6 text-gray-900">
                 <a href={person.href}>

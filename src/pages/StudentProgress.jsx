@@ -1,11 +1,11 @@
 import { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
 import jsPDF from "jspdf"
 
 import ComboBoxSimple from "../components/ComboBoxSimple";
 import Spinner from "../components/Spinner";
 
-import useData, { useAxios } from "../hooks/useData"
-import { useParams } from "react-router-dom";
+import useInfo from "../hooks/useInfo";
 
 import './StudentProgress.css'
 
@@ -94,26 +94,20 @@ const colorPallete = {
 export default function StudentProgress() {
   const { id } = useParams()
   const [selectedStudent, setSelectedStudent] = useState(null)
-  const [params, setParams] = useState({ studentId: null })
+  const [params, setParams] = useState({ studentId: id })
+  const [competencyByStudent, setCompetencyByStudent] = useState(null)
   const reportToPDF = useRef(null)
 
-  const [{ students, loading, error }] = useData()
-  const [{ data: competencyBystudent, loading: studentLoading, error: studentError }, refetch] = useAxios({
-    url: "/exec?action=studentByCompetency",
-    params: { ...params }
-  },
-  { manual: true }
-  )
+  const { students, isLoading, getRegistersByCode } = useInfo()
 
   function handleSelectStudent(e) {
-    setParams({
-      studentId: e.id
-    })
     setSelectedStudent(e)
   }
 
   function handleFetch() {
-    refetch()
+    getRegistersByCode(selectedStudent.code).then(registers => {
+      setCompetencyByStudent(registers)
+    })
   }
 
   const handleGeneratePDF = () => {
@@ -134,23 +128,17 @@ export default function StudentProgress() {
   }
 
   useEffect(() => {
-    if (id) {
-      setParams({ studentId: id })
-    }
+    getRegistersByCode(id).then(registers => {
+      setCompetencyByStudent(registers)
+    })
+  }, [])
 
-    const timer = setTimeout(() => {
-      refetch()
-    }, 1000);
+  if (isLoading) return <Spinner />
 
-    return () => clearTimeout(timer);
-  }, [id])
-
-  if (studentLoading || loading) return <Spinner />
-
-  const groupedByDomainAndCourse = competencyBystudent && Object.values(groupByDomainAndCourse(competencyBystudent.data));
-  const groupedByDomainName = competencyBystudent && groupByDomainName(groupedByDomainAndCourse)
-  const domainNameList = competencyBystudent && Object.keys(groupedByDomainName)
-  const percentProgress = competencyBystudent && returnPercent(groupedByDomainName)
+  const groupedByDomainAndCourse = competencyByStudent && Object.values(groupByDomainAndCourse(competencyByStudent));
+  const groupedByDomainName = competencyByStudent && groupByDomainName(groupedByDomainAndCourse)
+  const domainNameList = competencyByStudent && Object.keys(groupedByDomainName)
+  const percentProgress = competencyByStudent && returnPercent(groupedByDomainName)
   
   return(
     <main className="flex-1 overflow-y-auto bg-slate-50 place-items-center pt-20 pr-4 pl-4">
@@ -158,26 +146,26 @@ export default function StudentProgress() {
         <ComboBoxSimple
           label="STUDENT"
           // disabled={formData.selectedStudent}
-          people={students.data}
+          people={students}
           selectedPerson={selectedStudent}
           setSelectedPerson={handleSelectStudent}
         />
         <button
           type="button"
-          disabled={!params.studentId}
+          disabled={!selectedStudent}
           onClick={handleFetch}
           className="disabled:opacity-50 h-9 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2"
         >
           search
         </button>
-        <button
+        {/* <button
           type="button"
           disabled={!params.studentId}
           onClick={handleFetch}
           className="disabled:opacity-50 h-9 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2 right-0"
         >
           Edit
-        </button>
+        </button> */}
         <button
           type="button"
           disabled={!params.studentId}
@@ -186,7 +174,7 @@ export default function StudentProgress() {
         >
           Download PDF
         </button>
-        {(competencyBystudent?.data.length !== 0 && percentProgress !== 0) &&
+        {(competencyByStudent.length !== 0 && percentProgress !== 0) &&
           <div className="ml-auto">
             <p>% of plan completed</p>
             <div className="shadow-md bg-grey-light w-[30rem] border-emerald-400 border-[0.5px] rounded">
@@ -196,7 +184,7 @@ export default function StudentProgress() {
         }
       </div>
       <div ref={reportToPDF}>
-        {competencyBystudent && domainNameList.map(key => {
+        {competencyByStudent && domainNameList.map(key => {
           return (
             <div key={key} className="shadow-md p-2 mb-8 rounded-l bg-white border-indigo-300 border-[0.5px] border-opacity-70">
               <h2 className="mb-6 text-center text-indigo-500 font-semibold uppercase rounded w-[calc(6rem*3)] -mt-5 mx-auto bg-white border-indigo-300 border-[0.5px] border-opacity-70">{key}</h2>
