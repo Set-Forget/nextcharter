@@ -6,14 +6,21 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function SelectWithCheck({ label, people, selected, setSelected, ...props }) {
+export default function SelectWithCheck({ label, people, selected, setSelected, handleAdd, ...props }) {
   // const [selected, setSelected] = useState({ name: '' })
 
   return (
     <Listbox value={selected} onChange={setSelected} {...props}>
       {({ open }) => (
         <>
-          <Listbox.Label className="block text-sm font-medium leading-6 text-gray-900">{label}</Listbox.Label>
+          <Listbox.Label className=" flex items-center text-sm font-medium leading-6 text-gray-900">
+            {label}
+            {handleAdd && 
+              <svg className="h-3 w-3 ml-1 bg-nextcolor rounded-full cursor-pointer" viewBox="0 0 20 20" fill="#fff" aria-hidden="true" onClick={handleAdd}>
+                <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+              </svg>
+            }
+          </Listbox.Label>
           <div className="relative mt-2">
             <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
               {props.multiple
@@ -38,7 +45,7 @@ export default function SelectWithCheck({ label, people, selected, setSelected, 
                     key={person.id}
                     className={({ active }) =>
                       classNames(
-                        active ? 'bg-indigo-600 text-white' : 'text-gray-900',
+                        active ? 'bg-nextcolor text-white' : 'text-gray-900',
                         'relative cursor-default select-none py-2 pl-3 pr-9'
                       )
                     }

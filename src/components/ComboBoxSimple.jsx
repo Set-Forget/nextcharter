@@ -39,7 +39,7 @@ export default function ComboBoxSimple({ people, label, selectedPerson, setSelec
                 className={({ active }) =>
                   classNames(
                     'relative cursor-default select-none py-2 pl-3 pr-9',
-                    active ? 'bg-indigo-600 text-white' : 'text-gray-900'
+                    active ? 'bg-nextcolor text-white' : 'text-gray-900'
                   )
                 }
               >

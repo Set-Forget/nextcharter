@@ -154,7 +154,7 @@ export default function StudentProgress() {
           type="button"
           disabled={!selectedStudent}
           onClick={handleFetch}
-          className="disabled:opacity-50 h-9 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2"
+          className="disabled:opacity-50 h-9 rounded-md bg-nextcolor px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2"
         >
           search
         </button>
@@ -162,7 +162,7 @@ export default function StudentProgress() {
           type="button"
           disabled={!params.studentId}
           onClick={handleFetch}
-          className="disabled:opacity-50 h-9 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2 right-0"
+          className="disabled:opacity-50 h-9 rounded-md bg-nextcolor px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2 right-0"
         >
           Edit
         </button> */}
@@ -170,7 +170,7 @@ export default function StudentProgress() {
           type="button"
           disabled={!params.studentId}
           onClick={handleGeneratePDF}
-          className="disabled:opacity-50 h-9 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2 right-0"
+          className="disabled:opacity-50 h-9 rounded-md bg-nextcolor px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2 right-0"
         >
           Download PDF
         </button>

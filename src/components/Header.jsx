@@ -8,8 +8,8 @@ export default function Header({navItems}) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     return(
-        <header className="absolute inset-x-0 top-0 z-50  shadow-md bg-indigo-500">
-        <nav className="flex items-center justify-around px-8 py-4 gap-4" aria-label="Global">
+        <header className="absolute inset-x-0 top-0 z-50  shadow-md bg-nextcolor">
+        <nav className="flex items-center justify-around px-8 py-4 gap-4 container mx-auto" aria-label="Global">
           <div className="flex lg:flex-1">
             <a href="/" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
@@ -30,24 +30,24 @@ export default function Header({navItems}) {
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
-          <div className="hidden lg:flex lg:gap-x-12">
-            {navItems.map((item) => (
-              <NavLink to={item.href} key={item.name} className="text-sm font-semibold leading-6 text-white">
-                {item.name}
-              </NavLink>
-            ))}
-          </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            {/* <a href="#" className="text-sm font-semibold leading-6 text-gray-">
-              Log in <span aria-hidden="true">&rarr;</span>
-            </a> */}
+            <div className="hidden lg:flex lg:gap-x-12">
+              {navItems.map((item) => (
+                <NavLink to={item.href} key={item.name} className="text-sm font-semibold leading-6 text-white">
+                  {item.name}
+                </NavLink>
+              ))}
+              <a href="#" className="text-sm font-semibold leading-6 text-white">
+                Log out <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
           </div>
         </nav>
         <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
           <div className="fixed inset-0 z-50" />
           <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
             <div className="flex items-center justify-between">
-              <a href="#" className="-m-1.5 p-1.5 bg-indigo-500">
+              <a href="#" className="-m-1.5 p-1.5 bg-nextcolor">
                 <span className="sr-only">Your Company</span>
                 <img
                   className="h-8 w-auto"

@@ -1,3 +1,4 @@
+const colors = require("tailwindcss/colors")
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -5,7 +6,12 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    colors: {
+      ...colors,
+      nextcolor: "#13274b"
+    },
+    extend: {
+    },
   },
   plugins: [
     // eslint-disable-next-line no-undef

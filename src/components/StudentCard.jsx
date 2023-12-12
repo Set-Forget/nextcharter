@@ -18,7 +18,7 @@ export default function StudentCard({ people }) {
           onClick={() => handleNavigate(person.code)}
         >
           <div className="flex min-w-0 gap-x-4">
-            <span className="h-12 w-12 flex justify-center items-center rounded-full bg-indigo-500 text-white">
+            <span className="h-12 w-12 flex justify-center items-center rounded-full bg-nextcolor text-white">
               {person.name.split(" ")[0].charAt(0)}  {person.name.split(" ")[1].charAt(0)}
             </span>
             <div className="min-w-0 flex-auto">

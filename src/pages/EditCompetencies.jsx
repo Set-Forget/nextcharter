@@ -163,7 +163,7 @@ export default function EditCompetencies() {
 
           <div className="flex justify-center mt-10">
             <button
-              className="bg-indigo-500 w-24 h-12 text-white rounded-md"
+              className="bg-nextcolor w-24 h-12 text-white rounded-md"
               onClick={handleSubmit}
             >
               {isLoadingUpdate ? (

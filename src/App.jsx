@@ -7,9 +7,12 @@ import ComboBoxSimple from './components/ComboBoxSimple'
 import ResumeItem from './components/ResumeItem'
 import Spinner from './components/Spinner'
 import Alert from './components/Alert'
+import AddDomainModal from './components/AddDomainModal'
+import AddCourseModal from './components/AddCourseModal'
 
 // HOOKS
 import useInfo from './hooks/useInfo'
+import useModal from './hooks/useModal'
 
 function sumCreditValues(data) {
   const creditTotal = data.reduce((accumulator, item) => accumulator + item.credit_value, 0)
@@ -58,6 +61,9 @@ export default function App() {
     isLoading,
     error
    } = useInfo()
+
+  const { isShowing, toggle }  = useModal()
+  const { isShowing: courseIsShowing, toggle: courseToggle }  = useModal()
 
   const competenciesGrouped = useMemo(() => groupByCourseId(competencies), [competencies])
 
@@ -166,7 +172,6 @@ export default function App() {
 
   const handleDelete = async (ids) => {
     const result = await deleteCompetencies(ids)
-    console.log('Result deleted: ', result)
     getRegisters(selectedStudent.id).then(registerFunction)
   }
 
@@ -218,10 +223,12 @@ export default function App() {
   return (
     <>
       <Alert open={open} setOpen={setOpen} action={handleDelete} />
-      <main className="flex-1 bg-gray-100 place-items-center p-4 relative">
-        <div className='bg-white h-[calc(100vh-100px)] max-w-7xl mt-20 m-auto rounded-lg shadow flex'>
-          <div className="flex flex-col flex-1 p-8">
-            <form className='mb-8'>
+      <AddDomainModal isShowing={isShowing} toggle={toggle} />
+      <AddCourseModal isShowing={courseIsShowing} toggle={courseToggle} />
+      <main className="flex-1 bg-white place-items-center p-4 relative container mx-auto">
+        <div className='h-[calc(100vh-115px)] mt-20 rounded-lg shadow flex'>
+          <div className="flex flex-col flex-1 px-8 py-4">
+            <form className='mb-4'>
                 <ComboBoxSimple
                   label="Student"
                   disabled={formData.selectedStudent}
@@ -240,36 +247,39 @@ export default function App() {
                   label="Domains"
                   people={domains || []}
                   selected={selectedDomain}
-                  setSelected={handleSetDomain} />
+                  setSelected={handleSetDomain}
+                  handleAdd={toggle} />
                 <br />
                 <SelectWithCheck
                   label="Course"
                   people={courses || []}
                   selected={selectedCourse}
                   setSelected={setSelectedCourse}
+                  handleAdd={courseToggle}
                   multiple />
-                <br />
-                <label className='block text-sm font-medium leading-6 text-gray-900 mb-4'>Compentencies</label>
-                {competenciesGrouped.map((filters, index) => (
-                  <Fieldset key={index}
-                    items={filters}
-                    label="Competencies" />
-                ))
-                }
             </form>
-            {selectedDomain.name !== "Select" && (
-              <>
-                {/* <p className='block text-sm font-medium leading-6 text-gray-600'>{selectedDomain.name} credits required: {selectedDomain.credit_required}</p> */}
-                <p className='block text-sm font-medium leading-6 text-gray-900'>{selectedDomain.name} credits attached: {sumCreditValues(competencies)}</p>
-              </>
-            )}
+            <label className='block text-sm font-medium leading-6 text-gray-900'>Compentencies</label>
+            <div className='flex-1 bg-gray-100 no-scrollbar overflow-y-auto'>
+              {competenciesGrouped.map((filters, index) => (
+                <Fieldset key={index}
+                  items={filters}
+                  label="Competencies" />
+              ))
+              }
+            </div>
             <br />
-            <div className='flex justify-end'>
+            <div className='flex justify-between items-center mb-1'>
+              {selectedDomain.name !== "Select" ? (
+                <>
+                  {/* <p className='block text-sm font-medium leading-6 text-gray-600'>{selectedDomain.name} credits required: {selectedDomain.credit_required}</p> */}
+                  <p className='block text-sm font-medium leading-6'>{selectedDomain.name} credits attached: {sumCreditValues(competencies)}</p>
+                </>
+              ): <p></p>}
               <button
                 disabled={selectedDomain.name === "Select" || sumCreditValues(competencies) < selectedDomain.credit_required}
                 type="button"
                 onClick={handleAdd}
-                className="rounded-full bg-indigo-600 p-2 disabled:opacity-50 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                className="rounded-full bg-nextcolor p-2 disabled:opacity-50 text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                   <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
                 </svg>
@@ -307,7 +317,7 @@ export default function App() {
               </ul>
             </div>
             <div className='flex'>
-              <h3 className={`${totalCredits >= 20 ? 'text-green-500' : 'text-red-500'} p-2 font-semibold rounded-xl mb-2 shadow-md bg-white`}>
+              <h3 className={`${totalCredits >= 20 ? 'text-green-500' : totalCredits == 0 ? 'text-gray-400' : 'text-red-500'} p-2 font-semibold rounded-xl mb-2 shadow-md bg-white`}>
                 Total credits: {totalCredits + (registered.map(item => item.credits)).reduce((acc,cv) => acc + cv, 0)} / 20
               </h3>
             </div>
@@ -315,7 +325,7 @@ export default function App() {
               type="button"
               disabled={!formData.selectedStudent}
               onClick={handleSubmit}
-              className="disabled:opacity-50 h-12 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="disabled:opacity-50 h-12 rounded-md bg-nextcolor px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               {"Submit"}
             </button>
