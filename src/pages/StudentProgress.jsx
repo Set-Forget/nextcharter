@@ -96,6 +96,7 @@ export default function StudentProgress() {
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [params, setParams] = useState({ studentId: id })
   const [competencyByStudent, setCompetencyByStudent] = useState(null)
+  const [additional, setAdditional] = useState(true)
   const reportToPDF = useRef(null)
 
   const { students, isLoading, getRegistersByCode } = useInfo()
@@ -111,18 +112,29 @@ export default function StudentProgress() {
   }
 
   const handleGeneratePDF = () => {
+    setAdditional(false)
     let srcwidth = reportToPDF.current.scrollWidth
     const doc = new jsPDF('p', "pt", "a4")
     
+    // // Head
+    // doc.setFontSize(10);
+    // doc.text("Cabecera del Documento", 10, 10);
+
+    // // Title
+    // doc.setFontSize(16);
+    // doc.text("Título del Documento", 10, 20);
     //doc.setFont('Inter-Regular', 'normal');
 
     doc.html(reportToPDF.current, {
       html2canvas: {
-        scale: 600 / srcwidth
+        scale: (575 / srcwidth)
       },
+      x:10,
+      y: 20,
       callback(doc) {
         doc.save("Student_report")
-        // window.open(doc.output('bloburl'))  
+        // window.open(doc.output('bloburl'))
+        setAdditional(true)
       },
     })
   }
@@ -141,8 +153,9 @@ export default function StudentProgress() {
   const percentProgress = competencyByStudent && returnPercent(groupedByDomainName)
   
   return(
-    <main className="flex-1 overflow-y-auto bg-slate-50 place-items-center pt-20 pr-4 pl-4">
+    <main className="flex-1 overflow-y-auto bg-slate-50 place-items-center pt-20 pr-4 pl-4" ref={reportToPDF}>
       <div className="mb-8 mt-8 flex items-end">
+        {/* <div dangerouslySetInnerHTML={{ __html: additional }}></div> */}
         <ComboBoxSimple
           label="STUDENT"
           // disabled={formData.selectedStudent}
@@ -150,30 +163,34 @@ export default function StudentProgress() {
           selectedPerson={selectedStudent}
           setSelectedPerson={handleSelectStudent}
         />
-        <button
-          type="button"
-          disabled={!selectedStudent}
-          onClick={handleFetch}
-          className="disabled:opacity-50 h-9 rounded-md bg-nextcolor px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2"
-        >
-          search
-        </button>
-        {/* <button
-          type="button"
-          disabled={!params.studentId}
-          onClick={handleFetch}
-          className="disabled:opacity-50 h-9 rounded-md bg-nextcolor px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2 right-0"
-        >
-          Edit
-        </button> */}
-        <button
-          type="button"
-          disabled={!params.studentId}
-          onClick={handleGeneratePDF}
-          className="disabled:opacity-50 h-9 rounded-md bg-nextcolor px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2 right-0"
-        >
-          Download PDF
-        </button>
+        {additional && (
+          <>
+            <button
+              type="button"
+              disabled={!selectedStudent}
+              onClick={handleFetch}
+              className="disabled:opacity-50 h-9 rounded-md bg-nextcolor px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2"
+            >
+              search
+            </button>
+            {/* <button
+              type="button"
+              disabled={!params.studentId}
+              onClick={handleFetch}
+              className="disabled:opacity-50 h-9 rounded-md bg-nextcolor px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2 right-0"
+            >
+              Edit
+            </button> */}
+            <button
+              type="button"
+              disabled={!params.studentId}
+              onClick={handleGeneratePDF}
+              className="disabled:opacity-50 h-9 rounded-md bg-nextcolor px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2 right-0"
+            >
+              Download PDF
+            </button>
+          </>
+        )}
         {(competencyByStudent.length !== 0 && percentProgress !== 0) &&
           <div className="ml-auto">
             <p>% of plan completed</p>
@@ -183,7 +200,7 @@ export default function StudentProgress() {
           </div>
         }
       </div>
-      <div ref={reportToPDF}>
+      <div>
         {competencyByStudent && domainNameList.map(key => {
           return (
             <div key={key} className="shadow-md p-2 mb-8 rounded-l bg-white border-indigo-300 border-[0.5px] border-opacity-70">
