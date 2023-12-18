@@ -9,6 +9,7 @@ import Spinner from './components/Spinner'
 import Alert from './components/Alert'
 import AddDomainModal from './components/AddDomainModal'
 import AddCourseModal from './components/AddCourseModal'
+import AddCompetencyModal from './components/AddCompetencyModal'
 
 // HOOKS
 import useInfo from './hooks/useInfo'
@@ -64,6 +65,7 @@ export default function App() {
 
   const { isShowing, toggle }  = useModal()
   const { isShowing: courseIsShowing, toggle: courseToggle }  = useModal()
+  const { isShowing: competencyIsShowing, toggle: competencyToggle }  = useModal()
 
   const competenciesGrouped = useMemo(() => groupByCourseId(competencies), [competencies])
 
@@ -225,6 +227,7 @@ export default function App() {
       <Alert open={open} setOpen={setOpen} action={handleDelete} />
       <AddDomainModal isShowing={isShowing} toggle={toggle} />
       <AddCourseModal isShowing={courseIsShowing} toggle={courseToggle} />
+      <AddCompetencyModal isShowing={competencyIsShowing} toggle={competencyToggle} />
       <main className="flex-1 bg-white place-items-center p-4 relative container mx-auto">
         <div className='h-[calc(100vh-115px)] mt-20 rounded-lg shadow flex'>
           <div className="flex flex-col flex-1 px-8 py-4">
@@ -258,7 +261,12 @@ export default function App() {
                   handleAdd={courseToggle}
                   multiple />
             </form>
-            <label className='block text-sm font-medium leading-6 text-gray-900'>Compentencies</label>
+            <label className='text-sm font-medium leading-6 text-gray-900 flex items-center'>
+              Compentencies
+              <svg className="h-3 w-3 ml-1 bg-nextcolor rounded-full cursor-pointer" viewBox="0 0 20 20" fill="#fff" aria-hidden="true" onClick={competencyToggle}>
+                <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+              </svg>
+            </label>
             <div className='flex-1 bg-gray-100 no-scrollbar overflow-y-auto'>
               {competenciesGrouped.map((filters, index) => (
                 <Fieldset key={index}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const ProgressBar = ({ selectedStudent, competencyByStudent }) => {
+const ProgressBar = ({ selectedStudent, competencyByStudent, additional }) => {
   const [percentProgress, setPercentProgress] = useState(0);
 
   useEffect(() => {
@@ -27,9 +27,9 @@ const ProgressBar = ({ selectedStudent, competencyByStudent }) => {
 
   return (
     <div className="ml-auto mt-2">
-      <p>Target % based on today's date</p>
+      <p className={!additional && 'mb-2'}>Target % based on today's date</p>
       <div className="shadow-md bg-grey-light w-[30rem] border-blue-400 border-[0.5px] rounded">
-        <div className="bg-blue-400 text-xs leading-none py-[0.35rem] text-center text-white" style={{ width: `${percentProgress}%` }}>
+        <div className="bg-blue-400 text-xs leading-none py-[0.35rem] text-center text-white flex items-center justify-center" style={{ width: `${percentProgress}%` }}>
           {percentProgress}%
         </div>
       </div>

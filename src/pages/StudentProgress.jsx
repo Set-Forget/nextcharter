@@ -133,7 +133,7 @@ export default function StudentProgress() {
         scale: (575 / srcwidth)
       },
       x:10,
-      y: 20,
+      y: 10,
       callback(doc) {
         doc.save("Student_report")
         // window.open(doc.output('bloburl'))
@@ -156,18 +156,22 @@ export default function StudentProgress() {
   const percentProgress = competencyByStudent && returnPercent(groupedByDomainName)
   
   return(
-    <main className="flex-1 overflow-y-auto bg-slate-50 place-items-center pt-20 pr-4 pl-4" ref={reportToPDF}>
+    <main className={`flex-1 overflow-y-auto bg-slate-50 place-items-center pr-4 pl-4 ${!additional ? 'pt-1' : 'pt-20'}`} ref={reportToPDF}>
+      {!additional && <header className="shadow-md bg-nextcolor h-14">
+        <h3 className="leading-10 text-center text-white">Next Charter School</h3>
+      </header>}
       <div className="mb-8 mt-8 flex items-end">
         {/* <div dangerouslySetInnerHTML={{ __html: additional }}></div> */}
-        <ComboBoxSimple
-          label="STUDENT"
-          // disabled={formData.selectedStudent}
-          people={students}
-          selectedPerson={selectedStudent}
-          setSelectedPerson={handleSelectStudent}
-        />
+        {!additional && <h3>STUDENT: {selectedStudent.name}</h3>}
         {additional && (
           <>
+            <ComboBoxSimple
+              label="STUDENT"
+              // disabled={formData.selectedStudent}
+              people={students}
+              selectedPerson={selectedStudent}
+              setSelectedPerson={handleSelectStudent}
+            />
             <button
               type="button"
               disabled={!selectedStudent}
@@ -196,17 +200,18 @@ export default function StudentProgress() {
         )}
         {(competencyByStudent.length !== 0 && percentProgress !== 0) &&
           <div className="ml-auto">
-            <p>% of plan completed</p>
+            <p className={!additional && 'mb-2'}>% of plan completed</p>
             <div className="shadow-md bg-grey-light w-[30rem] border-emerald-400 border-[0.5px] rounded">
-              <div className="bg-teal-500 text-xs leading-none py-[0.35rem] text-center text-white" style={{ width: `${percentProgress}%` }}>{percentProgress}%</div>
+              <div className="bg-teal-500 text-xs leading-none py-[0.35rem] text-center text-white flex items-center justify-center" style={{ width: `${percentProgress}%` }}>{percentProgress}%</div>
             </div>
-          {competencyByStudent.length !== 0 && (
-            <ProgressBar
-            selectedStudent={selectedStudent}
-            competencyByStudent={competencyByStudent}
-            />
-          )}
-        </div>
+            {competencyByStudent.length !== 0 && (
+              <ProgressBar
+                selectedStudent={selectedStudent}
+                competencyByStudent={competencyByStudent}
+                additional={additional}
+              />
+            )}
+          </div>
         }
       </div>
       <div>

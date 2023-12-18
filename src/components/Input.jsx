@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { forwardRef, useImperativeHandle, useRef } from "react"
 
-const Input = forwardRef(({ label, ...props }, ref) => {
+const Input = forwardRef(({ label, flex, ...props }, ref) => {
   const inputRef = useRef()
 
   useImperativeHandle(ref, () => ({
@@ -9,7 +9,7 @@ const Input = forwardRef(({ label, ...props }, ref) => {
   }))
 
   return (
-    <div>
+    <div className={flex}>
       <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
         {label}
       </label>
@@ -27,7 +27,8 @@ const Input = forwardRef(({ label, ...props }, ref) => {
 
 Input.displayName = "Input"
 Input.propTypes = {
-  label: PropTypes.string.isRequired
+  label: PropTypes.string.isRequired,
+  flex: PropTypes.string
 }
 
 export default Input
