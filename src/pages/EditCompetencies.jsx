@@ -129,7 +129,7 @@ export default function EditCompetencies() {
               ) : (
                 studentRegister &&
                 studentRegister?.map((el, e) => (
-                  <option key={e} value={el.id}>
+                  <option key={e} value={el.competency_id}>
                     {el.competency_name}
                   </option>
                 ))
