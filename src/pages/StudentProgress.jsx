@@ -72,7 +72,7 @@ const colorPallete = {
     text: "text-white",
     tp: "text-blue-500",
   },
-  "not meet": {
+  "not met": {
     bg: "bg-slate-500",
     text: "text-white",
     tp: "text-slate-500",
