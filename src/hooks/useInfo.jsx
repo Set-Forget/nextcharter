@@ -94,6 +94,7 @@ export default function useInfo() {
   }
 
   async function updateRegister(student_id, competency_id, newStatus) {
+    console.log(student_id, " ", competency_id, " ", newStatus)
     const { data, error } = await supabase
       .from("registers")
       .update({ status: newStatus })
@@ -102,7 +103,7 @@ export default function useInfo() {
     if (error) {
       throw error;
     }
-
+    console.log(data)
     return data;
   }
 
