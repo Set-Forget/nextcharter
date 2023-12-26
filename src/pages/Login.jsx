@@ -17,7 +17,7 @@ export default function Login() {
       email: emailRef.current.value,
       options: {
         shouldCreateUser: false,
-        emailRedirectTo: 'http://localhost:5173/nextcharter/',
+        emailRedirectTo: 'https://set-forget.github.io/nextcharter/',
       },
     })
 
