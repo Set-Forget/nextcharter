@@ -1,18 +1,22 @@
-
 import { useState } from 'react'
 import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { NavLink } from 'react-router-dom'
+import { supabase } from '../lib/api'
 
-export default function Header({navItems}) {
+export default function Header({ navItems }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+    async function signOut() {
+      const { error } = await supabase.auth.signOut()
+    }
 
     return(
         <header className="absolute inset-x-0 top-0 z-50  shadow-md bg-nextcolor">
         <nav className="flex items-center justify-around px-8 py-4 gap-4 container mx-auto" aria-label="Global">
           <div className="flex lg:flex-1">
             <a href="/" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
+              {/* <span className="sr-only">Your Company</span> */}
               <img
                 className="h-8"
                 src="https://nextcharterschool.org/wp-content/uploads/2020/08/logo.png"
@@ -37,9 +41,14 @@ export default function Header({navItems}) {
                   {item.name}
                 </NavLink>
               ))}
-              <a href="#" className="text-sm font-semibold leading-6 text-white">
+              {navItems.length > 0 && 
+              <a 
+                href="#"
+                className="text-sm font-semibold leading-6 text-white"
+                onClick={signOut}>
                 Log out <span aria-hidden="true">&rarr;</span>
               </a>
+              }
             </div>
           </div>
         </nav>

@@ -1,19 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
 
 // COMPONENTS
-import SelectWithCheck from './components/SelectWithCheck'
-import Fieldset from './components/Fieldset'
-import ComboBoxSimple from './components/ComboBoxSimple'
-import ResumeItem from './components/ResumeItem'
-import Spinner from './components/Spinner'
-import Alert from './components/Alert'
-import AddDomainModal from './components/AddDomainModal'
-import AddCourseModal from './components/AddCourseModal'
-import AddCompetencyModal from './components/AddCompetencyModal'
+import SelectWithCheck from '../components/SelectWithCheck'
+import Fieldset from '../components/Fieldset'
+import ComboBoxSimple from '../components/ComboBoxSimple'
+import ResumeItem from '../components/ResumeItem'
+import Spinner from '../components/Spinner'
+import Alert from '../components/Alert'
+import AddDomainModal from '../components/AddDomainModal'
+import AddCourseModal from '../components/AddCourseModal'
+import AddCompetencyModal from '../components/AddCompetencyModal'
 
 // HOOKS
-import useInfo from './hooks/useInfo'
-import useModal from './hooks/useModal'
+import useInfo from '../hooks/useInfo'
+import useModal from '../hooks/useModal'
 
 function sumCreditValues(data) {
   const creditTotal = data.reduce((accumulator, item) => accumulator + item.credit_value, 0)
@@ -37,7 +37,7 @@ const initialFormData = {
   list: []
 }
 
-export default function App() {
+export default function Home() {
   const [postLoading, setPostLoading] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [selectedInstitution, setSelectedInstitution] = useState(null)
@@ -149,14 +149,14 @@ export default function App() {
     const groupedByDomain = result.reduce((acc, item) => {
       // Si el dominio no está en el acumulador, lo inicializamos
       if (!acc[item.domain_name]) {
-          acc[item.domain_name] = {
-              selectedDomain: {
-                  name: item.domain_name
-              },
-              selectedCourses: [],
-              credits: item.competency_course.credit_value,
-              competency_course_ids: [ item.id ]
-          };
+        acc[item.domain_name] = {
+          selectedDomain: {
+              name: item.domain_name
+          },
+          selectedCourses: [],
+          credits: item.competency_course.credit_value,
+          competency_course_ids: [ item.id ]
+        };
       } else {
         acc[item.domain_name].credits += item.competency_course.credit_value,
         acc[item.domain_name].competency_course_ids.push(item.id)

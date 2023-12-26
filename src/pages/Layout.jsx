@@ -1,5 +1,6 @@
-import { Outlet } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
 import Header from "../components/Header"
+import { useAuthContext } from '../context/AuthProvider'
 
 // CONSTANTS
 const navigation = [
@@ -9,10 +10,16 @@ const navigation = [
 ]
 
 export default function Layout() {
+  const { session } = useAuthContext()
+
   return(
-    <div className="flex flex-col h-screen">
-      <Header navItems={navigation} />
-      <Outlet />
-    </div>
+    session ? (
+      <div className="flex flex-col h-screen">
+        <Header navItems={navigation} />
+        <Outlet />
+      </div>
+    ) : (
+      <Navigate to="/login" replace />
+    )
   )
 }
