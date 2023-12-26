@@ -83,7 +83,9 @@ export default function Login() {
                   Sign in
                 </button>
               </div>
+              <p className="text-red-500 text-center">The email was denied</p>
             </form>
+
           </div>
         )}
       </div>
