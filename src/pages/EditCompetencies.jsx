@@ -2,16 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import useInfo from "../hooks/useInfo";
 import Spinner from "../components/Spinner";
 import SuccessAlert from "../components/SuccessAlert";
+// import CustomDropdown from "../components/CustomDropdown";
+import MultiSelect from "../components/Multiselect";
 export default function EditCompetencies() {
   const [studentRegister, setStudentRegister] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState();
+  const [selectedStudent, setSelectedStudent] = useState("");
   const [selectedCompetency, setSelectedCompetency] = useState();
   const [selectedStatus, setSelectedStatus] = useState();
   const [errorMessages, setErrorMessages] = useState({});
   const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
   const [successMessage, setSuccessMessage] = useState(false);
+  const [selectedCompetencies, setSelectedCompetencies] = useState([]);
 
-  const { students, getRegisters, updateRegister, isLoading, error } =
+  const { students, getRegisters, updateMultipleRegisters, isLoading, error } =
     useInfo();
   const studentRef = useRef();
   const competencyRef = useRef();
@@ -63,16 +66,18 @@ export default function EditCompetencies() {
 
     setIsLoadingUpdate(true);
 
-    const updatedRegisters = await updateRegister(
+    const updatedRegisters = await updateMultipleRegisters(
       selectedStudent,
-      selectedCompetency,
+      selectedCompetencies,
       selectedStatus
     ).then(() => {
       setIsLoadingUpdate(false);
       setSuccessMessage(true);
-      studentRef.current.value = '';
-      competencyRef.current.value = '';
-      statusRef.current.value = '';
+      studentRef.current.value = "";
+      setSelectedCompetencies([]);
+      statusRef.current.value = "";
+      setSelectedStudent('');
+      setStudentRegister([]);
     });
   }
 
@@ -112,29 +117,12 @@ export default function EditCompetencies() {
             <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
               Competencies{" "}
             </label>
-            <select
-              id="selectedCompetency"
-              name="Competency"
-              ref={competencyRef}
-              onChange={(e) => setSelectedCompetency(e.target.value)}
-              className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
-            >
-              <option value="" disabled selected>
-                Select competency
-              </option>
-              {studentRegister.length < 1 ? (
-                <option value="" disabled>
-                  Select student to see competencies
-                </option>
-              ) : (
-                studentRegister &&
-                studentRegister?.map((el, e) => (
-                  <option key={e} value={el.competency_id}>
-                    {el.competency_name}
-                  </option>
-                ))
-              )}
-            </select>
+            <MultiSelect
+              studentRegister={studentRegister}
+              setSelectedCompetenciesState={setSelectedCompetencies}
+              selectedCompetencies={selectedCompetencies}
+              student={selectedStudent}
+            />
             <span className="text-red-500">{errorMessages["Competency"]}</span>
           </div>
 
