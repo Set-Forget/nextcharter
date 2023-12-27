@@ -7,6 +7,7 @@ const navigation = [
   { name: 'Form', href: '/' },
   { name: 'Registrations', href: '/registrations' },
   { name: 'Profile', href: '/profile' },
+  { name: 'Edit Competencies', href: '/editCompentencies' },
 ]
 
 export default function Layout() {
