@@ -1,8 +1,22 @@
 import { useState, useEffect } from "react";
+import useInfo from "../hooks/useInfo";
 
 const ProgressBar = ({ selectedStudent, competencyByStudent }) => {
+  let oldestDate = null;
+
+  competencyByStudent.forEach(item => {
+    const currentDate = new Date(item.created_at);
+  
+    if (oldestDate === null || currentDate < oldestDate) {
+      oldestDate = currentDate;
+    }
+  });
+  
+  // Extract the year and add 4
+  const defaultTargetYear = oldestDate ? oldestDate.getFullYear() + 4 : null;
+  
   const [percentProgress, setPercentProgress] = useState(0);
-  const [targetYear, setTargetYear] = useState(new Date().getFullYear());
+  const [targetYear, setTargetYear] = useState(defaultTargetYear);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +55,10 @@ const ProgressBar = ({ selectedStudent, competencyByStudent }) => {
       <div className="w-[30rem] flex justify-between -mb-3">
         <p>Target % based on selected year</p>
         <div className="flex flex-row">
-          <button onClick={handleRestYear} disabled={targetYear <= new Date().getFullYear()}>
+          <button
+            onClick={handleRestYear}
+            disabled={targetYear <= new Date().getFullYear()}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
