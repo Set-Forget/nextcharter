@@ -58,7 +58,7 @@ const returnPercent = (groupedByDomainName) => {
   const totalCompetent = lista.filter((com) =>
     ["competent", "transfer"].includes(com.status)
   );
-  const totalPercent = (totalCompetent.length * 100) / lista.length;
+  const totalPercent = (totalCompetent?.length * 100) / lista?.length;
 
   return Math.round(totalPercent);
 };
@@ -198,13 +198,13 @@ export default function StudentProgress() {
             </button>
           </>
         )}
-        {(competencyByStudent.length !== 0 && percentProgress !== 0) &&
+        {(competencyByStudent?.length !== 0 && percentProgress !== 0) &&
           <div className="ml-auto">
             <p className={!additional && 'mb-2'}>% of plan completed</p>
             <div className="shadow-md bg-grey-light w-[30rem] border-emerald-400 border-[0.5px] rounded">
               <div className="bg-teal-500 text-xs leading-none py-[0.35rem] text-center text-white flex items-center justify-center" style={{ width: `${percentProgress}%` }}>{percentProgress}%</div>
             </div>
-            {competencyByStudent.length !== 0 && (
+            {competencyByStudent?.length !== 0 && (
               <ProgressBar
                 selectedStudent={selectedStudent}
                 competencyByStudent={competencyByStudent}
@@ -224,15 +224,15 @@ export default function StudentProgress() {
                   const { competencies } = courseItem
                   const noCompetents = competencies.filter(i => i.status !== 'competent' && i.status !== 'transfer')
                   const competents = competencies.filter(i => i.status == 'competent' || i.status == 'transfer')
-                  const completed = competents.length
+                  const completed = competents?.length
 
-                  while (noCompetents.length < 8) {
+                  while (noCompetents?.length < 8) {
                     noCompetents.unshift({
                       compentecy_name: "",
                       status: "blank",
                     });
                   }
-                  while (competents.length < 8) {
+                  while (competents?.length < 8) {
                     competents.push({ compentecy_name: "", status: "blank" });
                   }
 
@@ -271,7 +271,7 @@ export default function StudentProgress() {
                                 </span>
                                 : {courseName}
                               </p>
-                              <p className="text-sm capitalize">{`(${completed}/${competencies.length})`}</p>
+                              <p className="text-sm capitalize">{`(${completed}/${competencies?.length})`}</p>
                               <svg
                                 className={`absolute ${
                                   colorPallete[ptm.status].tp
@@ -323,7 +323,7 @@ export default function StudentProgress() {
                                 </span>
                                 : {courseName}
                               </p>
-                              <p className="text-sm capitalize">{`(${completed}/${competencies.length})`}</p>
+                              <p className="text-sm capitalize">{`(${completed}/${competencies?.length})`}</p>
                               <svg
                                 className={`absolute ${
                                   colorPallete[ptm.status].tp
