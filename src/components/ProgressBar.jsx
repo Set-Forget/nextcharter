@@ -4,7 +4,7 @@ import useInfo from "../hooks/useInfo";
 const ProgressBar = ({ selectedStudent, competencyByStudent }) => {
   let oldestDate = null;
 
-  competencyByStudent.forEach(item => {
+  competencyByStudent?.forEach(item => {
     const currentDate = new Date(item.created_at);
   
     if (oldestDate === null || currentDate < oldestDate) {
@@ -20,7 +20,7 @@ const ProgressBar = ({ selectedStudent, competencyByStudent }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const competentCredits = competencyByStudent.reduce(
+      const competentCredits = competencyByStudent?.reduce(
         (sum, competency) =>
           competency.status === "competent"
             ? sum + competency.competency_course.credit_value
