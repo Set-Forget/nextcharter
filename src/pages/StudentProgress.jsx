@@ -95,14 +95,22 @@ const colorPallete = {
 };
 
 export default function StudentProgress() {
-  const { id } = useParams()
-  const [selectedStudent, setSelectedStudent] = useState(null)
-  const [params, setParams] = useState({ studentId: id })
-  const [competencyByStudent, setCompetencyByStudent] = useState(null)
-  const [additional, setAdditional] = useState(true)
-  const reportToPDF = useRef(null)
+  const { id } = useParams();
 
   const { students, isLoading, getRegistersByCode } = useInfo();
+
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [params, setParams] = useState({ studentId: id });
+  const [competencyByStudent, setCompetencyByStudent] = useState(null);
+  const [additional, setAdditional] = useState(true);
+  const reportToPDF = useRef(null);
+
+  useEffect(() => {
+    if (students && selectedStudent == null) {
+      let getSelectedStudent = students.filter((student) => student.code == id);
+      setSelectedStudent(getSelectedStudent[0]);
+    }
+  }, [students, id, selectedStudent]);
 
   function handleSelectStudent(e) {
     setSelectedStudent(e);
@@ -115,10 +123,10 @@ export default function StudentProgress() {
   }
 
   const handleGeneratePDF = () => {
-    setAdditional(false)
-    let srcwidth = reportToPDF.current.scrollWidth
-    const doc = new jsPDF('p', "pt", "a4")
-    
+    setAdditional(false);
+    let srcwidth = reportToPDF.current.scrollWidth;
+    const doc = new jsPDF("p", "pt", "a4");
+
     // // Head
     // doc.setFontSize(10);
     // doc.text("Cabecera del Documento", 10, 10);
@@ -130,14 +138,14 @@ export default function StudentProgress() {
 
     doc.html(reportToPDF.current, {
       html2canvas: {
-        scale: (575 / srcwidth)
+        scale: 575 / srcwidth,
       },
-      x:10,
+      x: 10,
       y: 10,
       callback(doc) {
-        doc.save("Student_report")
+        doc.save("Student_report");
         // window.open(doc.output('bloburl'))
-        setAdditional(true)
+        setAdditional(true);
       },
     });
   };
@@ -150,16 +158,30 @@ export default function StudentProgress() {
 
   if (isLoading) return <Spinner />;
 
-  const groupedByDomainAndCourse = competencyByStudent && Object.values(groupByDomainAndCourse(competencyByStudent));
-  const groupedByDomainName = competencyByStudent && groupByDomainName(groupedByDomainAndCourse)
-  const domainNameList = competencyByStudent && Object.keys(groupedByDomainName)
-  const percentProgress = competencyByStudent && returnPercent(groupedByDomainName)
-  
-  return(
-    <main className={`flex-1 overflow-y-auto bg-slate-50 place-items-center pr-4 pl-4 ${!additional ? 'pt-1' : 'pt-20'}`} ref={reportToPDF}>
-      {!additional && <header className="shadow-md bg-nextcolor h-14">
-        <h3 className="leading-10 text-center text-white">Next Charter School</h3>
-      </header>}
+  const groupedByDomainAndCourse =
+    competencyByStudent &&
+    Object.values(groupByDomainAndCourse(competencyByStudent));
+  const groupedByDomainName =
+    competencyByStudent && groupByDomainName(groupedByDomainAndCourse);
+  const domainNameList =
+    competencyByStudent && Object.keys(groupedByDomainName);
+  const percentProgress =
+    competencyByStudent && returnPercent(groupedByDomainName);
+  console.log(selectedStudent);
+  return (
+    <main
+      className={`flex-1 overflow-y-auto bg-slate-50 place-items-center pr-4 pl-4 ${
+        !additional ? "pt-1" : "pt-20"
+      }`}
+      ref={reportToPDF}
+    >
+      {!additional && (
+        <header className="shadow-md bg-nextcolor h-14">
+          <h3 className="leading-10 text-center text-white">
+            Next Charter School
+          </h3>
+        </header>
+      )}
       <div className="mb-8 mt-8 flex items-end">
         {/* <div dangerouslySetInnerHTML={{ __html: additional }}></div> */}
         {!additional && <h3>STUDENT: {selectedStudent.name}</h3>}
@@ -198,11 +220,16 @@ export default function StudentProgress() {
             </button>
           </>
         )}
-        {(competencyByStudent?.length !== 0 && percentProgress !== 0) &&
+        {competencyByStudent?.length !== 0 && percentProgress !== 0 && (
           <div className="ml-auto">
-            <p className={!additional && 'mb-2'}>% of plan completed</p>
+            <p className={!additional && "mb-2"}>% of plan completed</p>
             <div className="shadow-md bg-grey-light w-[30rem] border-emerald-400 border-[0.5px] rounded">
-              <div className="bg-teal-500 text-xs leading-none py-[0.35rem] text-center text-white flex items-center justify-center" style={{ width: `${percentProgress}%` }}>{percentProgress}%</div>
+              <div
+                className="bg-teal-500 text-xs leading-none py-[0.35rem] text-center text-white flex items-center justify-center"
+                style={{ width: `${percentProgress}%` }}
+              >
+                {percentProgress}%
+              </div>
             </div>
             {competencyByStudent?.length !== 0 && (
               <ProgressBar
@@ -212,19 +239,29 @@ export default function StudentProgress() {
               />
             )}
           </div>
-        }
+        )}
       </div>
       <div>
-        {competencyByStudent && domainNameList.map(key => {
-          return (
-            <div key={key} className="shadow-md p-2 mb-8 rounded-l bg-white border-indigo-300 border-[0.5px] border-opacity-70">
-              <h2 className="mb-6 text-center text-indigo-500 font-semibold uppercase rounded w-[calc(6rem*3)] -mt-5 mx-auto bg-white border-indigo-300 border-[0.5px] border-opacity-70">{key}</h2>
-              { groupedByDomainName[key].map(courseItem => {
-                  const courseName = courseItem.course_name
-                  const { competencies } = courseItem
-                  const noCompetents = competencies.filter(i => i.status !== 'competent' && i.status !== 'transfer')
-                  const competents = competencies.filter(i => i.status == 'competent' || i.status == 'transfer')
-                  const completed = competents?.length
+        {competencyByStudent &&
+          domainNameList.map((key) => {
+            return (
+              <div
+                key={key}
+                className="shadow-md p-2 mb-8 rounded-l bg-white border-indigo-300 border-[0.5px] border-opacity-70"
+              >
+                <h2 className="mb-6 text-center text-indigo-500 font-semibold uppercase rounded w-[calc(6rem*3)] -mt-5 mx-auto bg-white border-indigo-300 border-[0.5px] border-opacity-70">
+                  {key}
+                </h2>
+                {groupedByDomainName[key].map((courseItem) => {
+                  const courseName = courseItem.course_name;
+                  const { competencies } = courseItem;
+                  const noCompetents = competencies.filter(
+                    (i) => i.status !== "competent" && i.status !== "transfer"
+                  );
+                  const competents = competencies.filter(
+                    (i) => i.status == "competent" || i.status == "transfer"
+                  );
+                  const completed = competents?.length;
 
                   while (noCompetents?.length < 8) {
                     noCompetents.unshift({
