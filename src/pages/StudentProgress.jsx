@@ -1,14 +1,14 @@
-import { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
 import jsPDF from "jspdf";
+import { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import ComboBoxSimple from "../components/ComboBoxSimple";
 import Spinner from "../components/Spinner";
 
 import useInfo from "../hooks/useInfo";
 
-import "./StudentProgress.css";
 import ProgressBar from "../components/ProgressBar";
+import "./StudentProgress.css";
 
 function groupByDomainAndCourse(arr) {
     return arr.reduce((acc, item) => {
@@ -125,15 +125,6 @@ export default function StudentProgress() {
         let srcwidth = reportToPDF.current.scrollWidth;
         const doc = new jsPDF("p", "pt", "a4");
 
-        // // Head
-        // doc.setFontSize(10);
-        // doc.text("Cabecera del Documento", 10, 10);
-
-        // // Title
-        // doc.setFontSize(16);
-        // doc.text("Título del Documento", 10, 20);
-        //doc.setFont('Inter-Regular', 'normal');
-
         doc.html(reportToPDF.current, {
             html2canvas: {
                 scale: 575 / srcwidth,
@@ -142,7 +133,6 @@ export default function StudentProgress() {
             y: 10,
             callback(doc) {
                 doc.save("Student_report");
-                // window.open(doc.output('bloburl'))
                 setAdditional(true);
             },
         });
@@ -175,13 +165,11 @@ export default function StudentProgress() {
                 </header>
             )}
             <div className="mb-8 mt-8 flex items-end">
-                {/* <div dangerouslySetInnerHTML={{ __html: additional }}></div> */}
                 {!additional && <h3>STUDENT: {selectedStudent.name}</h3>}
                 {additional && (
                     <>
                         <ComboBoxSimple
                             label="STUDENT"
-                            // disabled={formData.selectedStudent}
                             people={students}
                             selectedPerson={selectedStudent}
                             setSelectedPerson={handleSelectStudent}
@@ -194,14 +182,7 @@ export default function StudentProgress() {
                         >
                             search
                         </button>
-                        {/* <button
-              type="button"
-              disabled={!params.studentId}
-              onClick={handleFetch}
-              className="disabled:opacity-50 h-9 rounded-md bg-nextcolor px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2 right-0"
-            >
-              Edit
-            </button> */}
+
                         <button
                             type="button"
                             disabled={!params.studentId}
@@ -316,8 +297,13 @@ export default function StudentProgress() {
                                                     )}
                                                 </div>
                                             ))}
-                                            <div className="min-w-[6rem] w-[6rem] rounded-md h-16 p-1 bg-white border-2 border-indigo-600 text-indigo-600 flex justify-center items-center text-center font-bold">
-                                                <p className="truncate">{courseName}</p>
+                                            <div className="min-w-24 w-24 relative rounded-md h-16 p-1 tooltip bg-white border-2 border-indigo-600 text-indigo-600 flex justify-center items-center text-center font-bold">
+                                                <p className="truncate whitespace-pre-wrap max-h-full">
+                                                    {courseName}
+                                                </p>
+                                                <div className="flex min-h-[70px] max-w-max min-w-[100px] bg-white flex-col justify-center p-2 rounded-lg ring-1 ring-gray-900/10 z-20 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 invisible tooltip-item">
+                                                    <p className="text-sm capitalize">{courseName}</p>
+                                                </div>
                                             </div>
                                             {competents.map((ptm) => (
                                                 <div className="relative inline-block tooltip" key={ptm.id}>
