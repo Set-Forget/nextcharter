@@ -14,22 +14,8 @@ import EditCompetencies from "../pages/EditCompetencies.jsx";
 import LoginSuccess from "../pages/LoginSuccess.jsx";
 import SignUp from "../pages/SignUp.jsx";
 import ProtectedRoute from "../components/ProtectedRoutes.jsx";
+import Projects from "../pages/Projects.jsx";
 
-// const RootRoutes = createHashRouter(createRoutesFromElements(
-//   <>
-//     <Route path="/login" element={<Login />}  />
-//     <Route path="/signup" element={<SignUp />}  />
-//     <Route path="/successful" element={<LoginSuccess />}  />
-//     <Route path="/" element={<Layout />}>
-//       <Route index element={<Home />} />
-//       <Route path="registrations" element={<TableView />} />
-//       <Route path="profile" element={<Profile />} />
-//       <Route path="profile/:id" element={<StudentProgress />} />
-//       <Route path="editCompentencies" element={<EditCompetencies />} />
-//     </Route>
-//     <Route path="*" element={<div></div>} />
-//   </>
-// ))
 const RootRoutes = createHashRouter(
   createRoutesFromElements(
     <>
@@ -77,6 +63,7 @@ const RootRoutes = createHashRouter(
             </ProtectedRoute>
           }
         />
+        <Route path="projects" element={<Projects />} />
       </Route>
       <Route path="*" element={<div>404 Not Found</div>} />
     </>
