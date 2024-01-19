@@ -103,7 +103,6 @@ export default function useInfo() {
     if (error) {
       throw error;
     }
-    console.log(data);
     return data;
   }
   async function updateMultipleRegisters(
@@ -120,7 +119,6 @@ export default function useInfo() {
 
       if (error) throw error;
 
-      console.log(data);
       return data;
     } catch (error) {
       console.error("Error updating registers:", error);

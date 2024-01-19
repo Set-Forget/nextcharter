@@ -1,36 +1,66 @@
-import { useEffect, useRef, useState } from "react"
-import Header from "../components/Header"
+import { useEffect, useRef, useState } from "react";
+import Header from "../components/Header";
 
-import { supabase } from "../lib/api"
-import { useNavigate } from "react-router-dom"
-import { useAuthContext } from "../context/AuthProvider"
+import { supabase } from "../lib/api";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/AuthProvider";
 
 export default function Login() {
-  const [error, setError] = useState()
-  const emailRef =  useRef()
-  const passwordRef =  useRef()
+  const [error, setError] = useState();
+  const [storedUserRole, setStoredUserRole] = useState(null);
+  const emailRef = useRef();
+  const passwordRef = useRef();
 
-  const { session } = useAuthContext()
-  const navigate = useNavigate()
+  const { session } = useAuthContext();
+  const navigate = useNavigate();
 
   async function signInWithEmail(e) {
-    e.preventDefault()
+    e.preventDefault();
+
+    let email = emailRef.current.value;
 
     const { error } = await supabase.auth.signInWithPassword({
-      email: emailRef.current.value,
-      password: passwordRef.current.value
-    })
+      email: email,
+      password: passwordRef.current.value,
+    });
 
     if (error) {
-      setError(JSON.parse(JSON.stringify(error)))
+      setError(JSON.parse(JSON.stringify(error)));
+    }
+
+    const { data, error: fetchError } = await supabase
+      .from("allowed_users")
+      .select()
+      .eq("email", email);
+
+    if (data.length >= 1) {
+      localStorage.setItem("userRole", data[0].role);
+      setStoredUserRole(data[0].role);
     }
   }
 
   useEffect(() => {
-    if (session)
-      navigate("/")
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session])
+    if (session && storedUserRole != null) {
+      if (storedUserRole == "student") {
+        // const { data, error: fetchError } = await supabase
+        //   .from("student")
+        //   .select()
+        //   .eq("email", email);
+  
+        // navigate("/profile/" + data[0].code)
+        navigate("/profile/9054");
+      } else if (storedUserRole == 'teacher') {
+        navigate("/profile");
+      } else {
+        navigate("/");
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session, storedUserRole]);
+
+  function signUp() {
+    navigate("/signUp");
+  }
 
   return (
     <div className="flex flex-col h-screen">
@@ -66,20 +96,20 @@ export default function Login() {
                 />
               </div>
               <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                ref={passwordRef}
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="relative block w-full rounded-b-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-100 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                placeholder="Password"
-              />
-            </div>
+                <label htmlFor="password" className="sr-only">
+                  Password
+                </label>
+                <input
+                  ref={passwordRef}
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  className="relative block w-full rounded-b-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-100 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  placeholder="Password"
+                />
+              </div>
             </div>
             <div>
               <button
@@ -88,11 +118,20 @@ export default function Login() {
               >
                 Sign in
               </button>
+              <button
+                type="button"
+                onClick={signUp}
+                className="flex w-full justify-center rounded-md bg-transparent px-3 py-1.5 text-sm font-semibold leading-6 text-nextcolor border-1 border-nextcolor hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Dont have an account? Register
+              </button>
             </div>
-            {error && <p className="text-red-500 text-center">{error.message}</p>}
+            {error && (
+              <p className="text-red-500 text-center">{error.message}</p>
+            )}
           </form>
         </div>
       </div>
     </div>
-  )
+  );
 }
