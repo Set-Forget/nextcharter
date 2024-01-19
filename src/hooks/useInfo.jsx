@@ -88,20 +88,26 @@ export default function useInfo() {
         return data;
     }
 
-    async function insertProject(name, teacher_id, description, comment, competencies_id) {
-        const { data, error } = await supabase
-            .from("project")
-            .insert({ name, teacher_id, description, comment, competencies_id })
-            .select();
-        if (error) throw new Error(error.message);
-        return data;
-    }
+    //--
 
     async function insertToDatabase(data, table) {
         const { data: insertedData, error } = await supabase.from(table).insert(data).select();
         if (error) throw new Error(error.message);
         return insertedData;
     }
+
+    async function updateCompetencyStatus(student_id, competency_id, newStatus) {
+        const { data, error } = await supabase
+            .from("registers")
+            .update({ status: newStatus })
+            .eq("student_id", student_id)
+            .in("competency_id", competency_id);
+        if (error) throw error;
+
+        return data;
+    }
+
+    //--
 
     async function updateRegister(student_id, competency_id, newStatus) {
         const { data, error } = await supabase
@@ -167,7 +173,7 @@ export default function useInfo() {
         domains,
         courses,
         competencies,
-        insertProject,
+        updateCompetencyStatus,
         getDomains,
         insertToDatabase,
         getCourses,

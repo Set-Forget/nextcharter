@@ -151,7 +151,7 @@ export default function StudentProgress() {
     const groupedByDomainName = competencyByStudent && groupByDomainName(groupedByDomainAndCourse);
     const domainNameList = competencyByStudent && Object.keys(groupedByDomainName);
     const percentProgress = competencyByStudent && returnPercent(groupedByDomainName);
-    console.log(selectedStudent);
+
     return (
         <main
             className={`flex-1 overflow-y-auto bg-slate-50 place-items-center pr-4 pl-4 ${

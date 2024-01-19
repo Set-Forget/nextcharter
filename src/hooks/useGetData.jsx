@@ -9,7 +9,6 @@ export default function useGetData(table) {
     const getAllData = async () => {
         try {
             const { data } = await supabase.from(table).select();
-            console.log(data);
             setData(data);
         } catch (error) {
             throw new Error(error);

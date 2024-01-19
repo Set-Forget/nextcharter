@@ -1,171 +1,142 @@
-import { useEffect, useRef, useState } from "react";
-import Spinner from "../components/Spinner";
-import SuccessAlert from "../components/SuccessAlert";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import Button from "../components/Button";
+import SearchSelect from "../components/SearchSelect";
+import Select from "../components/Select";
+import useGetData from "../hooks/useGetData";
 import useInfo from "../hooks/useInfo";
-// import CustomDropdown from "../components/CustomDropdown";
-import MultiSelect from "../components/Multiselect";
+import MultiSelect from "../components/MultiSelectV2";
 
 export default function EditCompetencies() {
-    const [studentRegister, setStudentRegister] = useState([]);
-    const [selectedStudent, setSelectedStudent] = useState("");
-    const [selectedCompetency, setSelectedCompetency] = useState();
-    const [selectedStatus, setSelectedStatus] = useState();
-    const [errorMessages, setErrorMessages] = useState({});
-    const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
-    const [successMessage, setSuccessMessage] = useState(false);
-    const [selectedCompetencies, setSelectedCompetencies] = useState([]);
+    const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
 
-    const { students, getRegisters, updateMultipleRegisters, isLoading, error } = useInfo();
-    const studentRef = useRef();
-    const competencyRef = useRef();
-    const statusRef = useRef();
+    const { updateCompetencyStatus } = useInfo();
 
-    async function getStudentRegister(id) {
-        await getRegisters(id).then((response) => {
-            setStudentRegister(response);
-        });
-    }
+    const students = useGetData("student");
+    const domains = useGetData("domain");
+    const courses = useGetData("course");
+    const competencies = useGetData("competency");
+    const competenciesByCourse = useGetData("competency_course");
 
-    useEffect(() => {
-        if (selectedStudent) {
-            getStudentRegister(selectedStudent);
+    const {
+        register,
+        handleSubmit,
+        control,
+        watch,
+        reset,
+        formState: { errors },
+    } = useForm();
+
+    const onSubmit = async (data) => {
+        const competencies_id = data.competencies.map((competency) => competency.id);
+
+        try {
+            setIsLoadingSubmit(true);
+            await updateCompetencyStatus(data.student.id, competencies_id, data.status.value);
+        } catch (error) {
+            throw new Error(error.message);
+        } finally {
+            setIsLoadingSubmit(false);
+            reset();
         }
+    };
 
-        if (successMessage) {
-            const timeoutId = setTimeout(() => {
-                setSuccessMessage(false);
-            }, 250);
+    const selectedDomain = watch("domains");
+    const selectedCourse = watch("courses");
 
-            return () => clearTimeout(timeoutId);
-        }
-    }, [students, selectedStudent, studentRegister, successMessage]);
+    const formattedDomains = domains.data
+        .filter((domain) => domain.name)
+        .map((domain) => ({
+            id: domain.id,
+            name: domain.name,
+        }));
 
-    async function handleSubmit() {
-        const inputRefs = [studentRef, competencyRef, statusRef];
+    const formattedCourses = courses.data
+        .map((course) => ({
+            id: course.id,
+            name: course.name,
+            domainId: course.inst_domain_id,
+        }))
+        .filter((course) => course.domainId === selectedDomain?.id);
 
-        let newErrorMessages = {};
-        let hasErrors = false;
+    const formattedStudents = students.data.map((student) => ({
+        id: student.id,
+        name: student.name + " " + student.lastname,
+    }));
 
-        for (let i = 0; i < inputRefs.length; i++) {
-            const element = inputRefs[i]?.current;
+    const formattedCompetencies = competencies.data
+        .map((competency) => {
+            const course = competenciesByCourse.data.find((course) => course.competency_id === competency.id);
 
-            if (!element) continue;
-
-            if (element.tagName.toLowerCase() === "select" && element.selectedIndex === 0) {
-                newErrorMessages[element.name] = `${element.name} is required`;
-                hasErrors = true;
-            }
-        }
-
-        setErrorMessages(newErrorMessages);
-
-        if (hasErrors) return;
-
-        setIsLoadingUpdate(true);
-
-        const updatedRegisters = await updateMultipleRegisters(
-            selectedStudent,
-            selectedCompetencies,
-            selectedStatus
-        ).then(() => {
-            setIsLoadingUpdate(false);
-            setSuccessMessage(true);
-            studentRef.current.value = "";
-            setSelectedCompetencies([]);
-            statusRef.current.value = "";
-            setSelectedStudent("");
-            setStudentRegister([]);
-        });
-    }
-
-    if (isLoading) return <Spinner />;
+            return {
+                id: competency.id,
+                name: competency.name,
+                courseId: course?.course_id,
+            };
+        })
+        .filter((competency) => competency.courseId === selectedCourse?.id);
 
     return (
         <main className="flex-1 bg-gray-100 place-items-center relative pb-4">
-            <div className="mx-auto max-w-3xl h-[calc(100vh-100px)] mt-20">
-                {successMessage && <SuccessAlert setSuccessMessage={setSuccessMessage} />}
-                <div>
-                    <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  lg:text-sm">
-                        <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
-                            Student{" "}
-                        </label>
-                        <select
-                            id="selectedStudent"
-                            name="Student"
-                            ref={studentRef}
-                            onChange={(e) => setSelectedStudent(e.target.value)}
-                            className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
-                        >
-                            <option value="" disabled selected>
-                                Select student
-                            </option>
-                            {students.map((el, e) => (
-                                <option key={e} value={el.id}>
-                                    {el.name}
-                                </option>
-                            ))}
-                        </select>
-                        <span className="text-red-500">{errorMessages["Student"]}</span>
-                    </div>
-
-                    <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  lg:text-sm">
-                        <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
-                            Competencies{" "}
-                        </label>
-                        <MultiSelect
-                            studentRegister={studentRegister}
-                            setSelectedCompetenciesState={setSelectedCompetencies}
-                            selectedCompetencies={selectedCompetencies}
-                            student={selectedStudent}
-                        />
-                        <span className="text-red-500">{errorMessages["Competency"]}</span>
-                    </div>
-
-                    <div className="flex flex-col gap-4 w-full py-2 text-gray-500 px-1 outline-none  lg:text-sm">
-                        <label className="mt-4 text-left montserrat text-gray-700 font-semibold lg:text-sm text-sm after:content-['*'] after:ml-0.5 after:text-red-500">
-                            Status{" "}
-                        </label>
-                        <select
-                            id="selectedStatus"
-                            name="Status"
-                            ref={statusRef}
-                            onChange={(e) => setSelectedStatus(e.target.value)}
-                            className="bg-white ring-1 ring-gray-300 w-full rounded-md border border-gray-400 px-4 py-2 outline-none cursor-pointer focus:outline-indigo-600 focus:drop-shadow-2xl sm:h-[60px] lg:h-[40px] "
-                        >
-                            <option value="" disabled selected>
-                                Select status
-                            </option>
-                            <option value="plan to meet">Plan to meet</option>
-                            <option value="not met">Not met</option>
-                            <option value="attempting to meet">Attempting to meet</option>
-                            <option value="competent">Competent</option>
-                            <option value="transfer">Transfer</option>
-                        </select>
-                        <span className="text-red-500">{errorMessages["Status"]}</span>
-                    </div>
-
-                    <div className="flex justify-center mt-10">
-                        <button
-                            className="bg-nextcolor w-24 h-12 text-white rounded-md"
-                            onClick={handleSubmit}
-                        >
-                            {isLoadingUpdate ? (
-                                <div
-                                    className="spinner inline-block w-2 h-2 ml-2 border-t-2 border-white border-solid rounded-full animate-spin"
-                                    style={{
-                                        borderColor: "#535787",
-                                        borderRightColor: "transparent",
-                                        width: "1.2rem",
-                                        height: "1.2rem",
-                                    }}
-                                ></div>
-                            ) : (
-                                "Submit"
-                            )}
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="mx-auto gap-4 flex flex-col items-center max-w-3xl h-[calc(100vh-100px)] mt-20"
+            >
+                <SearchSelect
+                    name="student"
+                    control={control}
+                    label="Student"
+                    register={register("student", { required: true })}
+                    placeholder="Select a student"
+                    data={students.isLoading ? [] : formattedStudents}
+                    errors={errors.student && "Student is required"}
+                />
+                <SearchSelect
+                    name="domains"
+                    label="Domains"
+                    placeholder="Select the project domains"
+                    data={domains.isLoading ? [] : formattedDomains}
+                    register={register("domains", { required: true })}
+                    control={control}
+                    errors={errors.domains && "Project domains are required"}
+                />
+                <SearchSelect
+                    name="courses"
+                    label="Courses"
+                    placeholder="Select the project courses"
+                    data={courses.isLoading ? [] : formattedCourses}
+                    register={register("courses", { required: true })}
+                    control={control}
+                    errors={errors.courses && "Project courses are required"}
+                />
+                <MultiSelect
+                    name="competencies"
+                    label="Competencies"
+                    placeholder="Select the project competencies"
+                    data={competencies.isLoading ? [] : formattedCompetencies}
+                    register={register("competencies", { required: true })}
+                    control={control}
+                    errors={errors.competencies && "Project competencies are required"}
+                />
+                <Select
+                    name="status"
+                    label="Status"
+                    placeholder="Select the project status"
+                    data={[
+                        { id: 1, name: "Plan to meet", value: "plan to meet" },
+                        { id: 2, name: "Not met", value: "not met" },
+                        { id: 3, name: "Attempting to meet", value: "attempting to meet" },
+                        { id: 4, name: "Competent", value: "competent" },
+                        { id: 5, name: "Transfer", value: "transfer" },
+                    ]}
+                    register={register("status", { required: true })}
+                    control={control}
+                    errors={errors.status && "Project status is required"}
+                />
+                <Button isLoading={isLoadingSubmit} className="mt-4" type="submit">
+                    Submit
+                </Button>
+            </form>
         </main>
     );
 }
