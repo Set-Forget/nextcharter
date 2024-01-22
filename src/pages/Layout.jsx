@@ -8,7 +8,8 @@ const navigation = [
     { name: "Registrations", href: "/registrations" },
     { name: "Profile", href: "/profile" },
     { name: "Edit Competencies", href: "/editCompentencies" },
-    //{ name: "Projects", href: "/projects" },
+    { name: "Projects", href: "/projects" },
+    //{ name: "New Project", href: "/new-project" },
 ];
 
 export default function Layout() {

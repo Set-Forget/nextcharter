@@ -96,6 +96,17 @@ export default function useInfo() {
         return insertedData;
     }
 
+    async function updateDatabase(fieldId, data, table) {
+        const { data: updatedData, error } = await supabase
+            .from(table)
+            .update(data)
+            .eq("id", fieldId)
+            .select();
+        console.log(fieldId, data);
+        if (error) throw new Error(error.message);
+        return updatedData;
+    }
+
     async function updateCompetencyStatus(student_id, competency_id, newStatus) {
         const { data, error } = await supabase
             .from("registers")
@@ -118,7 +129,6 @@ export default function useInfo() {
         if (error) {
             throw error;
         }
-        console.log(data);
         return data;
     }
     async function updateMultipleRegisters(student_id, competency_ids, newStatus) {
@@ -131,7 +141,6 @@ export default function useInfo() {
 
             if (error) throw error;
 
-            console.log(data);
             return data;
         } catch (error) {
             console.error("Error updating registers:", error);
@@ -174,6 +183,7 @@ export default function useInfo() {
         courses,
         competencies,
         updateCompetencyStatus,
+        updateDatabase,
         getDomains,
         insertToDatabase,
         getCourses,

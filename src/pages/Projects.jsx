@@ -1,106 +1,89 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import Input from "../components/InputV2";
-import MultiSelect from "../components/MultiSelectV2";
-import SearchSelect from "../components/SearchSelect";
-import useGetData from "../hooks/useGetData";
-import useInfo from "../hooks/useInfo";
 import Button from "../components/Button";
+import Table from "../components/TableV2";
+import useGetData from "../hooks/useGetData";
+import ProjectDetails from "../modal-views/ProjectDetails";
+import { setModalState } from "../store/modalState";
+
+const columns = [
+    {
+        name: "Project name",
+        accessor: "projectName",
+    },
+    {
+        name: "Teacher",
+        accessor: "teacher",
+    },
+    {
+        name: "Compentencies",
+        accessor: "projectCompetencies",
+    },
+    {
+        name: "Actions",
+        accessor: "action",
+    },
+];
+
+const TABLE_TITLE = "Projects";
+const TABLE_SUBTITLE =
+    "A list of all the projects in your account including their name, assigned teacher and compentencies.";
 
 export default function Projects() {
+    const projects = useGetData("project");
     const competencies = useGetData("competency");
-    const teachers = useGetData("teacher");
 
-    const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
+    const handleViewProject = (id) => {
+        const projectData = projects.data.find((project) => project.id === id);
+        const adaptedProjectData = {
+            ...projectData,
+            teacher: {
+                name: projectData.teacher_name,
+                id: projectData.teacher_id,
+            },
+            competencies: competencies.data
+                .filter((competency) => projectData.competencies_id.includes(competency.id))
+                .map((competency) => {
+                    return {
+                        name: competency.name,
+                        id: competency.id,
+                    };
+                }),
+        };
 
-    const {
-        register,
-        handleSubmit,
-        control,
-        reset,
-        formState: { errors },
-    } = useForm();
-
-    const { insertToDatabase } = useInfo();
-
-    const formattedCompetencies = competencies.data.map((competency) => ({
-        id: competency.id,
-        name: competency.name,
-    }));
-
-    const formattedTeachers = teachers.data.map((teacher) => ({
-        id: teacher.id,
-        name: teacher.name,
-        email: teacher.email,
-    }));
-
-    const onSubmit = async (data) => {
-        setIsLoadingSubmit(true);
-        try {
-            await insertToDatabase(
-                {
-                    name: data.projectName,
-                    teacher_id: data.teacher.id,
-                    teacher_name: data.teacher.name,
-                    description: data.description,
-                    comment: data.comments,
-                    competencies_id: data.competencies.map((competency) => competency.id),
-                },
-                "project"
-            );
-            setIsLoadingSubmit(false);
-            reset();
-        } catch (error) {
-            throw new Error(error);
-        }
+        setModalState({
+            open: true,
+            payload: { id },
+            view: <ProjectDetails data={adaptedProjectData} />,
+            title: "Project view",
+            subtitle: "A detailed view of the project",
+        });
     };
 
+    const data = projects.data.map((project) => {
+        const projectName = project.name;
+        const teacher = project.teacher_name;
+        const action = (
+            <Button onClick={() => handleViewProject(project.id)} variant="link">
+                View project
+            </Button>
+        );
+
+        const projectCompetencies = competencies.data
+            .filter((competency) => project.competencies_id.includes(competency.id))
+            .map((competency) => competency.name)
+            .join(", ");
+
+        return { projectName, teacher, projectCompetencies, action };
+    });
+
     return (
-        <main className="flex-1 bg-gray-100 place-items-center relative pb-4">
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="mx-auto gap-4 flex flex-col items-center max-w-3xl h-[calc(100vh-100px)] mt-20"
-            >
-                <Input
-                    label="Project name"
-                    placeholder="Enter the project name"
-                    register={register("projectName", { required: true })}
-                    errors={errors.projectName && "Project name is required"}
-                />
-                <SearchSelect
-                    name="teacher"
-                    control={control}
-                    label="Teacher"
-                    register={register("teacher", { required: true })}
-                    placeholder="Select a teacher"
-                    data={teachers.isLoading ? [] : formattedTeachers}
-                    errors={errors.teacher && "Teacher is required"}
-                />
-                <Input
-                    label="Description"
-                    placeholder="Enter the project description"
-                    register={register("description", { required: true })}
-                    errors={errors.description && "Project description is required"}
-                />
-                <MultiSelect
-                    name="competencies"
-                    label="Competencies"
-                    placeholder="Select the project competencies"
-                    data={competencies.isLoading ? [] : formattedCompetencies}
-                    register={register("competencies", { required: true })}
-                    control={control}
-                    errors={errors.competencies && "Project competencies are required"}
-                />
-                <Input
-                    label="Comments"
-                    placeholder="Enter the project comments"
-                    register={register("comments", { required: true })}
-                    errors={errors.comments && "Project comments are required"}
-                />
-                <Button isLoading={isLoadingSubmit} className="mt-4" type="submit">
-                    Submit
-                </Button>
-            </form>
-        </main>
+        <div className="flex-1 overflow-y-auto bg-gray-100 place-items-center pt-20 relative">
+            <Table
+                columns={columns}
+                data={data}
+                title={TABLE_TITLE}
+                isLoading={projects.isLoading || competencies.isLoading}
+                subtitle={TABLE_SUBTITLE}
+            />
+        </div>
     );
 }

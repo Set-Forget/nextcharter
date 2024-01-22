@@ -8,7 +8,9 @@ import StudentProgress from "../pages/StudentProgress.jsx";
 import Profile from "../pages/Profile.jsx";
 import EditCompetencies from "../pages/EditCompetencies.jsx";
 import LoginSuccess from "../pages/LoginSuccess.jsx";
+import NewProject from "../pages/NewProject.jsx";
 import Projects from "../pages/Projects.jsx";
+import Modal from "../components/ModalV2.jsx";
 
 const RootRoutes = createHashRouter(
     createRoutesFromElements(
@@ -21,6 +23,7 @@ const RootRoutes = createHashRouter(
                 <Route path="profile" element={<Profile />} />
                 <Route path="profile/:id" element={<StudentProgress />} />
                 <Route path="editCompentencies" element={<EditCompetencies />} />
+                <Route path="new-project" element={<NewProject />} />
                 <Route path="projects" element={<Projects />} />
             </Route>
             <Route path="*" element={<div></div>} />
