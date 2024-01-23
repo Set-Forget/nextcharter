@@ -308,13 +308,15 @@ export default function StudentProgress() {
                                             {competents.map((ptm) => (
                                                 <div className="relative inline-block tooltip" key={ptm.id}>
                                                     <div
-                                                        className={`w-[4.6rem] h-16 ${
+                                                        className={`w-[4.6rem] truncate h-16 ${
                                                             colorPallete[ptm.status].bg
                                                         } ${
                                                             colorPallete[ptm.status].text
                                                         } flex justify-center items-center rounded-md`}
                                                     >
-                                                        {ptm.competency_name}
+                                                        <span className="truncate p-2">
+                                                            {ptm.competency_name}
+                                                        </span>
                                                     </div>
                                                     {ptm.status !== "blank" && (
                                                         <div

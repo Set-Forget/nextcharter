@@ -4,38 +4,41 @@ import { useAuthContext } from "../context/AuthProvider";
 import { useMemo } from "react";
 
 export default function Layout() {
-  const { session } = useAuthContext();
+    const { session } = useAuthContext();
 
-  const userRole = localStorage.getItem("userRole");
+    const userRole = localStorage.getItem("userRole");
 
-  const navigation = useMemo(() => {
-    const baseNavigation = [{ name: "Profile", href: "/profile" }];
+    const navigation = useMemo(() => {
+        const baseNavigation = [
+            { name: "Profile", href: "/profile" },
+            { name: "Projects", href: "/projects" },
+        ];
 
-    const adminNavigation = [
-      { name: "Form", href: "/" },
-      { name: "Registrations", href: "/registrations" },
-      { name: "Edit Competencies", href: "/editCompetencies" },
-      { name: "Projects", href: "/projects" },
-      ...baseNavigation, 
-    ];
+        const adminNavigation = [
+            { name: "Form", href: "/" },
+            { name: "Registrations", href: "/registrations" },
+            { name: "Edit Competencies", href: "/editCompetencies" },
+            ...baseNavigation,
+        ];
 
-    switch (userRole) {
-      case "admin":
-        return adminNavigation;
-      case "teacher":
-        return baseNavigation;
-      case "student":
-      default:
-        return [];
-    }
-  }, [userRole]);
+        switch (userRole) {
+            case "admin":
+                return adminNavigation;
+            case "teacher":
+                return baseNavigation;
+            case "student":
+                return [{ name: "Projects", href: "/projects" }];
+            default:
+                return [];
+        }
+    }, [userRole]);
 
-  return session ? (
-    <div className="flex flex-col h-screen">
-      <Header navItems={navigation} />
-      <Outlet />
-    </div>
-  ) : (
-    <Navigate to="/login" replace />
-  );
+    return session ? (
+        <div className="flex flex-col h-screen">
+            <Header navItems={navigation} />
+            <Outlet />
+        </div>
+    ) : (
+        <Navigate to="/login" replace />
+    );
 }
