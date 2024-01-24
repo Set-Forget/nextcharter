@@ -41,7 +41,7 @@ export default function Header({ navItems }) {
           </button>
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <div className="hidden lg:flex lg:gap-x-12">
+          <div className="hidden lg:flex lg:gap-x-12 whitespace-nowrap">
             {navItems.map((item) => (
               <NavLink
                 to={item.href}
