@@ -307,9 +307,7 @@ export default function StudentProgress() {
                                                         : "border-indigo-600 text-indigo-600"
                                                 } flex justify-center items-center text-center font-bold`}
                                             >
-                                                <p className="truncate whitespace-pre-wrap max-h-full">
-                                                    {courseName}
-                                                </p>
+                                                <p className="truncate max-h-full">{courseName}</p>
                                                 <div className="flex min-h-[70px] max-w-max min-w-[100px] bg-white flex-col justify-center p-2 rounded-lg ring-1 ring-gray-900/10 z-20 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 invisible tooltip-item">
                                                     <p className="text-sm capitalize">{courseName}</p>
                                                 </div>
