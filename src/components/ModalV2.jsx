@@ -26,7 +26,7 @@ export default function Modal() {
 
     return (
         <Transition.Root show={open} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={handleClose}>
+            <Dialog as="div" className="relative z-10" onClose={() => {}} onClick={handleClose}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-100"
@@ -36,7 +36,10 @@ export default function Modal() {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
-                    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                    <div
+                        className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+                        aria-hidden="true"
+                    />
                 </Transition.Child>
 
                 <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -53,7 +56,7 @@ export default function Modal() {
                         >
                             <Dialog.Panel
                                 ref={modalRef}
-                                className="relative transform max-h-[600px] overflow-auto rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
+                                className="relative z-10 transform max-h-[600px] overflow-auto rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
                             >
                                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                                     <div className="flex flex-col items-center">

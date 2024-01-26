@@ -10,9 +10,9 @@ export default function Table({ columns, data, title, subtitle, isLoading, toolb
                 </div>
                 {toolbar && toolbar}
             </div>
-            <div className="overflow-x-auto sm:-mx-6 lg:-mx-8 mt-4">
+            <div className="sm:-mx-6 lg:-mx-8 mt-4">
                 <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                    <div className="shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg overflow-hidden">
+                    <div className="shadow ring-1 ring-black bg-white ring-opacity-5 rounded-lg">
                         <table className="min-w-full divide-y divide-gray-300">
                             <thead className="bg-gray-50">
                                 <tr>
@@ -28,7 +28,7 @@ export default function Table({ columns, data, title, subtitle, isLoading, toolb
                                 </tr>
                             </thead>
                             {!isLoading && data.length > 0 && (
-                                <tbody className="divide-y divide-gray-200 bg-white">
+                                <tbody className="divide-y divide-gray-20">
                                     {data.map((row) => {
                                         return (
                                             <tr key={row.projectName}>
@@ -37,7 +37,7 @@ export default function Table({ columns, data, title, subtitle, isLoading, toolb
                                                     return (
                                                         <td
                                                             key={column.accessor}
-                                                            className="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                                            className="whitespace-nowrap px-3 py-4 text-sm text-gray-600"
                                                         >
                                                             {value}
                                                         </td>
@@ -50,7 +50,7 @@ export default function Table({ columns, data, title, subtitle, isLoading, toolb
                             )}
                         </table>
                         {isLoading && (
-                            <div className="h-1 w-ful overflow-hidden">
+                            <div className="h-1 w-full overflow-hidden">
                                 <div className="animate-progress w-full h-full bg-nextcolor origin-left-right"></div>
                             </div>
                         )}

@@ -11,6 +11,8 @@ import Projects from "../pages/Projects.jsx";
 import SignUp from "../pages/SignUp.jsx";
 import StudentProgress from "../pages/StudentProgress.jsx";
 import TableView from "../pages/TableView.jsx";
+import Dialog from "../components/Dialog.jsx";
+import Modal from "../components/ModalV2.jsx";
 
 const RootRoutes = createHashRouter(
     createRoutesFromElements(
@@ -59,7 +61,16 @@ const RootRoutes = createHashRouter(
                         </ProtectedRoute>
                     }
                 />
-                <Route path="projects" element={<Projects />} />
+                <Route
+                    path="projects"
+                    element={
+                        <ProtectedRoute allowedRoles={["admin", "teacher", "student"]}>
+                            <Projects />
+                            <Dialog />
+                            <Modal />
+                        </ProtectedRoute>
+                    }
+                />
             </Route>
             <Route path="*" element={<div>404 Not Found</div>} />
         </>

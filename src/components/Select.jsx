@@ -30,7 +30,7 @@ export default function Select({ control, name, label, data, placeholder, errors
                                 <Listbox.Option
                                     key={person.id}
                                     className={({ active }) =>
-                                        `relative cursor-default select-none py-2 pl-3 pr-9 ${
+                                        `relative cursor-default text-left select-none py-2 pl-3 pr-9 ${
                                             active ? "bg-nextcolor text-white" : "text-gray-900"
                                         }`
                                     }
