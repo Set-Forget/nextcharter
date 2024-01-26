@@ -98,7 +98,6 @@ export default function useInfo() {
             .update(data)
             .eq("id", fieldId)
             .select();
-        console.log(fieldId, data);
         if (error) throw new Error(error.message);
         return updatedData;
     }

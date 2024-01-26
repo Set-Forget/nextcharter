@@ -235,6 +235,9 @@ export default function StudentProgress() {
                                         (i) => i.status == "competent" || i.status == "transfer"
                                     );
                                     const completed = competents?.length;
+                                    const total = competencies?.length;
+
+                                    const isCourseCompleted = completed === total;
 
                                     while (noCompetents?.length < 8) {
                                         noCompetents.unshift({
@@ -297,7 +300,13 @@ export default function StudentProgress() {
                                                     )}
                                                 </div>
                                             ))}
-                                            <div className="min-w-24 w-24 relative rounded-md h-16 p-1 tooltip bg-white border-2 border-indigo-600 text-indigo-600 flex justify-center items-center text-center font-bold">
+                                            <div
+                                                className={`min-w-24 w-24 relative rounded-md h-16 p-1 tooltip bg-white border-2  ${
+                                                    isCourseCompleted
+                                                        ? "text-green-500 border-green-500"
+                                                        : "border-indigo-600 text-indigo-600"
+                                                } flex justify-center items-center text-center font-bold`}
+                                            >
                                                 <p className="truncate whitespace-pre-wrap max-h-full">
                                                     {courseName}
                                                 </p>

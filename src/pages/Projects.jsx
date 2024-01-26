@@ -1,11 +1,17 @@
-import { PlusIcon } from "@heroicons/react/24/solid";
+import {
+    AcademicCapIcon,
+    ChevronRightIcon,
+    EllipsisHorizontalIcon,
+    PlusIcon,
+} from "@heroicons/react/24/solid";
 import Button from "../components/Button";
+import Menu from "../components/Menu";
 import Table from "../components/TableV2";
 import useGetData from "../hooks/useGetData";
-import ProjectDetails from "../modal-views/ProjectDetails";
-import { setModalState } from "../store/modalState";
 import NewProject from "../modal-views/NewProject";
-import { useAuthContext } from "../context/AuthProvider";
+import ProjectDetails from "../modal-views/ProjectDetails";
+import ProjectStudents from "../modal-views/ProjectStudents";
+import { setModalState } from "../store/modalState";
 
 const columns = [
     {
@@ -64,6 +70,16 @@ export default function Projects() {
         });
     };
 
+    const handleViewStudents = (id) => {
+        setModalState({
+            open: true,
+            payload: { id },
+            view: <ProjectStudents />,
+            title: "Students view",
+            subtitle: "A detailed view of the students assigned to the project",
+        });
+    };
+
     const handleCreateProject = () => {
         setModalState({
             open: true,
@@ -77,9 +93,23 @@ export default function Projects() {
         const projectName = project.name;
         const teacher = project.teacher_name;
         const action = (
-            <Button onClick={() => handleViewProject(project.id)} variant="link">
-                View project
-            </Button>
+            <Menu
+                icon={<EllipsisHorizontalIcon className="h-5 w-5" />}
+                className="!p-1.5 !rounded-full"
+                variant="ghost"
+                options={[
+                    {
+                        name: "View details",
+                        onClick: () => handleViewProject(project.id),
+                        icon: ({ className }) => <ChevronRightIcon className={className} />,
+                    },
+                    {
+                        name: "View students",
+                        onClick: () => handleViewStudents(project.id),
+                        icon: ({ className }) => <AcademicCapIcon className={className} />,
+                    },
+                ]}
+            />
         );
 
         const projectCompetencies = projectsCompetencies.data

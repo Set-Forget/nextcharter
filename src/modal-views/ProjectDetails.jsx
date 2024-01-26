@@ -1,11 +1,12 @@
 import Button from "../components/Button";
-import { PencilSquareIcon, PlusIcon } from "@heroicons/react/24/solid";
+import { PencilSquareIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { closeModal, setModalState } from "../store/modalState";
 import EditProject from "./EditProject";
 import { useAuthContext } from "../context/AuthProvider";
 import useGetDataById from "../hooks/useGetDataById";
 import { useState } from "react";
 import useInfo from "../hooks/useInfo";
+import { setDialogState } from "../store/dialogState";
 
 export default function ProjectDetails({ data }) {
     const { name, competencies, teacher_name, teacher_id, description, comment } = data;
@@ -15,7 +16,8 @@ export default function ProjectDetails({ data }) {
     const userRole = localStorage.getItem("userRole");
 
     const { session } = useAuthContext();
-    const { insertToDatabase } = useInfo();
+    const { insertToDatabase, deleteFromDatabase } = useInfo();
+
     const teacher = useGetDataById("teacher", teacher_id);
 
     const teacher_email = !teacher.isLoading && teacher.data[0].email;
@@ -35,6 +37,28 @@ export default function ProjectDetails({ data }) {
         });
     };
 
+    const handleDeleteProject = () => {
+        setDialogState({
+            open: true,
+            title: "Are you sure you want to delete this project?",
+            description:
+                "This project and its assigned students will be deleted. This action cannot be undone.",
+            onConfirm: async () => {
+                setLoading(true);
+                try {
+                    await deleteFromDatabase("id", data.id, "project");
+                    await deleteFromDatabase("project_id", data.id, "project_competencies");
+                    await deleteFromDatabase("project_id", data.id, "project_students");
+                    closeModal();
+                } catch (error) {
+                    throw new Error(error);
+                } finally {
+                    setLoading(false);
+                }
+            },
+        });
+    };
+
     const handleApplyProject = async () => {
         setLoading(true);
         try {
@@ -45,10 +69,25 @@ export default function ProjectDetails({ data }) {
                 },
                 "project_students"
             );
-            setLoading(false);
+
+            competencies.forEach(async (competency) => {
+                await insertToDatabase(
+                    {
+                        competency_id: competency.id,
+                        competency_name: competency.name,
+                        student_email: session.user.email,
+                        project_id: data.id,
+                        status: "plan to meet",
+                    },
+                    "project_registers"
+                );
+            });
+
             closeModal();
         } catch (error) {
             throw new Error(error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -91,10 +130,19 @@ export default function ProjectDetails({ data }) {
                 )}
             </dl>
             {isAllowed && (
-                <div className="mt-4">
+                <div className="mt-4 flex gap-5">
                     <Button onClick={handleEditProject} className="w-full">
                         <PencilSquareIcon className="h-5 w-5 mr-2" />
                         Edit project
+                    </Button>
+                    <Button
+                        onClick={handleDeleteProject}
+                        variant="ghost"
+                        isLoading={loading}
+                        className="w-full text-red-700 hover:!bg-red-600/5"
+                    >
+                        <TrashIcon className="h-5 w-5 mr-2" />
+                        Delete project
                     </Button>
                 </div>
             )}

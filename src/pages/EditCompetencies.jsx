@@ -1,16 +1,14 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../components/Button";
+import MultiSelect from "../components/MultiSelectV2";
 import SearchSelect from "../components/SearchSelect";
 import Select from "../components/Select";
 import useGetData from "../hooks/useGetData";
-import useInfo from "../hooks/useInfo";
-import MultiSelect from "../components/MultiSelectV2";
+import { supabase } from "../lib/api";
 
 export default function EditCompetencies() {
     const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
-
-    const { updateCompetencyStatus } = useInfo();
 
     const students = useGetData("student");
     const domains = useGetData("domain");
@@ -28,11 +26,15 @@ export default function EditCompetencies() {
     } = useForm();
 
     const onSubmit = async (data) => {
+        setIsLoadingSubmit(true);
         const competencies_id = data.competencies.map((competency) => competency.id);
 
         try {
-            setIsLoadingSubmit(true);
-            await updateCompetencyStatus(data.student.id, competencies_id, data.status.value);
+            await supabase
+                .from("registers")
+                .update({ status: data.status.value })
+                .eq("student_id", data.student.id)
+                .in("competency_id", competencies_id);
         } catch (error) {
             throw new Error(error.message);
         } finally {
@@ -40,7 +42,6 @@ export default function EditCompetencies() {
             reset();
         }
     };
-
     const selectedDomain = watch("domains");
     const selectedCourse = watch("courses");
 
@@ -64,14 +65,16 @@ export default function EditCompetencies() {
         name: student.name + " " + student.lastname,
     }));
 
-    const formattedCompetencies = competencies.data
-        .map((competency) => {
-            const course = competenciesByCourse.data.find((course) => course.competency_id === competency.id);
+    const formattedCompetenciesByCourse = competenciesByCourse.data
+        .map((competencyCourse) => {
+            const course = competencies.data.find(
+                (competency) => competency.id === competencyCourse.competency_id
+            );
 
             return {
-                id: competency.id,
-                name: competency.name,
-                courseId: course?.course_id,
+                id: competencyCourse.competency_id,
+                name: course?.name,
+                courseId: competencyCourse.course_id,
             };
         })
         .filter((competency) => competency.courseId === selectedCourse?.id);
@@ -113,7 +116,7 @@ export default function EditCompetencies() {
                     name="competencies"
                     label="Competencies"
                     placeholder="Select the project competencies"
-                    data={competencies.isLoading ? [] : formattedCompetencies}
+                    data={competencies.isLoading ? [] : formattedCompetenciesByCourse}
                     register={register("competencies", { required: true })}
                     control={control}
                     errors={errors.competencies && "Project competencies are required"}
