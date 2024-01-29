@@ -81,6 +81,11 @@ const colorPallete = {
         text: "text-grey-500",
         tp: "text-amber-400",
     },
+    attempting: {
+        bg: "bg-amber-400",
+        text: "text-grey-500",
+        tp: "text-amber-400",
+    },
     competent: {
         bg: "bg-green-500",
         text: "text-white",
@@ -90,6 +95,14 @@ const colorPallete = {
         bg: "bg-green-500",
         text: "text-white",
         tp: "text-green-500",
+    },
+    "competent with distinction": {
+        bg: "bg-green-500",
+        text: "text-white",
+        tp: "text-green-500",
+    },
+    "' '": {
+        bg: "bg-white",
     },
 };
 
@@ -159,7 +172,7 @@ export default function StudentProgress() {
                         <button
                             type="button"
                             disabled={!params.studentId}
-                            onClick={() => getStudentProgressPDF()}
+                            onClick={handleGeneratePDF}
                             className="disabled:opacity-50 h-9 rounded-md bg-nextcolor px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-4 right-0"
                         >
                             Download PDF
@@ -184,7 +197,7 @@ export default function StudentProgress() {
                         <button
                             type="button"
                             disabled={!params.studentId}
-                            onClick={() => getStudentProgressPDF()}
+                            onClick={handleGeneratePDF}
                             className="disabled:opacity-50 h-9 rounded-md bg-nextcolor px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2 right-0"
                         >
                             Download PDF
@@ -248,94 +261,25 @@ export default function StudentProgress() {
 
                                     return (
                                         <div key={courseName} className="flex gap-2 justify-center mb-4">
-                                            {noCompetents.map(
-                                                (ptm) =>
-                                                    colorPallete[ptm.status] && (
-                                                        <div
-                                                            className={`relative flex items-center justify-center w-[4.6rem] h-16 p-1 tooltip rounded-md ${
-                                                                colorPallete[ptm.status].bg
-                                                            }`}
-                                                            key={ptm.id}
-                                                        >
-                                                            <p
-                                                                className={`${
-                                                                    colorPallete[ptm.status].text
-                                                                } truncate`}
-                                                            >
-                                                                {ptm.competency_name}
-                                                            </p>
-                                                            {ptm.status !== "blank" && (
-                                                                <div
-                                                                    className={`flex ${
-                                                                        colorPallete[ptm.status].bg
-                                                                    } ${
-                                                                        colorPallete[ptm.status].text
-                                                                    } flex-col p-2 w-52 rounded-lg z-20 absolute top-[67px] right-0 invisible tooltip-item mt-2`}
-                                                                >
-                                                                    <p className="text-sm capitalize">
-                                                                        <span className="font-semibold">
-                                                                            Status
-                                                                        </span>
-                                                                        : {ptm.status}
-                                                                    </p>
-                                                                    <p className="text-sm capitalize">
-                                                                        <span className="font-semibold">
-                                                                            Belongs to
-                                                                        </span>
-                                                                        : {courseName}
-                                                                    </p>
-                                                                    <p className="text-sm capitalize">{`(${completed}/${competencies?.length})`}</p>
-                                                                    <svg
-                                                                        className={`absolute ${
-                                                                            colorPallete[ptm.status].tp
-                                                                        } -top-3 h-8 right-0 mr-3`}
-                                                                        x="0px"
-                                                                        y="0px"
-                                                                        viewBox="0 0 255 255"
-                                                                        xmlSpace="preserve"
-                                                                    >
-                                                                        <polygon
-                                                                            className="fill-current"
-                                                                            points="50,0 100,100 0,100"
-                                                                        />
-                                                                    </svg>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    )
-                                            )}
-                                            <div
-                                                className={`min-w-24 w-24 relative rounded-md h-16 p-1 tooltip bg-white border-2
-                                                                ${
-                                                                    isTotalCompleted
-                                                                        ? "border-green-500 text-green-500"
-                                                                        : "border-indigo-600 text-indigo-600"
-                                                                }
-                                                 flex justify-center items-center text-center font-bold`}
-                                            >
-                                                <p className="truncate max-h-full">{courseName}</p>
-                                                <div className="flex min-h-[70px] max-w-max min-w-[100px] bg-white flex-col justify-center p-2 rounded-lg ring-1 ring-gray-900/10 z-20 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 invisible tooltip-item">
-                                                    <p className="text-sm capitalize">{courseName}</p>
-                                                </div>
-                                            </div>
-                                            {competents.map((ptm) => (
-                                                <div className="relative inline-block tooltip" key={ptm.id}>
-                                                    <div
-                                                        className={`w-[4.6rem] truncate h-16 ${
-                                                            colorPallete[ptm.status].bg
-                                                        } ${
+                                            {noCompetents.map((ptm) => (
+                                                <div
+                                                    className={`relative flex items-center justify-center w-[4.6rem] h-16 p-1 tooltip rounded-md ${
+                                                        colorPallete[ptm.status].bg
+                                                    }`}
+                                                    key={ptm.id}
+                                                >
+                                                    <p
+                                                        className={`${
                                                             colorPallete[ptm.status].text
-                                                        } flex justify-center items-center rounded-md`}
+                                                        } truncate`}
                                                     >
-                                                        <span className="truncate p-2">
-                                                            {ptm.competency_name}
-                                                        </span>
-                                                    </div>
+                                                        {ptm.competency_name}
+                                                    </p>
                                                     {ptm.status !== "blank" && (
                                                         <div
                                                             className={`flex ${colorPallete[ptm.status].bg} ${
                                                                 colorPallete[ptm.status].text
-                                                            } flex-col p-2 w-56 rounded-lg z-20 absolute right-0 invisible tooltip-item mt-2`}
+                                                            } flex-col p-2 w-52 rounded-lg z-20 absolute top-[67px] right-0 invisible tooltip-item mt-2`}
                                                         >
                                                             <p className="text-sm capitalize">
                                                                 <span className="font-semibold">Status</span>:{" "}
@@ -366,6 +310,78 @@ export default function StudentProgress() {
                                                     )}
                                                 </div>
                                             ))}
+                                            <div
+                                                className={`min-w-24 w-24 relative rounded-md h-16 p-1 tooltip bg-white border-2
+                                                                ${
+                                                                    isTotalCompleted
+                                                                        ? "border-green-500 text-green-500"
+                                                                        : "border-indigo-600 text-indigo-600"
+                                                                }
+                                                 flex justify-center items-center text-center font-bold`}
+                                            >
+                                                <p className="truncate max-h-full">{courseName}</p>
+                                                <div className="flex min-h-[70px] max-w-max min-w-[100px] bg-white flex-col justify-center p-2 rounded-lg ring-1 ring-gray-900/10 z-20 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 invisible tooltip-item">
+                                                    <p className="text-sm capitalize">{courseName}</p>
+                                                </div>
+                                            </div>
+                                            {competents.map((ptm) => {
+                                                console.log(colorPallete[ptm.status]);
+                                                return (
+                                                    <div
+                                                        className="relative inline-block tooltip"
+                                                        key={ptm.id}
+                                                    >
+                                                        <div
+                                                            className={`w-[4.6rem] truncate h-16 ${
+                                                                colorPallete[ptm.status].bg
+                                                            } ${
+                                                                colorPallete[ptm.status].text
+                                                            } flex justify-center items-center rounded-md`}
+                                                        >
+                                                            <span className="truncate p-2">
+                                                                {ptm.competency_name}
+                                                            </span>
+                                                        </div>
+                                                        {ptm.status !== "blank" && (
+                                                            <div
+                                                                className={`flex ${
+                                                                    colorPallete[ptm.status].bg
+                                                                } ${
+                                                                    colorPallete[ptm.status].text
+                                                                } flex-col p-2 w-56 rounded-lg z-20 absolute right-0 invisible tooltip-item mt-2`}
+                                                            >
+                                                                <p className="text-sm capitalize">
+                                                                    <span className="font-semibold">
+                                                                        Status
+                                                                    </span>
+                                                                    : {ptm.status}
+                                                                </p>
+                                                                <p className="text-sm capitalize">
+                                                                    <span className="font-semibold">
+                                                                        Belongs to
+                                                                    </span>
+                                                                    : {courseName}
+                                                                </p>
+                                                                <p className="text-sm capitalize">{`(${completed}/${competencies?.length})`}</p>
+                                                                <svg
+                                                                    className={`absolute ${
+                                                                        colorPallete[ptm.status].tp
+                                                                    } -top-3 h-8 right-0 mr-3`}
+                                                                    x="0px"
+                                                                    y="0px"
+                                                                    viewBox="0 0 255 255"
+                                                                    xmlSpace="preserve"
+                                                                >
+                                                                    <polygon
+                                                                        className="fill-current"
+                                                                        points="50,0 100,100 0,100"
+                                                                    />
+                                                                </svg>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     );
                                 })}
