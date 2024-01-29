@@ -9,6 +9,7 @@ import useInfo from "../hooks/useInfo";
 
 import ProgressBar from "../components/ProgressBar";
 import "./StudentProgress.css";
+import getStudentProgressPDF from "../utils/getStudentProgressPDF";
 
 function groupByDomainAndCourse(arr) {
     return arr.reduce((acc, item) => {
@@ -120,24 +121,6 @@ export default function StudentProgress() {
         });
     }
 
-    const handleGeneratePDF = () => {
-        setAdditional(false);
-        let srcwidth = reportToPDF.current.scrollWidth;
-        const doc = new jsPDF("p", "pt", "a4");
-
-        doc.html(reportToPDF.current, {
-            html2canvas: {
-                scale: 575 / srcwidth,
-            },
-            x: 10,
-            y: 10,
-            callback(doc) {
-                doc.save("Student_report");
-                setAdditional(true);
-            },
-        });
-    };
-
     useEffect(() => {
         getRegistersByCode(id).then((registers) => {
             setCompetencyByStudent(registers);
@@ -176,7 +159,7 @@ export default function StudentProgress() {
                         <button
                             type="button"
                             disabled={!params.studentId}
-                            onClick={handleGeneratePDF}
+                            onClick={() => getStudentProgressPDF()}
                             className="disabled:opacity-50 h-9 rounded-md bg-nextcolor px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-4 right-0"
                         >
                             Download PDF
@@ -201,7 +184,7 @@ export default function StudentProgress() {
                         <button
                             type="button"
                             disabled={!params.studentId}
-                            onClick={handleGeneratePDF}
+                            onClick={() => getStudentProgressPDF()}
                             className="disabled:opacity-50 h-9 rounded-md bg-nextcolor px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-nextcolor focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2 right-0"
                         >
                             Download PDF
@@ -265,55 +248,62 @@ export default function StudentProgress() {
 
                                     return (
                                         <div key={courseName} className="flex gap-2 justify-center mb-4">
-                                            {noCompetents.map((ptm) => (
-                                                <div
-                                                    className={`relative flex items-center justify-center w-[4.6rem] h-16 p-1 tooltip rounded-md ${
-                                                        colorPallete[ptm.status].bg
-                                                    }`}
-                                                    key={ptm.id}
-                                                >
-                                                    <p
-                                                        className={`${
-                                                            colorPallete[ptm.status].text
-                                                        } truncate`}
-                                                    >
-                                                        {ptm.competency_name}
-                                                    </p>
-                                                    {ptm.status !== "blank" && (
+                                            {noCompetents.map(
+                                                (ptm) =>
+                                                    colorPallete[ptm.status] && (
                                                         <div
-                                                            className={`flex ${colorPallete[ptm.status].bg} ${
-                                                                colorPallete[ptm.status].text
-                                                            } flex-col p-2 w-52 rounded-lg z-20 absolute top-[67px] right-0 invisible tooltip-item mt-2`}
+                                                            className={`relative flex items-center justify-center w-[4.6rem] h-16 p-1 tooltip rounded-md ${
+                                                                colorPallete[ptm.status].bg
+                                                            }`}
+                                                            key={ptm.id}
                                                         >
-                                                            <p className="text-sm capitalize">
-                                                                <span className="font-semibold">Status</span>:{" "}
-                                                                {ptm.status}
-                                                            </p>
-                                                            <p className="text-sm capitalize">
-                                                                <span className="font-semibold">
-                                                                    Belongs to
-                                                                </span>
-                                                                : {courseName}
-                                                            </p>
-                                                            <p className="text-sm capitalize">{`(${completed}/${competencies?.length})`}</p>
-                                                            <svg
-                                                                className={`absolute ${
-                                                                    colorPallete[ptm.status].tp
-                                                                } -top-3 h-8 right-0 mr-3`}
-                                                                x="0px"
-                                                                y="0px"
-                                                                viewBox="0 0 255 255"
-                                                                xmlSpace="preserve"
+                                                            <p
+                                                                className={`${
+                                                                    colorPallete[ptm.status].text
+                                                                } truncate`}
                                                             >
-                                                                <polygon
-                                                                    className="fill-current"
-                                                                    points="50,0 100,100 0,100"
-                                                                />
-                                                            </svg>
+                                                                {ptm.competency_name}
+                                                            </p>
+                                                            {ptm.status !== "blank" && (
+                                                                <div
+                                                                    className={`flex ${
+                                                                        colorPallete[ptm.status].bg
+                                                                    } ${
+                                                                        colorPallete[ptm.status].text
+                                                                    } flex-col p-2 w-52 rounded-lg z-20 absolute top-[67px] right-0 invisible tooltip-item mt-2`}
+                                                                >
+                                                                    <p className="text-sm capitalize">
+                                                                        <span className="font-semibold">
+                                                                            Status
+                                                                        </span>
+                                                                        : {ptm.status}
+                                                                    </p>
+                                                                    <p className="text-sm capitalize">
+                                                                        <span className="font-semibold">
+                                                                            Belongs to
+                                                                        </span>
+                                                                        : {courseName}
+                                                                    </p>
+                                                                    <p className="text-sm capitalize">{`(${completed}/${competencies?.length})`}</p>
+                                                                    <svg
+                                                                        className={`absolute ${
+                                                                            colorPallete[ptm.status].tp
+                                                                        } -top-3 h-8 right-0 mr-3`}
+                                                                        x="0px"
+                                                                        y="0px"
+                                                                        viewBox="0 0 255 255"
+                                                                        xmlSpace="preserve"
+                                                                    >
+                                                                        <polygon
+                                                                            className="fill-current"
+                                                                            points="50,0 100,100 0,100"
+                                                                        />
+                                                                    </svg>
+                                                                </div>
+                                                            )}
                                                         </div>
-                                                    )}
-                                                </div>
-                                            ))}
+                                                    )
+                                            )}
                                             <div
                                                 className={`min-w-24 w-24 relative rounded-md h-16 p-1 tooltip bg-white border-2
                                                                 ${

@@ -16,7 +16,6 @@ export default function EditCompetencies() {
     const competencies = useGetData("competency");
     const competenciesByCourse = useGetData("competency_course");
     const institution_domain = useGetData("institution_domain");
-    console.log(institution_domain);
 
     const {
         register,
@@ -61,12 +60,6 @@ export default function EditCompetencies() {
         id: domain.id,
         name: domain.name,
     }));
-    // const formattedDomains = domains.data
-    //     .filter((domain) => domain.name)
-    //     .map((domain) => ({
-    //         id: domain.id,
-    //         name: domain.name,
-    //     }));
 
     const formattedCourses = courses.data
         .map((course) => ({
