@@ -16,7 +16,6 @@ export default function EditCompetencies() {
     const competencies = useGetData("competency");
     const competenciesByCourse = useGetData("competency_course");
     const institution_domain = useGetData("institution_domain");
-    console.log(institution_domain);
 
     const {
         register,

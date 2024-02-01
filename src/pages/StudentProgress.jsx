@@ -355,9 +355,7 @@ export default function StudentProgress() {
                           <p className="text-sm capitalize">{courseName}</p>
                         </div>
                       </div>
-                      {competents.map((ptm) => {
-                        console.log(colorPallete[ptm.status]);
-                        return (
+                      {competents.map((ptm) => (
                           <div
                             className="relative inline-block tooltip"
                             key={ptm.id}
@@ -409,8 +407,8 @@ export default function StudentProgress() {
                               </div>
                             )}
                           </div>
-                        );
-                      })}
+                        )
+                      )}
                     </div>
                   );
                 })}

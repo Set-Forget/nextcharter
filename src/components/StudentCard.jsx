@@ -5,7 +5,6 @@ export default function StudentCard({ people }) {
   const navigate = useNavigate();
 
   const handleNavigate = (studentId) => {
-    console.log(studentId);
     navigate(`/profile/${studentId}`);
   };
 
