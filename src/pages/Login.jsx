@@ -84,7 +84,7 @@ export default function Login() {
     navigate("/signUp");
   }
 
-  if (session == null && userRoleInStorage !== null) return <Spinner />
+  // if (session == null && userRoleInStorage !== null) return <Spinner />
 
   return (
     <div className="flex flex-col h-screen">
