@@ -10,7 +10,7 @@ export default function Layout() {
 
     const navigation = useMemo(() => {
         const baseNavigation = [
-            { name: "Profile", href: "/profile" },
+            { name: "Dashboard", href: "/profile" },
             { name: "Projects", href: "/projects" },
         ];
 

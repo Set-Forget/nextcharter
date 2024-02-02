@@ -10,139 +10,10 @@ import * as pdfMake from "pdfmake/build/pdfmake";
     },
 };
 
-const data = {
-    studentName: "Aiden Abbott",
-    date: "12/12/2020",
-    percentageCompleted: "50%",
-    targetPercentage: "100%",
-    domains: [
-        {
-            domain: "English",
-            courses: [
-                {
-                    course: "English 1",
-                    competencies: [
-                        {
-                            competency: "Eng1.4",
-                            status: "Not Met",
-                        },
-                        {
-                            competency: "Eng1.1",
-                            status: "Not Met",
-                        },
-                        {
-                            competency: "Eng1.3",
-                            status: "Not Met",
-                        },
-                        {
-                            competency: "Eng1.4",
-                            status: "Plan To Meet",
-                        },
-                        {
-                            competency: "Eng1.1",
-                            status: "Plan To Meet",
-                        },
-                        {
-                            competency: "Eng1.3",
-                            status: "Plan To Meet",
-                        },
-                    ],
-                },
-                {
-                    course: "English 2",
-                    competencies: [
-                        {
-                            competency: "Eng2.4",
-                            status: "Not Met",
-                        },
-                        {
-                            competency: "Eng2.1",
-                            status: "Not Met",
-                        },
-                        {
-                            competency: "Eng2.3",
-                            status: "Not Met",
-                        },
-                        {
-                            competency: "Eng2.4",
-                            status: "Plan To Meet",
-                        },
-                        {
-                            competency: "Eng2.1",
-                            status: "Plan To Meet",
-                        },
-                        {
-                            competency: "Eng2.3",
-                            status: "Plan To Meet",
-                        },
-                        {
-                            competency: "Eng2.4",
-                            status: "Not Met",
-                        },
-                        {
-                            competency: "Eng2.1",
-                            status: "Not Met",
-                        },
-                        {
-                            competency: "Eng2.3",
-                            status: "Not Met",
-                        },
-                        {
-                            competency: "Eng2.4",
-                            status: "Plan To Meet",
-                        },
-                        {
-                            competency: "Eng2.1",
-                            status: "Plan To Meet",
-                        },
-                        {
-                            competency: "Eng2.3",
-                            status: "Plan To Meet",
-                        },
-                    ],
-                }
-            ]
-        },
-        {
-            domain: "Math",
-            courses: [
-                {
-                    course: "Math 1",
-                    competencies: [
-                        {
-                            competency: "Math1.4",
-                            status: "Not Met",
-                        },
-                        {
-                            competency: "Math1.1",
-                            status: "Not Met",
-                        },
-                        {
-                            competency: "Math1.3",
-                            status: "Not Met",
-                        },
-                        {
-                            competency: "Math1.4",
-                            status: "Plan To Meet",
-                        },
-                        {
-                            competency: "Math1.1",
-                            status: "Plan To Meet",
-                        },
-                        {
-                            competency: "Math1.3",
-                            status: "Plan To Meet",
-                        },
-                    ],
-                },
-            ]
-        }
-    ]
-}
-
-export default async function getStudentProgressPDF() {
+export default async function getStudentProgressPDF(data) {
     var dd = {
         content: [
+
             {
                 table: {
                     widths: '*',
@@ -180,14 +51,13 @@ export default async function getStudentProgressPDF() {
                         text: [
                             { text: 'Date: ', bold: false },
                             { text: data.date + '\n', bold: true },
-                            { text: 'Percentage completed: ', bold: false },
-                            { text: data.percentageCompleted + '\n', bold: true },
-                            { text: 'Target percentage based on 2027: ', bold: false },
-                            { text: data.targetPercentage, bold: true },
+                            { text: 'Total progress: ', bold: false },
+                            { text: data.percentageCompleted + "%", bold: true },
+
                         ],
                     }
                 ],
-                margin: [0, 20]
+                margin: [0, 20, 0, 30],
             }
         ],
         styles: {
@@ -195,68 +65,108 @@ export default async function getStudentProgressPDF() {
                 fontSize: 14,
                 alignment: 'center'
             },
-        }
+        },
     };
 
     data.domains.forEach(domain => {
-        dd.content.push({
+        let domainContent = {
+            unbreakable: true,
+            stack: [],
+            margin: [0, 0, 0, 15],
+        };
+
+        domainContent.stack.push({
             table: {
                 widths: '*',
                 body: [
                     [
                         {
-                            text: domain.domain.toUpperCase(),
-                            style: 'header',
-                            bold: true,
-                            margin: [2.5, 2.5],
+                            columns: [
+                                {
+                                    width: '*',
+                                    text: domain.name.toUpperCase(),
+                                    style: 'header',
+                                    bold: true,
+                                    alignment: 'left',
+                                },
+                                {
+                                    width: '*',
+                                    text: [
+                                        {
+                                            text: "Domain progress: ",
+                                            alignment: 'right',
+                                        },
+                                        {
+                                            text: domain.progress + "%",
+                                            alignment: 'right',
+                                            bold: true,
+                                        }
+                                    ],
+                                    fontSize: 10,
+                                },
+                            ],
                             border: [false, false, false, true],
                         }
-                    ]
+                    ],
                 ],
             },
             margin: [0, 0, 0, 10]
         });
 
-        let coursesColumns = domain.courses.map((course, idx) => {
-            let competenciesGroupedByStatus = course.competencies.reduce((group, competency) => {
-                group[competency.status] = group[competency.status] || [];
-                group[competency.status].push(competency.competency);
-                return group;
-            }, {});
+        let coursesPairs = [];
+        for (let i = 0; i < domain.courses.length; i += 2) {
+            coursesPairs.push(domain.courses.slice(i, i + 2));
+        }
 
-            return {
-                width: '50%',
-                table: {
-                    widths: '*',
-                    body: [
-                        [
-                            {
-                                text: course.course,
-                                style: 'header',
-                                fontSize: 12,
-                                fillColor: '#13274B',
-                                color: '#FFFFFF',
-                                margin: [0, 1],
-                            },
-                        ],
-                        ...Object.keys(competenciesGroupedByStatus).map(status => {
-                            return [
-                                {
-                                    text: [
-                                        { text: `${status}: `, bold: true },
-                                        { text: competenciesGroupedByStatus[status].join(', '), bold: false },
-                                    ],
-                                    fontSize: 10,
-                                },
-                            ];
-                        })
-                    ]
-                },
-                margin: idx % 2 === 0 ? [0, 0, 5, 20] : [5, 0, 0, 20]
+        coursesPairs.forEach(pair => {
+            let pairColumns = {
+                columns: []
             };
+
+            pair.forEach((course, courseIndex) => {
+                let competenciesGroupedByStatus = course.competencies.reduce((group, competency) => {
+                    group[competency.status] = group[competency.status] || [];
+                    group[competency.status].push(competency.name);
+                    return group;
+                }, {});
+
+                pairColumns.columns.push({
+                    width: '50%',
+                    table: {
+                        dontBreakRows: true,
+                        widths: '*',
+                        body: [
+                            [
+                                {
+                                    text: course.name,
+                                    style: 'header',
+                                    fontSize: 10,
+                                    fillColor: '#13274B',
+                                    color: '#FFFFFF',
+                                    margin: [0, 1],
+                                },
+                            ],
+                            ...Object.keys(competenciesGroupedByStatus).map(status => {
+                                return [
+                                    {
+                                        text: [
+                                            { text: `${status.charAt(0).toUpperCase() + status.slice(1)}: `, bold: true },
+                                            { text: competenciesGroupedByStatus[status].join(', '), bold: false },
+                                        ],
+                                        fontSize: 10,
+                                    },
+                                ];
+                            })
+                        ],
+                    },
+                    margin: courseIndex % 2 === 0 ? [0, 0, 5, 10] : [5, 0, 0, 10],
+                });
+            });
+
+            domainContent.stack.push(pairColumns);
         });
 
-        dd.content.push({ columns: coursesColumns });
+        dd.content.push(domainContent);
     });
 
     pdfMake.createPdf(dd).open();

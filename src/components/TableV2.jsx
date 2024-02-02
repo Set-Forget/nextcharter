@@ -12,15 +12,15 @@ export default function Table({ columns, data, title, subtitle, isLoading, toolb
             </div>
             <div className="sm:-mx-6 lg:-mx-8 mt-4">
                 <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                    <div className="shadow ring-1 ring-black bg-white ring-opacity-5 rounded-lg">
-                        <table className="min-w-full divide-y divide-gray-300">
-                            <thead className="bg-gray-50">
+                    <div className="shadow ring-1 ring-black bg-white ring-opacity-5 rounded-md">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead>
                                 <tr>
                                     {columns.map((column) => (
                                         <th
                                             key={column.name}
                                             scope="col"
-                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 bg-transparent"
                                         >
                                             {column.name}
                                         </th>
@@ -56,7 +56,7 @@ export default function Table({ columns, data, title, subtitle, isLoading, toolb
                         )}
                         {data.length === 0 && !isLoading && (
                             <div className="px-4 py-3 text-center text-sm bg-white text-gray-900">
-                                No data found
+                                There is no data to display
                             </div>
                         )}
                     </div>

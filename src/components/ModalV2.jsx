@@ -1,27 +1,38 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useRef } from "react";
 import { useObservable } from "rxjs-hooks";
-import { closeModal, modalState$ } from "../store/modalState";
+import { closeModal, modalState$, setModalState } from "../store/modalState";
+import { XMarkIcon, ArrowLeftIcon } from "@heroicons/react/20/solid";
+
+import Button from "./Button";
 
 export default function Modal() {
-    const { open, view, title, subtitle } = useObservable(() => modalState$, {
+    const { open, view, title, subtitle, previous } = useObservable(() => modalState$, {
         open: false,
         payload: null,
         view: null,
         title: "",
         subtitle: "",
+        previous: null,
     });
 
     const modalRef = useRef(null);
 
-    const handleClose = () => {
-        closeModal();
+    const handlePrevious = () => {
+        const { payload, view, title, subtitle } = previous;
+
+        setModalState({
+            open: true,
+            payload: payload,
+            view: view ?? null,
+            title: title,
+            subtitle: subtitle,
+            previous: null,
+        });
     };
 
-    const afterEnter = () => {
-        if (modalRef.current) {
-            modalRef.current.scrollTo({ top: 0, behavior: "smooth" });
-        }
+    const handleClose = () => {
+        closeModal();
     };
 
     return (
@@ -41,8 +52,7 @@ export default function Modal() {
                         aria-hidden="true"
                     />
                 </Transition.Child>
-
-                <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div className="fixed inset-0 z-10 w-screen">
                     <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                         <Transition.Child
                             as={Fragment}
@@ -52,13 +62,12 @@ export default function Modal() {
                             leave="ease-in duration-200"
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            afterEnter={afterEnter}
                         >
                             <Dialog.Panel
                                 ref={modalRef}
-                                className="relative z-10 transform max-h-[600px] overflow-auto rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
+                                className="relative z-10 rounded-lg transform bg-white text-left shadow-xl transition-all my-8 w-full max-w-lg"
                             >
-                                <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                                <div className="bg-white pt-5 rounded-lg">
                                     <div className="flex flex-col items-center">
                                         <div className="text-center w-full">
                                             <Dialog.Title
@@ -70,7 +79,24 @@ export default function Modal() {
                                             <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
                                                 {subtitle}
                                             </p>
-                                            <div className="mt-2">{view}</div>
+                                            <Button
+                                                className="absolute top-2 left-2 !p-1.5 !rounded-full !text-gray-600"
+                                                variant="ghost"
+                                                disabled={!previous}
+                                                onClick={handlePrevious}
+                                            >
+                                                <ArrowLeftIcon className="h-5 w-5" />
+                                            </Button>
+                                            <Button
+                                                className="absolute top-2 right-2 !p-1.5 !rounded-full !text-gray-600"
+                                                variant="ghost"
+                                                onClick={handleClose}
+                                            >
+                                                <XMarkIcon className="h-5 w-5" />
+                                            </Button>
+                                            <div className="mt-2 overflow-y-auto max-h-[600px] px-5 pb-5">
+                                                {view}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

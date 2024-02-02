@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import Button from "../components/Button";
-import Input from "../components/InputV2";
-import MultiSelect from "../components/MultiSelectV2";
-import SearchSelect from "../components/SearchSelect";
-import useGetData from "../hooks/useGetData";
-import useInfo from "../hooks/useInfo";
-import { closeModal } from "../store/modalState";
+import Button from "../../../components/Button";
+import Input from "../../../components/InputV2";
+import MultiSelect from "../../../components/MultiSelectV2";
+import SearchSelect from "../../../components/SearchSelect";
+import useGetData from "../../../hooks/useGetData";
+import useInfo from "../../../hooks/useInfo";
+import { closeModal } from "../../../store/modalState";
 
 export default function NewProject() {
     const competencies = useGetData("competency");

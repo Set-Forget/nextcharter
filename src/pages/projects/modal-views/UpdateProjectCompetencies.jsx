@@ -1,10 +1,10 @@
 import { useForm } from "react-hook-form";
-import MultiSelect from "../components/MultiSelectV2";
-import Select from "../components/Select";
-import Button from "../components/Button";
-import { getModalState, setModalState } from "../store/modalState";
-import useGetFilterData from "../hooks/useGetFilterData";
-import { supabase } from "../lib/api";
+import MultiSelect from "../../../components/MultiSelectV2";
+import Select from "../../../components/Select";
+import Button from "../../../components/Button";
+import { getModalState, setModalState } from "../../../store/modalState";
+import useGetFilterData from "../../../hooks/useGetFilterData";
+import { supabase } from "../../../lib/api";
 import { useState } from "react";
 import ProjectStudents from "./ProjectStudents";
 
