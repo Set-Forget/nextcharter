@@ -14,6 +14,7 @@ import AddCompetencyModal from "../components/AddCompetencyModal";
 // HOOKS
 import useInfo from "../hooks/useInfo";
 import useModal from "../hooks/useModal";
+import { supabase } from "../lib/api";
 
 function sumCreditValues(data) {
   const creditTotal = data.reduce(
@@ -49,6 +50,8 @@ export default function Home() {
   const [formData, setFormData] = useState(initialFormData);
   const [registered, setRegistered] = useState([]);
   const [open, setOpen] = useState({ value: false, message: "" });
+  const [domainTableData, setDomainTableData] = useState([]);
+  const [instDomainTableData, setInstDomainTableData] = useState([]);
 
   const {
     students,
@@ -213,7 +216,7 @@ export default function Home() {
               competency_name: competency.name,
               competency_id: competency.competency_id,
               competency_course_id: competency.id,
-              status: 'transfer'
+              status: "transfer",
             };
             list.push(element);
           });
@@ -263,6 +266,30 @@ export default function Home() {
     }
   }, [selectedStudent]);
 
+  useEffect(() => {
+    async function fetchData() {
+      if (domains != undefined && domains.length >= 1) {
+        try {
+          // Fetch domainTable data
+          const { data: domainTable } = await supabase
+            .from("domain")
+            .select();
+          setDomainTableData(domainTable);
+
+          // Fetch instDomainTable data
+          const { data: instDomainTable } = await supabase
+            .from("institution_domain")
+            .select();
+          setInstDomainTableData(instDomainTable);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+    }
+
+    fetchData();
+  }, [domains]); // domains as a dependency
+
   if (postLoading || isLoading) return <Spinner />;
   if (error) return <p>Error!</p>;
 
@@ -301,6 +328,8 @@ export default function Home() {
                 selected={selectedDomain}
                 setSelected={handleSetDomain}
                 handleAdd={toggle}
+                domainTableData={domainTableData}
+                instDomainTableData={instDomainTableData}
               />
               <br />
               <SelectWithCheck
