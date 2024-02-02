@@ -1,12 +1,12 @@
-import { useForm } from "react-hook-form";
-import Button from "../components/Button";
-import { closeModal, setModalState } from "../store/modalState";
-import Input from "../components/InputV2";
-import SearchSelect from "../components/SearchSelect";
-import useGetData from "../hooks/useGetData";
-import MultiSelect from "../components/MultiSelectV2";
 import { useState } from "react";
-import useInfo from "../hooks/useInfo";
+import { useForm } from "react-hook-form";
+import Button from "../../../components/Button";
+import Input from "../../../components/InputV2";
+import MultiSelect from "../../../components/MultiSelectV2";
+import SearchSelect from "../../../components/SearchSelect";
+import useGetData from "../../../hooks/useGetData";
+import useInfo from "../../../hooks/useInfo";
+import { closeModal, setModalState } from "../../../store/modalState";
 import ProjectDetails from "./ProjectDetails";
 
 export default function EditProject({ data }) {

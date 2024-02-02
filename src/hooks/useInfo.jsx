@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../lib/api";
 export default function useInfo() {
     const [isLoading, setIsLoading] = useState(true);
@@ -108,9 +108,14 @@ export default function useInfo() {
             .update({ status: newStatus })
             .eq("student_id", student_id)
             .in("competency_id", competency_id);
-        if (error) throw error;
-
+        if (error) throw new Error(error.message);
         return data;
+    }
+
+    async function getFromDatabase(field, fieldVal, table) {
+        const { data: fetchedData, error } = await supabase.from(table).select().eq(field, fieldVal);
+        if (error) throw new Error(error.message);
+        return fetchedData;
     }
 
     // ---
@@ -138,7 +143,6 @@ export default function useInfo() {
 
             return data;
         } catch (error) {
-            console.error("Error updating registers:", error);
             throw error;
         }
     }
@@ -178,6 +182,7 @@ export default function useInfo() {
         courses,
         competencies,
         updateCompetencyStatus,
+        getFromDatabase,
         deleteFromDatabase,
         updateDatabase,
         getDomains,

@@ -1,12 +1,12 @@
-import Button from "../components/Button";
+import Button from "../../../components/Button";
 import { PencilSquareIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
-import { closeModal, setModalState } from "../store/modalState";
+import { closeModal, setModalState } from "../../../store/modalState";
 import EditProject from "./EditProject";
-import { useAuthContext } from "../context/AuthProvider";
-import useGetDataById from "../hooks/useGetDataById";
+import { useAuthContext } from "../../../context/AuthProvider";
+import useGetDataById from "../../../hooks/useGetDataById";
 import { useState } from "react";
-import useInfo from "../hooks/useInfo";
-import { setDialogState } from "../store/dialogState";
+import useInfo from "../../../hooks/useInfo";
+import { setDialogState } from "../../../store/dialogState";
 
 export default function ProjectDetails({ data }) {
     const { name, competencies, teacher_name, teacher_id, description, comment } = data;
@@ -34,6 +34,12 @@ export default function ProjectDetails({ data }) {
             view: <EditProject data={data} />,
             title: "Edit project",
             subtitle: "Edit the project details",
+            previous: {
+                payload: { id: data.id },
+                view: <ProjectDetails data={data} />,
+                title: "Project details",
+                subtitle: "A detailed view of the project",
+            },
         });
     };
 

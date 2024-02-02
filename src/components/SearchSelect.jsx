@@ -50,16 +50,18 @@ export default function SearchSelect({ control, name, data, label, placeholder, 
                                         }
                                         value={item}
                                     >
-                                        {({ selected, active }) => (
+                                        {({ active }) => (
                                             <>
                                                 <span
                                                     className={`block truncate text-left ${
-                                                        selected ? "font-medium" : "font-normal"
+                                                        value && value.id === item.id
+                                                            ? "font-medium"
+                                                            : "font-normal"
                                                     }`}
                                                 >
                                                     {item.name}
                                                 </span>
-                                                {selected ? (
+                                                {value && value.id === item.id ? (
                                                     <span
                                                         className={`absolute inset-y-0 right-0 flex items-center pr-4 ${
                                                             active ? "text-white" : "text-indigo-600"

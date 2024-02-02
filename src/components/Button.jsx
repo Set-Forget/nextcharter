@@ -1,4 +1,4 @@
-export default function Button({ children, className, isLoading, ...props }) {
+export default function Button({ children, className, isLoading, disabled, ...props }) {
     const buttonVariantClasses = {
         primary: "bg-nextcolor hover:hover:bg-nextcolor/90 text-white",
         secondary: "bg-gray-200 hover:bg-gray-300 text-gray-800",
@@ -8,12 +8,22 @@ export default function Button({ children, className, isLoading, ...props }) {
         ghost: "bg-transparent hover:bg-black/5 text-gray-800",
     };
 
+    const buttonSizeClasses = {
+        sm: "px-2.5 py-1.5 text-xs",
+        md: "px-3 py-2 text-sm",
+        lg: "px-4 py-2 text-base",
+    };
+
     return (
         <button
             className={`${className} rounded-md justify-center ${
                 buttonVariantClasses[props.variant] || buttonVariantClasses.primary
-            }
-            flex px-3.5 py-2.5 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2`}
+            } flex ${
+                buttonSizeClasses[props.size] || buttonSizeClasses.md
+            } text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                disabled && "opacity-50"
+            }`}
+            disabled={disabled}
             {...props}
         >
             {isLoading && (

@@ -1,19 +1,18 @@
 import {
     AcademicCapIcon,
+    ChevronRightIcon,
     DocumentChartBarIcon,
     EllipsisVerticalIcon,
-    ChevronRightIcon,
 } from "@heroicons/react/24/solid";
-import Menu from "../components/Menu";
-import { closeModal, getModalState, setModalState } from "../store/modalState";
-import useGetFilterData from "../hooks/useGetFilterData";
-import { useState } from "react";
-import { useEffect } from "react";
-import { supabase } from "../lib/api";
-import Avatar from "../components/Avatar";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "../context/AuthProvider";
-import Button from "../components/Button";
+import Button from "../../../components/Button";
+import Menu from "../../../components/Menu";
+import useGetFilterData from "../../../hooks/useGetFilterData";
+import { closeModal, getModalState, setModalState } from "../../../store/modalState";
+import Avatar from "../../../components/Avatar";
+import { useAuthContext } from "../../../context/AuthProvider";
+import { supabase } from "../../../lib/api";
 import UpdateProjectCompetencies from "./UpdateProjectCompetencies";
 
 export default function ProjectStudents() {
@@ -48,6 +47,12 @@ export default function ProjectStudents() {
             view: <UpdateProjectCompetencies />,
             title: "Update competencies",
             subtitle: "Update the competencies of the students assigned to this project",
+            previous: {
+                payload: { id: projectId },
+                view: <ProjectStudents />,
+                title: "Students view",
+                subtitle: "A detailed view of the students assigned to the project",
+            },
         });
     };
 
