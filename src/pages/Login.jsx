@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import { supabase } from "../lib/api";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthProvider";
+import Spinner from "../components/Spinner";
 
 export default function Login() {
   const [error, setError] = useState();
@@ -11,7 +12,8 @@ export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
 
-  const { session } = useAuthContext();
+  const { session, loading } = useAuthContext();
+
   const navigate = useNavigate();
 
   async function signInWithEmail(e) {
@@ -39,67 +41,50 @@ export default function Login() {
     }
   }
 
-  // useEffect(() => {
-  //   if (session && storedUserRole != null) {
-  //     if (storedUserRole == "student") {
-  //       const { data, error: fetchError } = await supabase
-  //         .from("student")
-  //         .select()
-  //         .eq("email", email);
+  let userRoleInStorage = localStorage.getItem('userRole');
 
-  //       localStorage.setItem("studentCode", data[0].code);
+  const fetchData = async () => {
+    if (session && (storedUserRole != null || userRoleInStorage != null)) {
+      if (storedUserRole === "student") {
+        try {
+          const { data, error: fetchError } = await supabase
+            .from("student")
+            .select()
+            .eq("email", emailRef.current.value);
 
-  //       navigate("/profile/" + data[0].code)
-  //       // navigate("/profile/9054");
-  //     } else if (storedUserRole == "teacher") {
-  //       navigate("/profile");
-  //     } else {
-  //       navigate("/");
-  //     }
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [session, storedUserRole]);
+          if (fetchError) {
+            console.error("Error fetching student data:", fetchError);
+            return;
+          }
 
+          if (data && data.length > 0) {
+            localStorage.setItem("studentCode", data[0].code);
+            navigate("/profile/" + data[0].code);
+          } else {
+            console.error("No student data found");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      } else if (storedUserRole === "teacher") {
+        navigate("/profile");
+      } else {
+        navigate("/#");
+      }
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (session && storedUserRole != null) {
-        if (storedUserRole === "student") {
-          try {
-            const { data, error: fetchError } = await supabase
-              .from("student")
-              .select()
-              .eq("email", emailRef.current.value);
-
-            if (fetchError) {
-              console.error("Error fetching student data:", fetchError);
-              return;
-            }
-
-            if (data && data.length > 0) {
-              localStorage.setItem("studentCode", data[0].code);
-              navigate("/profile/" + data[0].code);
-            } else {
-              console.error("No student data found");
-            }
-          } catch (error) {
-            console.error("Error:", error);
-          }
-        } else if (storedUserRole === "teacher") {
-          navigate("/profile");
-        } else {
-          navigate("/");
-        }
-      }
-    };
-
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, storedUserRole]);
+    if (window.location.hash === '#/login') {
+        fetchData();
+    }
+}, [session, storedUserRole]);
 
   function signUp() {
     navigate("/signUp");
   }
+
+  // if (session == null && userRoleInStorage !== null) return <Spinner />
 
   return (
     <div className="flex flex-col h-screen">

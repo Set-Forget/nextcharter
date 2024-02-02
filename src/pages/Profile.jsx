@@ -8,6 +8,8 @@ export default function Profile() {
 
   if (isLoading) return <Spinner />
 
+  console.log(students)
+
   return(
     <main className="flex-1 bg-gray-100 place-items-center relative pb-4">
       <div className="mx-auto max-w-3xl overflow-scroll h-[calc(100vh-100px)] mt-20">

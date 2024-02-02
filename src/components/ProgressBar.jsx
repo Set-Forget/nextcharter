@@ -55,7 +55,6 @@ const ProgressBar = ({ selectedStudent, competencyByStudent }) => {
   const handleRestYear = () => {
     setTargetYear(targetYear - 1);
   };
-  console.log(defaultTargetYear);
 
   return (
     <div className="ml-auto w-[30rem] mt-6 flex flex-col items-center gap-4">
