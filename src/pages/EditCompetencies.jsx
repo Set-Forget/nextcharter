@@ -78,18 +78,28 @@ export default function EditCompetencies() {
     }));
 
     const formattedCompetenciesByCourse = competenciesByCourse.data
-        .map((competencyCourse) => {
-            const course = competencies.data.find(
-                (competency) => competency.id === competencyCourse.competency_id
-            );
+    .map((competencyCourse) => {
+        const course = competencies.data.find(
+            (competency) => competency.id === competencyCourse.competency_id
+        );
 
-            return {
-                id: competencyCourse.competency_id,
-                name: course?.name,
-                courseId: competencyCourse.course_id,
-            };
-        })
-        .filter((competency) => competency.courseId === selectedCourse?.id);
+        return {
+            id: competencyCourse.competency_id,
+            name: course?.name,
+            courseId: competencyCourse.course_id,
+        };
+    })
+    .filter((competency) => competency.courseId === selectedCourse?.id)
+    .filter((function() {
+        const seenIds = new Set();
+        return function(competency) {
+            if (!seenIds.has(competency.id)) {
+                seenIds.add(competency.id);
+                return true;
+            }
+            return false;
+        };
+    })());
 
     return (
         <main className="flex-1 bg-gray-100 place-items-center relative pb-4">
