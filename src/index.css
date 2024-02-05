@@ -5,3 +5,20 @@
 .tooltip:hover .tooltip-item {
   visibility: visible;
 }
+
+::-webkit-scrollbar {
+  width: 6px; 
+}
+
+::-webkit-scrollbar-track {
+  background: white; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #13274b;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #254277;
+}
+

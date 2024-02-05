@@ -6,7 +6,7 @@ export const modalState$ = new BehaviorSubject({
     view: null,
     title: "",
     subtitle: "",
-
+    previous: null
 });
 
 export function setModalState(state) {
@@ -24,5 +24,6 @@ export function closeModal() {
         view: getModalState().view,
         title: getModalState().title,
         subtitle: getModalState().subtitle,
+        previous: getModalState().previous
     });
 }

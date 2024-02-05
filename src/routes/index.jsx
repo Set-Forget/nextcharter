@@ -7,12 +7,12 @@ import Layout from "../pages/Layout.jsx";
 import Login from "../pages/Login.jsx";
 import LoginSuccess from "../pages/LoginSuccess.jsx";
 import Profile from "../pages/Profile.jsx";
-import Projects from "../pages/Projects.jsx";
+import Projects from "../pages/projects/Projects.jsx";
 import SignUp from "../pages/SignUp.jsx";
-import StudentProgress from "../pages/StudentProgress.jsx";
 import TableView from "../pages/TableView.jsx";
 import Dialog from "../components/Dialog.jsx";
 import Modal from "../components/ModalV2.jsx";
+import StudentProgress from "../pages/dashboard/StudentProgress.jsx";
 
 const RootRoutes = createHashRouter(
     createRoutesFromElements(

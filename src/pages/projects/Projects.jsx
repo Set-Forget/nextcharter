@@ -4,14 +4,14 @@ import {
     EllipsisHorizontalIcon,
     PlusIcon,
 } from "@heroicons/react/24/solid";
-import Button from "../components/Button";
-import Menu from "../components/Menu";
-import Table from "../components/TableV2";
-import useGetData from "../hooks/useGetData";
-import NewProject from "../modal-views/NewProject";
-import ProjectDetails from "../modal-views/ProjectDetails";
-import ProjectStudents from "../modal-views/ProjectStudents";
-import { setModalState } from "../store/modalState";
+import Button from "../../components/Button";
+import Menu from "../../components/Menu";
+import Table from "../../components/TableV2";
+import useGetData from "../../hooks/useGetData";
+import { setModalState } from "../../store/modalState";
+import NewProject from "./modal-views/NewProject";
+import ProjectDetails from "./modal-views/ProjectDetails";
+import ProjectStudents from "./modal-views/ProjectStudents";
 
 const columns = [
     {

@@ -25,28 +25,30 @@ export default function Select({ control, name, label, data, placeholder, errors
                                 <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                             </span>
                         </Listbox.Button>
-                        <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                            {data.map((person) => (
+                        <Listbox.Options className="absolute z-50 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                            {data.map((data) => (
                                 <Listbox.Option
-                                    key={person.id}
+                                    key={data.id}
                                     className={({ active }) =>
                                         `relative cursor-default text-left select-none py-2 pl-3 pr-9 ${
                                             active ? "bg-nextcolor text-white" : "text-gray-900"
                                         }`
                                     }
-                                    value={person}
+                                    value={data}
                                 >
-                                    {({ selected, active }) => (
+                                    {({ active }) => (
                                         <>
                                             <span
                                                 className={`${
-                                                    selected ? "font-semibold" : "font-normal"
+                                                    value && value.id === data.id
+                                                        ? "font-semibold"
+                                                        : "font-normal"
                                                 } block truncate`}
                                             >
-                                                {person.name}
+                                                {data.name}
                                             </span>
 
-                                            {selected ? (
+                                            {value && value.id === data.id ? (
                                                 <span
                                                     className={`${
                                                         active ? "text-white" : "text-indigo-600"
