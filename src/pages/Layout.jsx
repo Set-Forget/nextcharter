@@ -33,7 +33,7 @@ export default function Layout() {
         }
     }, [userRole]);
 
-    return session ? (
+    return session || userRole ? (
         <div className="flex flex-col h-screen">
             <Header navItems={navigation} />
             <Outlet />
