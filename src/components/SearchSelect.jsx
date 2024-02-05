@@ -1,13 +1,20 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { Controller } from "react-hook-form";
 
-export default function SearchSelect({ control, name, data, label, placeholder, errors, ...props }) {
+export default function SearchSelect({ control, name, data, label, placeholder, errors, resetQuery, ...props }) {
     const [query, setQuery] = useState("");
 
     const filteredData =
         query === "" ? data : data.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()));
+
+    useEffect(() => {
+        if (resetQuery == true) {
+            setQuery("");
+        }        
+    }, [resetQuery])
+    
     return (
         <Controller
             control={control}

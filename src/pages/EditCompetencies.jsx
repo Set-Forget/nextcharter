@@ -9,6 +9,7 @@ import { supabase } from "../lib/api";
 
 export default function EditCompetencies() {
     const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
+    const [resetQuery, setResetQuery] = useState(false);
 
     const students = useGetData("student");
     const domains = useGetData("domain");
@@ -28,6 +29,7 @@ export default function EditCompetencies() {
 
     const onSubmit = async (data) => {
         setIsLoadingSubmit(true);
+        setResetQuery(true);
         const competencies_id = data.competencies.map((competency) => competency.id);
 
         try {
@@ -40,6 +42,7 @@ export default function EditCompetencies() {
             throw new Error(error.message);
         } finally {
             setIsLoadingSubmit(false);
+            setResetQuery(false);
             reset();
         }
     };
@@ -60,12 +63,6 @@ export default function EditCompetencies() {
         id: domain.id,
         name: domain.name,
     }));
-    // const formattedDomains = domains.data
-    //     .filter((domain) => domain.name)
-    //     .map((domain) => ({
-    //         id: domain.id,
-    //         name: domain.name,
-    //     }));
 
     const formattedCourses = courses.data
         .map((course) => ({
@@ -108,6 +105,7 @@ export default function EditCompetencies() {
                     placeholder="Select a student"
                     data={students.isLoading ? [] : formattedStudents}
                     errors={errors.student && "Student is required"}
+                    resetQuery={resetQuery}
                 />
                 <SearchSelect
                     name="domains"
