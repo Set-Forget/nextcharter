@@ -44,7 +44,6 @@ export default function TableView() {
     const currentData = filteredByName.slice(startIndex, endIndex);
     const startPage = Math.max(currentPage - 2, 1);
     const endPage = Math.min(startPage + 4, totalPages);
-    console.log({ currentPage, totalPages, startIndex, endIndex, currentDataLength: currentData.length });
 
     const pageNumbers = [];
     for (let i = 1; i <= Math.ceil(filteredByName.length / itemsPerPage); i++) {

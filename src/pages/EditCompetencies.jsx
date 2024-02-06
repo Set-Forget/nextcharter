@@ -92,7 +92,7 @@ export default function EditCompetencies() {
         <main className="flex-1 bg-gray-100 place-items-center relative pb-4">
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="mx-auto gap-4 flex flex-col items-center max-w-3xl h-[calc(100vh-100px)] mt-20"
+                className="mx-auto gap-4 flex flex-col sm:max-w-md items-center max-w-3xl h-[calc(100vh-100px)] mt-20"
             >
                 <SearchSelect
                     name="student"
