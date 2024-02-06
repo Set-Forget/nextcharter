@@ -10,7 +10,7 @@ export default function Select({ control, name, label, data, placeholder, errors
             name={name}
             defaultValue={null}
             render={({ field: { onChange, value } }) => (
-                <Listbox as="div" className="w-full sm:max-w-md" value={value} onChange={onChange} {...props}>
+                <Listbox as="div" className="w-full" value={value} onChange={onChange} {...props}>
                     <Listbox.Label className="flex items-center text-sm font-medium leading-6 text-gray-900">
                         {label}
                     </Listbox.Label>

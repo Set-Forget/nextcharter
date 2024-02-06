@@ -20,7 +20,7 @@ export default function Button({ children, className, isLoading, disabled, ...pr
                 buttonVariantClasses[props.variant] || buttonVariantClasses.primary
             } flex ${
                 buttonSizeClasses[props.size] || buttonSizeClasses.md
-            } text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+            } font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
                 disabled && "opacity-50"
             }`}
             disabled={disabled}

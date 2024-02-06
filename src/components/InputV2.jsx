@@ -1,6 +1,6 @@
-export default function Input({ label, errors, register, ...props }) {
+export default function Input({ label, errors, register, className, ...props }) {
     return (
-        <div className="w-full sm:max-w-md">
+        <div className="w-full">
             {label && (
                 <label className="flex items-center text-sm font-medium leading-6 mb-1 text-gray-900">
                     {label}
@@ -8,7 +8,7 @@ export default function Input({ label, errors, register, ...props }) {
             )}
             <div>
                 <input
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${className}`}
                     {...register}
                     {...props}
                 />

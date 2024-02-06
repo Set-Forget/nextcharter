@@ -2,18 +2,21 @@ import { Listbox } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { Controller } from "react-hook-form";
 
-export default function MultiSelect({ control, name, label, placeholder, data, errors, ...props }) {
+export default function MultiSelect({ control, name, label, placeholder, data, errors, toolbar, ...props }) {
     return (
         <Controller
             control={control}
             name={name}
             defaultValue={[]}
             render={({ field: { onChange, value } }) => (
-                <Listbox as="div" className="w-full sm:max-w-md" value={value} multiple {...props}>
+                <Listbox as="div" className="w-full" value={value} multiple {...props}>
                     {label && (
-                        <Listbox.Label className="flex items-center text-sm font-medium leading-6 mb-1 text-gray-900">
-                            {label}
-                        </Listbox.Label>
+                        <div className="flex items-center gap-1 mb-1">
+                            <Listbox.Label className="flex items-center text-sm font-medium leading-6 text-gray-900">
+                                {label}
+                            </Listbox.Label>
+                            {toolbar && toolbar}
+                        </div>
                     )}
                     <div className="relative">
                         <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">

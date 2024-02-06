@@ -113,7 +113,11 @@ export default function useInfo() {
     }
 
     async function getFromDatabase(field, fieldVal, table) {
-        const { data: fetchedData, error } = await supabase.from(table).select().eq(field, fieldVal);
+        const { data: fetchedData, error } = await supabase
+            .from(table)
+            .select()
+            .eq(field, fieldVal)
+            .eq("is_deleted", false);
         if (error) throw new Error(error.message);
         return fetchedData;
     }

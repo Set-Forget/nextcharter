@@ -50,7 +50,6 @@ export default function EditProject({ data }) {
     };
 
     const onSubmit = async (data) => {
-        console.log(data);
         setLoading(true);
 
         const formattedData = {

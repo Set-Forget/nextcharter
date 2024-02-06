@@ -1,9 +1,22 @@
-import { Fragment, useEffect, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { useEffect } from "react";
+import { Fragment, useState } from "react";
 import { Controller } from "react-hook-form";
 
-export default function SearchSelect({ control, name, data, label, placeholder, errors, resetQuery, ...props }) {
+export default function SearchSelect({
+    control,
+    name,
+    data,
+    label,
+    placeholder,
+    errors,
+    toolbar,
+    onChange,
+    optionSubtext,
+    resetQuery,
+    ...props
+}) {
     const [query, setQuery] = useState("");
 
     const filteredData =
@@ -12,27 +25,35 @@ export default function SearchSelect({ control, name, data, label, placeholder, 
     useEffect(() => {
         if (resetQuery == true) {
             setQuery("");
-        }        
-    }, [resetQuery])
-    
+        }
+    }, [resetQuery]);
+
     return (
         <Controller
             control={control}
             name={name}
             defaultValue={null}
-            render={({ field: { onChange, value } }) => (
-                <Combobox as="div" className="w-full sm:max-w-md" value={value} onChange={onChange}>
+            render={({ field: { onChange: defaultOnChange, value } }) => (
+                <Combobox
+                    as="div"
+                    className="w-full"
+                    value={value}
+                    onChange={onChange ? onChange : defaultOnChange}
+                >
                     {label && (
-                        <Combobox.Label className="flex items-center text-sm font-medium leading-6 mb-1 text-gray-900">
-                            {label}
-                        </Combobox.Label>
+                        <div className="flex items-center gap-1 mb-1">
+                            <Combobox.Label className="flex items-center text-sm font-medium leading-6 text-gray-900">
+                                {label}
+                            </Combobox.Label>
+                            {toolbar && toolbar}
+                        </div>
                     )}
                     <div className="relative">
                         <Combobox.Input
                             className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             displayValue={(item) => (item ? item.name : "")}
-                            onChange={(event) => {
-                                setQuery(event.target.value);
+                            onChange={(e) => {
+                                setQuery(e.target.value);
                             }}
                             placeholder={placeholder}
                             {...props}
@@ -66,7 +87,13 @@ export default function SearchSelect({ control, name, data, label, placeholder, 
                                                             : "font-normal"
                                                     }`}
                                                 >
-                                                    {item.name}
+                                                    {item.name}{" "}
+                                                    {optionSubtext && item[optionSubtext.item] && (
+                                                        <>
+                                                            <br /> {item[optionSubtext.item]}{" "}
+                                                            {optionSubtext.label}
+                                                        </>
+                                                    )}
                                                 </span>
                                                 {value && value.id === item.id ? (
                                                     <span
