@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import useGetData from "../../../hooks/useGetData";
-import CompetencyChip from "./CompetencyChip";
+import Chip from "../../../components/Chip";
 
 export default function CompetenciesContainer({ selectedCourses, setValue, toolbar }) {
     const competencies = useGetData("competency");
@@ -53,7 +53,7 @@ export default function CompetenciesContainer({ selectedCourses, setValue, toolb
                             <label className="text-sm text-gray-400">{competencies[0].courseName}</label>
                             <div className="mb-4">
                                 {competencies.map((competency) => (
-                                    <CompetencyChip key={competency.id} label={competency.name} />
+                                    <Chip key={competency.id} label={competency.name} />
                                 ))}
                             </div>
                         </div>

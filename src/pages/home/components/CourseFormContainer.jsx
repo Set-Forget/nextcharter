@@ -1,7 +1,7 @@
 import { PlusIcon } from "@heroicons/react/20/solid";
 import { useForm } from "react-hook-form";
 import Button from "../../../components/Button";
-import MultiSelect from "../../../components/MultiSelectV2";
+import MultiSelect from "../../../components/MultiSelect";
 import SearchSelect from "../../../components/SearchSelect";
 import useGetData from "../../../hooks/useGetData";
 import { setModalState } from "../../../store/modalState";
@@ -11,7 +11,12 @@ import NewDomain from "../modal-views/NewDomain";
 import CompetenciesContainer from "./CompetenciesContainer";
 import CreditCounter from "./CreditCounter";
 
-export default function CourseFormContainer({ setSelectedStudent, setCurrentRegisters }) {
+export default function CourseFormContainer({
+    setSelectedStudent,
+    setCurrentRegisters,
+    getStudentRegisters,
+    loading,
+}) {
     const students = useGetData("student");
     const domains = useGetData("domain");
     const courses = useGetData("course");
@@ -158,9 +163,11 @@ export default function CourseFormContainer({ setSelectedStudent, setCurrentRegi
                     placeholder="Select a student"
                     data={students.isLoading ? [] : formattedStudents}
                     errors={errors.student && "Student is required"}
+                    loading={loading}
                     onChange={(e) => {
                         setValue("student", e);
                         setSelectedStudent(e);
+                        getStudentRegisters(e.student_code);
                     }}
                 />
                 <SearchSelect

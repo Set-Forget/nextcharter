@@ -1,11 +1,10 @@
-import { useForm } from "react-hook-form";
-import SearchSelect from "../../../components/SearchSelect";
-import useGetData from "../../../hooks/useGetData";
-import { closeModal } from "../../../store/modalState";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import Button from "../../../components/Button";
-import Input from "../../../components/InputV2";
+import Input from "../../../components/Input";
+import SearchSelect from "../../../components/SearchSelect";
 import useInfo from "../../../hooks/useInfo";
+import { closeModal } from "../../../store/modalState";
 
 export default function NewDomain({ institutions }) {
     const [loading, setLoading] = useState(false);

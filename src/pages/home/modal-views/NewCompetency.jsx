@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../../../components/Button";
-import Input from "../../../components/InputV2";
+import Input from "../../../components/Input";
 import SearchSelect from "../../../components/SearchSelect";
 import useInfo from "../../../hooks/useInfo";
 import { closeModal } from "../../../store/modalState";

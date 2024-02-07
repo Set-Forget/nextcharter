@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../../../components/Button";
-import Input from "../../../components/InputV2";
+import Input from "../../../components/Input";
 import SearchSelect from "../../../components/SearchSelect";
 import useInfo from "../../../hooks/useInfo";
 import { closeModal } from "../../../store/modalState";
@@ -85,6 +85,7 @@ export default function NewCourse({ institutions, domains, institutionDomains })
                     placeholder="Enter the course name"
                     register={register("courseName", { required: true })}
                     errors={errors.courseName && "Course name is required"}
+                    className="w-full"
                 />
                 <Input
                     label="Credits required"
@@ -92,6 +93,7 @@ export default function NewCourse({ institutions, domains, institutionDomains })
                     placeholder="Enter the credits required"
                     register={register("creditsRequired", { required: true })}
                     errors={errors.creditsRequired && "Credits required is required"}
+                    className="w-full"
                 />
             </div>
             <div className="mt-4 grid grid-flow-row-dense grid-cols-2 gap-4">

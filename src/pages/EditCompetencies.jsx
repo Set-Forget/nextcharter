@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../components/Button";
-import MultiSelect from "../components/MultiSelectV2";
+import MultiSelect from "../components/MultiSelect";
 import SearchSelect from "../components/SearchSelect";
 import Select from "../components/Select";
 import useGetData from "../hooks/useGetData";
@@ -78,28 +78,30 @@ export default function EditCompetencies() {
     }));
 
     const formattedCompetenciesByCourse = competenciesByCourse.data
-    .map((competencyCourse) => {
-        const course = competencies.data.find(
-            (competency) => competency.id === competencyCourse.competency_id
-        );
+        .map((competencyCourse) => {
+            const course = competencies.data.find(
+                (competency) => competency.id === competencyCourse.competency_id
+            );
 
-        return {
-            id: competencyCourse.competency_id,
-            name: course?.name,
-            courseId: competencyCourse.course_id,
-        };
-    })
-    .filter((competency) => competency.courseId === selectedCourse?.id)
-    .filter((function() {
-        const seenIds = new Set();
-        return function(competency) {
-            if (!seenIds.has(competency.id)) {
-                seenIds.add(competency.id);
-                return true;
-            }
-            return false;
-        };
-    })());
+            return {
+                id: competencyCourse.competency_id,
+                name: course?.name,
+                courseId: competencyCourse.course_id,
+            };
+        })
+        .filter((competency) => competency.courseId === selectedCourse?.id)
+        .filter(
+            (function () {
+                const seenIds = new Set();
+                return function (competency) {
+                    if (!seenIds.has(competency.id)) {
+                        seenIds.add(competency.id);
+                        return true;
+                    }
+                    return false;
+                };
+            })()
+        );
 
     return (
         <main className="flex-1 bg-gray-100 place-items-center relative pb-4">

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../../../components/Button";
-import Input from "../../../components/InputV2";
-import MultiSelect from "../../../components/MultiSelectV2";
+import Input from "../../../components/Input";
+import MultiSelect from "../../../components/MultiSelect";
 import SearchSelect from "../../../components/SearchSelect";
 import useGetData from "../../../hooks/useGetData";
 import useInfo from "../../../hooks/useInfo";

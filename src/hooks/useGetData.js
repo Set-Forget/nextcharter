@@ -10,7 +10,7 @@ export default function useGetData(table, realtime) {
 
     const getAllData = async () => {
         try {
-            const { data } = await supabase.from(table).select();
+            const { data } = await supabase.from(table).select()
             setData(data);
         } catch (error) {
             throw new Error(error);

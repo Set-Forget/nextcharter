@@ -15,6 +15,7 @@ export default function SearchSelect({
     onChange,
     optionSubtext,
     resetQuery,
+    loading,
     ...props
 }) {
     const [query, setQuery] = useState("");
@@ -37,6 +38,7 @@ export default function SearchSelect({
                 <Combobox
                     as="div"
                     className="w-full"
+                    disabled={loading}
                     value={value}
                     onChange={onChange ? onChange : defaultOnChange}
                 >

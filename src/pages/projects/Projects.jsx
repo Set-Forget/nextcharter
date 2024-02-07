@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/solid";
 import Button from "../../components/Button";
 import Menu from "../../components/Menu";
-import Table from "../../components/TableV2";
+import Table from "../../components/Table";
 import useGetData from "../../hooks/useGetData";
 import { setModalState } from "../../store/modalState";
 import NewProject from "./modal-views/NewProject";

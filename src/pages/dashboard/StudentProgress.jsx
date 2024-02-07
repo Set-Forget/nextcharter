@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useInfo from "../../hooks/useInfo";
-import getStudentProgressPDF from "../../utils/getStudentProgressPDF";
+import getStudentProgressPDF from "./utils/getStudentProgressPDF";
 import useGetData from "../../hooks/useGetData";
 import Select from "../../components/Select";
 import { useForm } from "react-hook-form";
