@@ -34,7 +34,7 @@ const RootRoutes = createHashRouter(
                 <Route
                     path="registrations"
                     element={
-                        <ProtectedRoute allowedRoles={["admin"]}>
+                        <ProtectedRoute allowedRoles={["admin", "teacher"]}>
                             <Registers />
                             <Modal />
                         </ProtectedRoute>
