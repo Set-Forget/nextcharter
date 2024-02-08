@@ -27,7 +27,9 @@ export default function SignUp() {
       const { data, error: fetchError } = await supabase
         .from("allowed_users")
         .select()
-        .eq("email", email);
+        // .eq("email", email);
+
+        console.log("Data", data)
 
       if (fetchError) {
         setIsLoadingSignUp(false);

@@ -21,12 +21,15 @@ export default function Login() {
 
     let email = emailRef.current.value;
 
+    console.log(email)
+
     const { error } = await supabase.auth.signInWithPassword({
       email: email,
       password: passwordRef.current.value,
     });
 
     if (error) {
+      console.log(error)
       setError(JSON.parse(JSON.stringify(error)));
     }
 
@@ -34,6 +37,8 @@ export default function Login() {
       .from("allowed_users")
       .select()
       .eq("email", email);
+
+      console.log(data)
 
     if (data.length >= 1) {
       localStorage.setItem("userRole", data[0].role);
