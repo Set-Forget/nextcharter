@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../components/Button";
-import MultiSelect from "../components/MultiSelect";
 import SearchSelect from "../components/SearchSelect";
 import Select from "../components/Select";
 import useGetData from "../hooks/useGetData";
 import { supabase } from "../lib/api";
+import MultiSelect from "../components/MultiSelect";
 
 export default function EditCompetencies() {
     const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
