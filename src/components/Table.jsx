@@ -1,6 +1,6 @@
 export default function Table({ columns, data, title, subtitle, isLoading, toolbar, footer, className }) {
     return (
-        <div className={`px-8 pt-8 ${className}`}>
+        <div className={`px-8 pt-8 ${className && className}`}>
             <div className="flex justify-between items-end">
                 <div className="sm:flex sm:items-center">
                     <div className="sm:flex-auto">

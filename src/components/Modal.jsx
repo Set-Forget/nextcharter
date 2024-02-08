@@ -92,7 +92,7 @@ export default function Modal() {
                                             >
                                                 <XMarkIcon className="h-5 w-5" />
                                             </Button>
-                                            <div className="mt-2 overflow-y-auto overflow-x-hidden max-h-[600px] px-5 pb-5">
+                                            <div className="mt-2 overflow-y-auto overflow-x-hidden max-h-[60vh] px-5 pb-5">
                                                 {view}
                                             </div>
                                         </div>

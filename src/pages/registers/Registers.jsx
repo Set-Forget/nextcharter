@@ -94,6 +94,7 @@ export default function Registers() {
                 title={TABLE_TITLE}
                 subtitle={TABLE_SUBTITLE}
                 isLoading={students.isLoading}
+                className="pb-8"
                 toolbar={
                     <Input
                         icon={<MagnifyingGlassIcon className="h-4 w-4 text-gray-400" />}
