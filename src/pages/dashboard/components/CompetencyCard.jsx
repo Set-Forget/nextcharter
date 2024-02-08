@@ -1,4 +1,4 @@
-const colorPallete = {
+export const colorPallete = {
     blank: {
         bg: "bg-white",
     },

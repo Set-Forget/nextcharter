@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import MultiSelect from "../../../components/MultiSelectV2";
+import MultiSelect from "../../../components/MultiSelect";
 import Select from "../../../components/Select";
 import Button from "../../../components/Button";
 import { getModalState, setModalState } from "../../../store/modalState";
@@ -56,7 +56,7 @@ export default function UpdateProjectCompetencies() {
     };
 
     return (
-        <div className="mt-6 ">
+        <div className="mt-6">
             <form onSubmit={handleSubmit(onSubmit)} className="gap-4 flex flex-col items-center">
                 <MultiSelect
                     name="competencies"

@@ -2,17 +2,17 @@ import { createHashRouter, createRoutesFromElements, Route } from "react-router-
 
 import ProtectedRoute from "../components/ProtectedRoutes.jsx";
 import EditCompetencies from "../pages/EditCompetencies.jsx";
-import Home from "../pages/Home.jsx";
 import Layout from "../pages/Layout.jsx";
 import Login from "../pages/Login.jsx";
 import LoginSuccess from "../pages/LoginSuccess.jsx";
 import Profile from "../pages/Profile.jsx";
 import Projects from "../pages/projects/Projects.jsx";
 import SignUp from "../pages/SignUp.jsx";
-import TableView from "../pages/TableView.jsx";
+import Registers from "../pages/registers/Registers.jsx";
 import Dialog from "../components/Dialog.jsx";
-import Modal from "../components/ModalV2.jsx";
+import Modal from "../components/Modal.jsx";
 import StudentProgress from "../pages/dashboard/StudentProgress.jsx";
+import Home from "../pages/home/Home.jsx";
 
 const RootRoutes = createHashRouter(
     createRoutesFromElements(
@@ -26,14 +26,17 @@ const RootRoutes = createHashRouter(
                     element={
                         <ProtectedRoute allowedRoles={["admin"]}>
                             <Home />
+                            <Dialog />
+                            <Modal />
                         </ProtectedRoute>
                     }
                 />
                 <Route
                     path="registrations"
                     element={
-                        <ProtectedRoute allowedRoles={["admin"]}>
-                            <TableView />
+                        <ProtectedRoute allowedRoles={["admin", "teacher"]}>
+                            <Registers />
+                            <Modal />
                         </ProtectedRoute>
                     }
                 />

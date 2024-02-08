@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../../../components/Button";
-import Input from "../../../components/InputV2";
-import MultiSelect from "../../../components/MultiSelectV2";
+import Input from "../../../components/Input";
+import MultiSelect from "../../../components/MultiSelect";
 import SearchSelect from "../../../components/SearchSelect";
 import useGetData from "../../../hooks/useGetData";
 import useInfo from "../../../hooks/useInfo";
@@ -75,6 +75,7 @@ export default function NewProject() {
                     placeholder="Enter the project name"
                     register={register("projectName", { required: true })}
                     errors={errors.projectName && "Project name is required"}
+                    className="w-full"
                 />
                 <SearchSelect
                     name="teacher"
@@ -90,6 +91,7 @@ export default function NewProject() {
                     placeholder="Enter the project description"
                     register={register("description", { required: true })}
                     errors={errors.description && "Project description is required"}
+                    className="w-full"
                 />
                 <MultiSelect
                     name="competencies"
@@ -105,6 +107,7 @@ export default function NewProject() {
                     placeholder="Enter the project comments"
                     register={register("comments", { required: true })}
                     errors={errors.comments && "Project comments are required"}
+                    className="w-full"
                 />
                 <Button isLoading={isLoadingSubmit} className="mt-4" type="submit">
                     Submit

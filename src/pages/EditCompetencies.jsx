@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../components/Button";
-import MultiSelect from "../components/MultiSelectV2";
 import SearchSelect from "../components/SearchSelect";
 import Select from "../components/Select";
 import useGetData from "../hooks/useGetData";
 import { supabase } from "../lib/api";
+import MultiSelect from "../components/MultiSelect";
 
 export default function EditCompetencies() {
     const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
@@ -78,34 +78,36 @@ export default function EditCompetencies() {
     }));
 
     const formattedCompetenciesByCourse = competenciesByCourse.data
-    .map((competencyCourse) => {
-        const course = competencies.data.find(
-            (competency) => competency.id === competencyCourse.competency_id
-        );
+        .map((competencyCourse) => {
+            const course = competencies.data.find(
+                (competency) => competency.id === competencyCourse.competency_id
+            );
 
-        return {
-            id: competencyCourse.competency_id,
-            name: course?.name,
-            courseId: competencyCourse.course_id,
-        };
-    })
-    .filter((competency) => competency.courseId === selectedCourse?.id)
-    .filter((function() {
-        const seenIds = new Set();
-        return function(competency) {
-            if (!seenIds.has(competency.id)) {
-                seenIds.add(competency.id);
-                return true;
-            }
-            return false;
-        };
-    })());
+            return {
+                id: competencyCourse.competency_id,
+                name: course?.name,
+                courseId: competencyCourse.course_id,
+            };
+        })
+        .filter((competency) => competency.courseId === selectedCourse?.id)
+        .filter(
+            (function () {
+                const seenIds = new Set();
+                return function (competency) {
+                    if (!seenIds.has(competency.id)) {
+                        seenIds.add(competency.id);
+                        return true;
+                    }
+                    return false;
+                };
+            })()
+        );
 
     return (
         <main className="flex-1 bg-gray-100 place-items-center relative pb-4">
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="mx-auto gap-4 flex flex-col items-center max-w-3xl h-[calc(100vh-100px)] mt-20"
+                className="mx-auto gap-4 flex flex-col sm:max-w-md items-center max-w-3xl h-[calc(100vh-100px)] mt-20"
             >
                 <SearchSelect
                     name="student"
