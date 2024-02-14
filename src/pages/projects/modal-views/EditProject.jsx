@@ -8,6 +8,7 @@ import useGetData from "../../../hooks/useGetData";
 import useInfo from "../../../hooks/useInfo";
 import { closeModal, setModalState } from "../../../store/modalState";
 import ProjectDetails from "./ProjectDetails";
+import { setToastState } from "../../../store/toastState";
 
 export default function EditProject({ data }) {
     const { name, teacher, description, comment, id } = data;
@@ -63,6 +64,12 @@ export default function EditProject({ data }) {
             id,
         };
 
+        const formattedCompetencies = data.competencies.map((competency) => ({
+            project_id: id,
+            competency_id: competency.id,
+            competency_name: competency.name,
+        }));
+
         try {
             await updateDatabase(
                 id,
@@ -75,19 +82,8 @@ export default function EditProject({ data }) {
                 },
                 "project"
             );
-
             await deleteFromDatabase("project_id", id, "project_competencies");
-
-            data.competencies.forEach(async (competency) => {
-                await insertToDatabase(
-                    {
-                        project_id: id,
-                        competency_id: competency.id,
-                        competency_name: competency.name,
-                    },
-                    "project_competencies"
-                );
-            });
+            await insertToDatabase(formattedCompetencies, "project_competencies");
 
             setModalState({
                 open: true,
@@ -96,7 +92,17 @@ export default function EditProject({ data }) {
                 title: "Edit project",
                 subtitle: "Edit the project details",
             });
+            setToastState({
+                open: true,
+                title: "The project has been updated successfully",
+                type: "success",
+            });
         } catch (error) {
+            setToastState({
+                open: true,
+                title: "An error occurred while updating the project",
+                type: "error",
+            });
             throw new Error(error);
         } finally {
             setLoading(false);

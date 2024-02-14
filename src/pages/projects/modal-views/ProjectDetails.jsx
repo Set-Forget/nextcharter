@@ -7,6 +7,7 @@ import useGetDataById from "../../../hooks/useGetDataById";
 import { useState } from "react";
 import useInfo from "../../../hooks/useInfo";
 import { setDialogState } from "../../../store/dialogState";
+import { setToastState } from "../../../store/toastState";
 
 export default function ProjectDetails({ data }) {
     const { name, competencies, teacher_name, teacher_id, description, comment } = data;
@@ -56,7 +57,17 @@ export default function ProjectDetails({ data }) {
                     await deleteFromDatabase("project_id", data.id, "project_competencies");
                     await deleteFromDatabase("project_id", data.id, "project_students");
                     closeModal();
+                    setToastState({
+                        open: true,
+                        title: "The project has been deleted successfully",
+                        type: "success",
+                    });
                 } catch (error) {
+                    setToastState({
+                        open: true,
+                        title: "An error occurred while deleting the project",
+                        type: "error",
+                    });
                     throw new Error(error);
                 } finally {
                     setLoading(false);
@@ -88,9 +99,18 @@ export default function ProjectDetails({ data }) {
                     "project_registers"
                 );
             });
-
             closeModal();
+            setToastState({
+                open: true,
+                title: "You have applied to the project successfully",
+                type: "success",
+            });
         } catch (error) {
+            setToastState({
+                open: true,
+                title: "An error occurred while applying to the project",
+                type: "error",
+            });
             throw new Error(error);
         } finally {
             setLoading(false);

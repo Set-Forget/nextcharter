@@ -12,6 +12,7 @@ import ProgressContainer from "./components/ProgressContainer";
 
 export default function StudentProgress() {
     const studentId = useParams().id;
+    const userRole = localStorage.getItem("userRole");
     const students = useGetData("student");
     const competencyCourseData = useGetData("competency_course");
 
@@ -132,29 +133,33 @@ export default function StudentProgress() {
     return (
         <main className="flex-1 overflow-y-auto bg-slate-50 place-items-center pr-4 pl-4 pt-20">
             <div className="mb-8 mt-8 flex items-end gap-2">
-                <Select
-                    label="Select Student"
-                    name="student"
-                    control={control}
-                    data={formattedStudents}
-                    placeholder="Select Student"
-                    className="w-60"
-                />
-                <Button
-                    isLoading={loading}
-                    type="button"
-                    size="md"
-                    disabled={!selectedStudent}
-                    onClick={handleSubmit(onSearch)}
-                >
-                    Search
-                </Button>
+                {userRole !== "student" && (
+                    <>
+                        <Select
+                            label="Select Student"
+                            name="student"
+                            control={control}
+                            data={formattedStudents}
+                            placeholder="Select Student"
+                            className="w-60"
+                        />
+                        <Button
+                            isLoading={loading}
+                            type="button"
+                            size="md"
+                            disabled={!selectedStudent}
+                            onClick={handleSubmit(onSearch)}
+                        >
+                            Search
+                        </Button>
+                    </>
+                )}
                 <Button
                     type="button"
                     disabled={!studentId || !studentRegisters}
                     onClick={() => getStudentProgressPDF(studentRegisters)}
                 >
-                    Download PDF
+                    View report
                 </Button>
                 <ProgressContainer
                     selectedStudent={selectedStudent}

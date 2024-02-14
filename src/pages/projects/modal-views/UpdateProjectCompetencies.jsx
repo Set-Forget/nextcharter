@@ -7,6 +7,7 @@ import useGetFilterData from "../../../hooks/useGetFilterData";
 import { supabase } from "../../../lib/api";
 import { useState } from "react";
 import ProjectStudents from "./ProjectStudents";
+import { setToastState } from "../../../store/toastState";
 
 export default function UpdateProjectCompetencies() {
     const { studentEmail, projectId } = getModalState().payload || {};
@@ -39,9 +40,6 @@ export default function UpdateProjectCompetencies() {
                     "competency_id",
                     data.competencies.map((competency) => competency.id)
                 );
-        } catch (error) {
-            throw new Error(error.message);
-        } finally {
             setModalState({
                 open: true,
                 payload: { id: projectId },
@@ -49,7 +47,19 @@ export default function UpdateProjectCompetencies() {
                 title: "Students view",
                 subtitle: "A detailed view of the students assigned to the project",
             });
-
+            setToastState({
+                open: true,
+                title: "The project competencies have been updated successfully",
+                type: "success",
+            });
+        } catch (error) {
+            setToastState({
+                open: true,
+                title: "An error occurred while updating the project competencies",
+                type: "error",
+            });
+            throw new Error(error.message);
+        } finally {
             setLoading(false);
             reset();
         }

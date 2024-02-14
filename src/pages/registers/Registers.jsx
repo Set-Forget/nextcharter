@@ -105,7 +105,7 @@ export default function Registers() {
                     />
                 }
                 footer={
-                    <div className="flex justify-between items-center mt-2">
+                    <div className="flex justify-between items-center mt-4">
                         <span className="text-sm text-gray-700">
                             Showing {startIndex + 1} to{" "}
                             {Math.min(startIndex + itemsPerPage, filteredData.length)} of{" "}
