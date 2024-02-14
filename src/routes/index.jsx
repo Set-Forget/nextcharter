@@ -1,5 +1,4 @@
 import { createHashRouter, createRoutesFromElements, Route } from "react-router-dom";
-
 import ProtectedRoute from "../components/ProtectedRoutes.jsx";
 import EditCompetencies from "../pages/EditCompetencies.jsx";
 import Layout from "../pages/Layout.jsx";
@@ -13,6 +12,8 @@ import Dialog from "../components/Dialog.jsx";
 import Modal from "../components/Modal.jsx";
 import StudentProgress from "../pages/dashboard/StudentProgress.jsx";
 import Home from "../pages/home/Home.jsx";
+import EmailVerification from "../pages/EmailVerification.jsx";
+import Toast from "../components/Toast.jsx";
 
 const RootRoutes = createHashRouter(
     createRoutesFromElements(
@@ -28,6 +29,7 @@ const RootRoutes = createHashRouter(
                             <Home />
                             <Dialog />
                             <Modal />
+                            <Toast />
                         </ProtectedRoute>
                     }
                 />
@@ -53,6 +55,7 @@ const RootRoutes = createHashRouter(
                     element={
                         <ProtectedRoute allowedRoles={["admin", "teacher", "student"]}>
                             <StudentProgress />
+                            <Toast />
                         </ProtectedRoute>
                     }
                 />
@@ -61,6 +64,7 @@ const RootRoutes = createHashRouter(
                     element={
                         <ProtectedRoute allowedRoles={["admin"]}>
                             <EditCompetencies />
+                            <Toast />
                         </ProtectedRoute>
                     }
                 />
@@ -71,11 +75,13 @@ const RootRoutes = createHashRouter(
                             <Projects />
                             <Dialog />
                             <Modal />
+                            <Toast />
                         </ProtectedRoute>
                     }
                 />
             </Route>
             <Route path="*" element={<div>404 Not Found</div>} />
+            <Route path="email-verification" element={<EmailVerification />} />
         </>
     )
 );

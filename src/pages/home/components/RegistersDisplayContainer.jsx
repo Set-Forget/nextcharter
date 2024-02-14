@@ -5,6 +5,7 @@ import { supabase } from "../../../lib/api";
 import { setDialogState } from "../../../store/dialogState";
 import StudentRegisterCard from "./StudentRegisterCard";
 import TotalCreditCounter from "./TotalCreditCounter";
+import { setToastState } from "../../../store/toastState";
 
 export default function RegistersDisplayContainer({
     selectedStudent,
@@ -28,7 +29,6 @@ export default function RegistersDisplayContainer({
                 prev.filter((item) => item.exist || item.name !== register.name)
             );
         }
-
         setDialogState({
             open: true,
             title: "Unsubscribe competencies",
@@ -41,9 +41,18 @@ export default function RegistersDisplayContainer({
                         .eq("student_code", studentCode)
                         .in("competency_id", competencyIds);
                     getStudentRegisters(studentCode);
+                    setToastState({
+                        open: true,
+                        title: "The competencies have been unsubscribed successfully",
+                        type: "success",
+                    });
                 } catch (error) {
+                    setToastState({
+                        open: true,
+                        title: "An error occurred while unsuscribing the competencies",
+                        type: "error",
+                    });
                     throw new Error(error);
-                } finally {
                 }
             },
         });
@@ -70,7 +79,17 @@ export default function RegistersDisplayContainer({
         try {
             await insertToDatabase(adaptedRegisters, "registers");
             getStudentRegisters(selectedStudent.student_code);
+            setToastState({
+                open: true,
+                title: "The registers have been submitted successfully",
+                type: "success",
+            });
         } catch (error) {
+            setToastState({
+                open: true,
+                title: "An error occurred while submitting the registers",
+                type: "error",
+            });
             throw new Error(error);
         } finally {
             setSubmitLoading(false);

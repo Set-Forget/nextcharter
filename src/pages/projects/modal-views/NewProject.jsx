@@ -7,6 +7,7 @@ import SearchSelect from "../../../components/SearchSelect";
 import useGetData from "../../../hooks/useGetData";
 import useInfo from "../../../hooks/useInfo";
 import { closeModal } from "../../../store/modalState";
+import { setToastState } from "../../../store/toastState";
 
 export default function NewProject() {
     const competencies = useGetData("competency");
@@ -57,15 +58,25 @@ export default function NewProject() {
                     "project_competencies"
                 );
             });
+            setToastState({
+                open: true,
+                title: "The project has been created successfully",
+                type: "success",
+            });
             setIsLoadingSubmit(false);
             closeModal();
         } catch (error) {
+            setToastState({
+                open: true,
+                title: "An error occurred while creating the project",
+                type: "error",
+            });
             throw new Error(error);
         }
     };
 
     return (
-        <main className="flex-1 place-items-center relative">
+        <main className="flex-1 place-items-center relative mt-4">
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="mx-auto gap-4 flex flex-col items-center max-w-3xl"

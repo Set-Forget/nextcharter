@@ -6,6 +6,7 @@ import Select from "../components/Select";
 import useGetData from "../hooks/useGetData";
 import { supabase } from "../lib/api";
 import MultiSelect from "../components/MultiSelect";
+import { setToastState } from "../store/toastState";
 
 export default function EditCompetencies() {
     const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
@@ -38,7 +39,18 @@ export default function EditCompetencies() {
                 .update({ status: data.status.value })
                 .eq("student_id", data.student.id)
                 .in("competency_id", competencies_id);
+
+            setToastState({
+                open: true,
+                title: "Competencies updated successfully",
+                type: "success",
+            });
         } catch (error) {
+            setToastState({
+                open: true,
+                title: "Error updating competencies",
+                type: "error",
+            });
             throw new Error(error.message);
         } finally {
             setIsLoadingSubmit(false);
