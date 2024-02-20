@@ -15,6 +15,7 @@ export default function CourseFormContainer({
     setSelectedStudent,
     setCurrentRegisters,
     getStudentRegisters,
+    currentRegisters,
     loading,
 }) {
     const students = useGetData("student");
@@ -88,14 +89,20 @@ export default function CourseFormContainer({
         credits: domain.credits_required,
     }));
 
+    const registeredCourseNames = new Set();
+    currentRegisters.forEach((register) =>
+        register.courses.forEach((course) => registeredCourseNames.add(course.name))
+    );
+
     const formattedCourses = courses?.data
-        ?.map((course) => ({
+        ?.filter((course) => course.inst_domain_id === selectedDomain?.id)
+        .map((course) => ({
             id: course.id,
             name: course.name,
             domainId: course.inst_domain_id,
             credits: course.credits,
         }))
-        .filter((course) => course.domainId === selectedDomain?.id);
+        .filter((course) => !registeredCourseNames.has(course.name));
 
     const formattedStudents = students?.data?.map((student) => ({
         id: student.id,
@@ -238,8 +245,9 @@ export default function CourseFormContainer({
                 />
                 <div className="flex justify-between items-center">
                     <CreditCounter domain={selectedDomain} credits={selectedCoursesCredits} />
-                    <Button className="!p-2 !rounded-full" type="submit">
+                    <Button className="!rounded-full" type="submit">
                         <PlusIcon className="h-5 w-5" aria-hidden="true" />
+                        Add course
                     </Button>
                 </div>
             </form>

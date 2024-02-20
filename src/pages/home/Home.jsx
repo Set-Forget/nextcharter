@@ -69,6 +69,7 @@ export default function Home() {
                     setSelectedStudent={setSelectedStudent}
                     setCurrentRegisters={setCurrentRegisters}
                     getStudentRegisters={getStudentRegisters}
+                    currentRegisters={currentRegisters}
                 />
                 <RegistersDisplayContainer
                     loading={loading}

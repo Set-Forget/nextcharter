@@ -138,7 +138,6 @@ export default function RegistersDisplayContainer({
             </div>
             <Button
                 isLoading={submitLoading}
-                size="lg"
                 type="button"
                 onClick={handleSubmit}
                 disabled={!selectedStudent || nonExistingCredits === 0}

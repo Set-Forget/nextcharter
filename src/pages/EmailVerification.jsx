@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import Header from "../components/Header";
 import { supabase } from "../lib/api";
 
 export default function EmailVerification() {
@@ -26,7 +25,6 @@ export default function EmailVerification() {
 
     return (
         <div className="flex flex-col h-screen">
-            <Header navItems={[]} />
             <div className="flex min-h-full flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
                 <div className="w-full max-w-sm space-y-10">
                     <div>

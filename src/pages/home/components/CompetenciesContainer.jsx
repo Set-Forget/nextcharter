@@ -46,7 +46,7 @@ export default function CompetenciesContainer({ selectedCourses, setValue, toolb
                 </label>
                 {toolbar && toolbar}
             </div>
-            <div className="h-full max-h-[350px] shadow-sm ring-1 ring-inset ring-gray-300 rounded-lg overflow-y-auto p-2 mb-4">
+            <div className="h-full max-h-[350px] shadow-sm ring-1 ring-inset ring-gray-300 rounded-lg overflow-y-auto py-1.5 px-3 mb-4">
                 {competenciesGroupedByCourse.length > 0 ? (
                     competenciesGroupedByCourse.map((competencies, index) => (
                         <div key={index} className="flex flex-col gap-0.5">

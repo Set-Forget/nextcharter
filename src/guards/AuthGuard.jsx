@@ -1,12 +1,17 @@
+import { useMemo } from "react";
+import { useAuthContext } from "../context/AuthProvider";
 import { Navigate, Outlet } from "react-router-dom";
 import Header from "../components/Header";
-import { useAuthContext } from "../context/AuthProvider";
-import { useMemo } from "react";
+import Spinner from "../components/Spinner";
 
-export default function Layout() {
-    const { session } = useAuthContext();
+export default function AuthGuard() {
+    const { user, loading } = useAuthContext();
 
-    const userRole = localStorage.getItem("userRole");
+    console.log(user, loading);
+
+    if (loading) return <Spinner />;
+
+    if (!user) return <Navigate to="/login" replace />;
 
     const navigation = useMemo(() => {
         const baseNavigation = [
@@ -21,7 +26,7 @@ export default function Layout() {
             ...baseNavigation,
         ];
 
-        switch (userRole) {
+        switch (user.role) {
             case "admin":
                 return adminNavigation;
             case "teacher":
@@ -31,14 +36,12 @@ export default function Layout() {
             default:
                 return [];
         }
-    }, [userRole]);
+    }, [user.role]);
 
-    return session || userRole ? (
-        <div className="flex flex-col h-screen">
+    return (
+        <>
             <Header navItems={navigation} />
             <Outlet />
-        </div>
-    ) : (
-        <Navigate to="/login" replace />
+        </>
     );
 }
