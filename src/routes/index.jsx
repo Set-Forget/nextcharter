@@ -1,27 +1,41 @@
 import { createHashRouter, createRoutesFromElements, Route } from "react-router-dom";
-import ProtectedRoute from "../components/ProtectedRoutes.jsx";
-import EditCompetencies from "../pages/EditCompetencies.jsx";
-import Layout from "../pages/Layout.jsx";
-import Login from "../pages/Login.jsx";
-import LoginSuccess from "../pages/LoginSuccess.jsx";
-import Profile from "../pages/Profile.jsx";
-import Projects from "../pages/projects/Projects.jsx";
-import SignUp from "../pages/SignUp.jsx";
-import Registers from "../pages/registers/Registers.jsx";
 import Dialog from "../components/Dialog.jsx";
 import Modal from "../components/Modal.jsx";
-import StudentProgress from "../pages/dashboard/StudentProgress.jsx";
-import Home from "../pages/home/Home.jsx";
-import EmailVerification from "../pages/EmailVerification.jsx";
+import ProtectedRoute from "../components/ProtectedRoutes.jsx";
 import Toast from "../components/Toast.jsx";
+import AuthGuard from "../guards/AuthGuard.jsx";
+import StudentProgress from "../pages/dashboard/StudentProgress.jsx";
+import EditCompetencies from "../pages/EditCompetencies.jsx";
+import EmailVerification from "../pages/EmailVerification.jsx";
+import Home from "../pages/home/Home.jsx";
+import Login from "../pages/Login.jsx";
+import Profile from "../pages/Profile.jsx";
+import Projects from "../pages/projects/Projects.jsx";
+import Registers from "../pages/registers/Registers.jsx";
+import SignUp from "../pages/SignUp.jsx";
 
 const RootRoutes = createHashRouter(
     createRoutesFromElements(
         <>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/successful" element={<LoginSuccess />} />
-            <Route path="/" element={<Layout />}>
+            <Route
+                path="/login"
+                element={
+                    <>
+                        <Login />
+                        <Toast />
+                    </>
+                }
+            />
+            <Route
+                path="/signup"
+                element={
+                    <>
+                        <SignUp />
+                        <Toast />
+                    </>
+                }
+            />
+            <Route path="*" element={<AuthGuard />}>
                 <Route
                     index
                     element={

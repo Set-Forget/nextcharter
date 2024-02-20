@@ -1,60 +1,60 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import PropTypes from "prop-types";
-
 import { supabase } from "../lib/api";
 
 const Context = createContext();
 
-// export default function AuthContextProvider({ children }) {
-//     const [session, setSession] = useState(null);
-
-//     useEffect(() => {
-//         supabase.auth.getSession().then(({ data: { session } }) => {
-//             setSession(session);
-//         });
-
-//         const {
-//             data: { subscription },
-//         } = supabase.auth.onAuthStateChange((_event, session) => {
-//             setSession(session);
-//         });
-
-//         return () => subscription.unsubscribe();
-//     }, []);
-
-//     return <Context.Provider value={{ session }}>{children}</Context.Provider>;
-// }
-
-// // eslint-disable-next-line react-refresh/only-export-components
-// export const useAuthContext = () => useContext(Context);
-
-// AuthContextProvider.propTypes = {
-//     children: PropTypes.node,
-// };
-
 export default function AuthContextProvider({ children }) {
-  const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true); // loading state
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false); // set loading to false once the session is fetched
-    });
+    const signInWithEmail = async (email, password) => {
+        const { error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password,
+        });
+        if (error) return error.message;
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setLoading(false); // set loading to false on auth state change
-    });
+        const res = await getSession();
+        return res;
+    };
 
-    return () => subscription.unsubscribe();
-  }, []);
+    const getUser = async (email) => {
+        const { data, error } = await supabase.from("allowed_users").select().eq("email", email).single();
+        if (error) return error;
+        setUser(data);
+    };
 
-  return (
-    <Context.Provider value={{ session, loading }}>{children}</Context.Provider>
-  );
+    const getSession = async () => {
+        setLoading(true);
+
+        const {
+            data: { session },
+        } = await supabase.auth.getSession();
+
+        if (session?.user?.email) {
+            const error = await getUser(session.user.email);
+            setLoading(false);
+            if (error) return error.code;
+        }
+
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        getSession();
+    }, []);
+
+    return (
+        <Context.Provider
+            value={{
+                user,
+                loading,
+                signInWithEmail,
+            }}
+        >
+            {children}
+        </Context.Provider>
+    );
 }
 
 export const useAuthContext = () => useContext(Context);

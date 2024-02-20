@@ -3,16 +3,22 @@ import { Dialog } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { NavLink } from "react-router-dom";
 import { supabase } from "../lib/api";
+import { useAuthContext } from "../context/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 export default function Header({ navItems }) {
+    const { user } = useAuthContext();
+
+    const navigate = useNavigate();
+
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    async function signOut() {
-        const { error } = await supabase.auth.signOut();
-        localStorage.clear();
-    }
+    const userRole = user.role;
 
-    const userRole = localStorage.getItem("userRole");
+    const signOut = async () => {
+        await supabase.auth.signOut();
+        navigate("/login");
+    };
 
     return (
         <header className="absolute inset-x-0 top-0 z-50  shadow-md bg-nextcolor">
@@ -22,7 +28,6 @@ export default function Header({ navItems }) {
             >
                 <div className="flex lg:flex-1">
                     <a href="/" className="-m-1.5 p-1.5">
-                        {/* <span className="sr-only">Your Company</span> */}
                         <img
                             className="h-8"
                             src="https://nextcharterschool.org/wp-content/uploads/2020/08/logo.png"
@@ -42,7 +47,7 @@ export default function Header({ navItems }) {
                 </div>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
                     <div className="hidden lg:flex lg:gap-x-12 whitespace-nowrap">
-                        {navItems.map((item) => (
+                        {navItems?.map((item) => (
                             <NavLink
                                 to={item.href}
                                 key={item.name}
@@ -51,7 +56,7 @@ export default function Header({ navItems }) {
                                 {item.name}
                             </NavLink>
                         ))}
-                        {(navItems.length > 0 || userRole == "student") && (
+                        {(navItems?.length > 0 || userRole == "student") && (
                             <a
                                 href="#"
                                 className="text-sm font-semibold leading-6 text-white"
@@ -87,7 +92,7 @@ export default function Header({ navItems }) {
                     <div className="mt-6 flow-root">
                         <div className="-my-6 divide-y divide-gray-500/10">
                             <div className="space-y-2 py-6">
-                                {navItems.map((item) => (
+                                {navItems?.map((item) => (
                                     <NavLink
                                         key={item.name}
                                         to={item.href}
