@@ -40,7 +40,12 @@ export default function SearchSelect({
                     className="w-full"
                     disabled={loading}
                     value={value}
-                    onChange={onChange ? onChange : defaultOnChange}
+                    // onChange={onChange ? onChange : defaultOnChange}
+                    onChange={(newValue) => {
+                        const handleChange = onChange ? onChange : defaultOnChange;
+                        handleChange(newValue);
+                        setQuery("");
+                    }}
                 >
                     {label && (
                         <div className="flex items-center gap-1 mb-1">

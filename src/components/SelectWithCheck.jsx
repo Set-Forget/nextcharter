@@ -14,6 +14,7 @@ export default function SelectWithCheck({
   handleAdd,
   domainTableData,
   instDomainTableData,
+  selectedInstitution,
   ...props
 }) {
   // const [selected, setSelected] = useState({ name: '' })
@@ -100,7 +101,7 @@ export default function SelectWithCheck({
                           >
                             {person.name}
                           </span>
-                          {creditsRequired ? (
+                          {creditsRequired && selectedInstitution != '969d886e-4e4e-45a8-b872-13a6ee137ff2' ? (
                             <span className="right-1">
                               {creditsRequired} credits required
                             </span>

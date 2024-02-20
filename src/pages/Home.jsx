@@ -330,6 +330,7 @@ export default function Home() {
                 handleAdd={toggle}
                 domainTableData={domainTableData}
                 instDomainTableData={instDomainTableData}
+                selectedInstitution={selectedInstitution.id}
               />
               <br />
               <SelectWithCheck
