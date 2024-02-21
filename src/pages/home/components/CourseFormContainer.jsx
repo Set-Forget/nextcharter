@@ -194,7 +194,7 @@ export default function CourseFormContainer({
                     register={register("domains", { required: true })}
                     control={control}
                     errors={errors.domains && "Project domains are required"}
-                    optionSubtext={{ label: "Credits required", item: "credits" }}
+                    optionSubtext={selectedInstitution && selectedInstitution.name == 'Other' ? "" : { label: "Credits required", item: "credits" }}
                     onChange={(e) => {
                         setValue("domains", e);
                         setValue("courses", []);
