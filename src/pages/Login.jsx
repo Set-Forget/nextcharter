@@ -17,6 +17,7 @@ export default function Login() {
     const { signInWithEmail } = useAuthContext();
 
     const [loading, setLoading] = useState(false);
+    const [isResetPasswordPressed, setIsResetPasswordPressed] = useState(false);
 
     const navigate = useNavigate();
 
@@ -49,6 +50,7 @@ export default function Login() {
     };
 
     const handleResetPassword = async () => {
+        setIsResetPasswordPressed(true);
         const email = watch("email");
 
         if (!email) {
@@ -64,6 +66,11 @@ export default function Login() {
                 redirectTo: `${window.location.origin}/nextcharter/#/passwordReset`,
             });
             if (error) throw error;
+            setToastState({
+                open: true,
+                title: `Password reset link sent to ${email}`,
+                type: "success",
+            });
         } catch (error) {
             return setToastState({
                 open: true,
@@ -114,7 +121,12 @@ export default function Login() {
                                 <Button type="button" onClick={handleGoToSignUp} variant="ghost">
                                     Don't have an account? Sign up
                                 </Button>
-                                <Button type="button" onClick={handleResetPassword} variant="link">
+                                <Button
+                                    type="button"
+                                    disabled={isResetPasswordPressed}
+                                    onClick={handleResetPassword}
+                                    variant="link"
+                                >
                                     Reset password
                                 </Button>
                             </div>
