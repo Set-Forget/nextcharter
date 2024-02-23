@@ -1,19 +1,16 @@
-import { useMemo } from "react";
-import { useAuthContext } from "../context/AuthProvider";
 import { Navigate, Outlet } from "react-router-dom";
 import Header from "../components/Header";
 import Spinner from "../components/Spinner";
+import { useAuthContext } from "../context/AuthProvider";
 
 export default function AuthGuard() {
     const { user, loading } = useAuthContext();
 
-    console.log(user, loading);
-
     if (loading) return <Spinner />;
 
-    if (!user) return <Navigate to="/login" replace />;
+    if (!user && !loading) return <Navigate to="/login" replace />;
 
-    const navigation = useMemo(() => {
+    const navigation = () => {
         const baseNavigation = [
             { name: "Dashboard", href: "/profile" },
             { name: "Projects", href: "/projects" },
@@ -32,15 +29,20 @@ export default function AuthGuard() {
             case "teacher":
                 return baseNavigation;
             case "student":
-                return [{ name: "Projects", href: "/projects" }];
+                return [
+                    { name: "Dashboard", href: "/" },
+                    { name: "Projects", href: "/projects" },
+                ];
             default:
                 return [];
         }
-    }, [user.role]);
+    };
+
+    const navItems = navigation();
 
     return (
         <>
-            <Header navItems={navigation} />
+            <Header navItems={navItems} />
             <Outlet />
         </>
     );

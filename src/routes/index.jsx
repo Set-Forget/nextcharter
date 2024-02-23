@@ -13,6 +13,7 @@ import Profile from "../pages/Profile.jsx";
 import Projects from "../pages/projects/Projects.jsx";
 import Registers from "../pages/registers/Registers.jsx";
 import SignUp from "../pages/SignUp.jsx";
+import PasswordReset from "../pages/PasswordReset.jsx";
 
 const RootRoutes = createHashRouter(
     createRoutesFromElements(
@@ -96,6 +97,14 @@ const RootRoutes = createHashRouter(
             </Route>
             <Route path="*" element={<div>404 Not Found</div>} />
             <Route path="email-verification" element={<EmailVerification />} />
+            <Route
+                path="passwordReset"
+                element={
+                    <>
+                        <PasswordReset /> <Toast />
+                    </>
+                }
+            />
         </>
     )
 );

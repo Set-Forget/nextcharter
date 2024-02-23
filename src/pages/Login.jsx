@@ -5,6 +5,7 @@ import Button from "../components/Button";
 import Input from "../components/Input";
 import { useAuthContext } from "../context/AuthProvider";
 import { setToastState } from "../store/toastState";
+import { supabase } from "../lib/api";
 
 const ERROR_MESSAGES = {
     PGRST116: "Sorry, your user is not allowed to access this application, please contact the administrator",
@@ -22,6 +23,7 @@ export default function Login() {
     const {
         register,
         handleSubmit,
+        watch,
         formState: { errors },
     } = useForm();
 
@@ -44,6 +46,31 @@ export default function Login() {
 
     const handleGoToSignUp = () => {
         navigate("/signUp");
+    };
+
+    const handleResetPassword = async () => {
+        const email = watch("email");
+
+        if (!email) {
+            return setToastState({
+                open: true,
+                title: "Please enter your email to reset your password",
+                type: "error",
+            });
+        }
+
+        try {
+            const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/nextcharter/#/passwordReset`,
+            });
+            if (error) throw error;
+        } catch (error) {
+            return setToastState({
+                open: true,
+                title: ERROR_MESSAGES[error] || `Error signing in: ${error.message}`,
+                type: "error",
+            });
+        }
     };
 
     return (
@@ -83,9 +110,14 @@ export default function Login() {
                             <Button type="submit" isLoading={loading}>
                                 Sign in
                             </Button>
-                            <Button type="button" onClick={handleGoToSignUp} variant="ghost">
-                                Don't have an account? Sign up
-                            </Button>
+                            <div className="flex justify-between items-baseline">
+                                <Button type="button" onClick={handleGoToSignUp} variant="ghost">
+                                    Don't have an account? Sign up
+                                </Button>
+                                <Button type="button" onClick={handleResetPassword} variant="link">
+                                    Reset password
+                                </Button>
+                            </div>
                         </div>
                     </form>
                 </div>
