@@ -19,9 +19,18 @@ export default function AuthContextProvider({ children }) {
     };
 
     const getUser = async (email) => {
-        const { data, error } = await supabase.from("allowed_users").select().eq("email", email).single();
-        if (error) return error;
-        setUser(data);
+        const { data: userData, error: userDataError } = await supabase
+            .from("allowed_users")
+            .select()
+            .eq("email", email)
+            .single();
+        const { data: studentData, error: studentDataError } = await supabase
+            .from("student")
+            .select()
+            .eq("email", email)
+            .single();
+        if (userDataError || studentDataError) return userDataError || studentDataError;
+        setUser({ ...userData, ...studentData });
     };
 
     const getSession = async () => {

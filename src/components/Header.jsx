@@ -1,10 +1,11 @@
-import { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { NavLink } from "react-router-dom";
-import { supabase } from "../lib/api";
+import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/api";
+import Avatar from "./Avatar";
+import Button from "./Button";
 
 export default function Header({ navItems }) {
     const { user } = useAuthContext();
@@ -13,17 +14,24 @@ export default function Header({ navItems }) {
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    const userRole = user.role;
-
     const signOut = async () => {
         await supabase.auth.signOut();
         navigate("/login");
     };
 
+    const pascalCase = (str) => {
+        return str
+            .split(" ")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ");
+    };
+
+    const userRole = pascalCase(user.role);
+
     return (
         <header className="absolute inset-x-0 top-0 z-50  shadow-md bg-nextcolor">
             <nav
-                className="flex items-center justify-around px-8 py-4 gap-4 container mx-auto"
+                className="flex items-center justify-around py-4 gap-4 container mx-auto"
                 aria-label="Global"
             >
                 <div className="flex lg:flex-1">
@@ -45,8 +53,8 @@ export default function Header({ navItems }) {
                         <Bars3Icon className="h-6 w-6" aria-hidden="true" />
                     </button>
                 </div>
-                <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                    <div className="hidden lg:flex lg:gap-x-12 whitespace-nowrap">
+                <div className="flex justify-end items-center">
+                    <div className="flex gap-x-8 whitespace-nowrap items-center">
                         {navItems?.map((item) => (
                             <NavLink
                                 to={item.href}
@@ -56,15 +64,27 @@ export default function Header({ navItems }) {
                                 {item.name}
                             </NavLink>
                         ))}
-                        {(navItems?.length > 0 || userRole == "student") && (
-                            <a
-                                href="#"
-                                className="text-sm font-semibold leading-6 text-white"
+                    </div>
+                    <div className="min-h-[40px] border-l border-white/75 mx-6"></div>
+                    <div className="flex items-center gap-2">
+                        <Avatar
+                            className="bg-white text-nextcolor"
+                            name={user.name}
+                            lastname={user.lastname}
+                        />
+                        <div className="flex flex-col items-start gap-1">
+                            <span className="text-white text-xs font-bold">
+                                {user.name} {user.lastname}{" "}
+                                <span className="text-gray-300">({userRole})</span>
+                            </span>
+                            <Button
+                                className="text-red-500 text-xs flex gap-1"
+                                variant="link"
                                 onClick={signOut}
                             >
-                                Log out <span aria-hidden="true">&rarr;</span>
-                            </a>
-                        )}
+                                <span aria-hidden="true">&larr;</span> Log out
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </nav>
