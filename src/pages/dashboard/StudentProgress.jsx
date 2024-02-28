@@ -9,10 +9,12 @@ import Button from "../../components/Button";
 import DomainContainer from "./components/DomainContainer";
 import CourseContainer from "./components/CourseContainer";
 import ProgressContainer from "./components/ProgressContainer";
+import { useAuthContext } from "../../context/AuthProvider";
 
 export default function StudentProgress() {
+    const { user } = useAuthContext();
+
     const studentId = useParams().id;
-    const userRole = localStorage.getItem("userRole");
     const students = useGetData("student");
     const competencyCourseData = useGetData("competency_course");
 
@@ -133,7 +135,7 @@ export default function StudentProgress() {
     return (
         <main className="flex-1 overflow-y-auto bg-slate-50 place-items-center pr-4 pl-4 pt-20">
             <div className="mb-8 mt-8 flex items-end gap-2">
-                {userRole !== "student" && (
+                {user.role !== "student" && (
                     <>
                         <Select
                             label="Select Student"
