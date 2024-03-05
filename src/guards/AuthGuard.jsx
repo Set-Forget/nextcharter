@@ -14,6 +14,7 @@ export default function AuthGuard() {
         const baseNavigation = [
             { name: "Dashboard", href: "/profile" },
             { name: "Projects", href: "/projects" },
+            { name: "Registrations", href: "/registrations" },
         ];
 
         const adminNavigation = [
