@@ -10,11 +10,13 @@ import { setDialogState } from "../../../store/dialogState";
 import { setToastState } from "../../../store/toastState";
 
 export default function ProjectDetails({ data }) {
+    const { user } = useAuthContext();
+
     const { name, competencies, teacher_name, teacher_id, description, comment } = data;
 
     const [loading, setLoading] = useState(false);
 
-    const userRole = localStorage.getItem("userRole");
+    const userRole = user.role;
 
     const { session } = useAuthContext();
     const { insertToDatabase, deleteFromDatabase } = useInfo();

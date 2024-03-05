@@ -16,19 +16,19 @@ import { supabase } from "../../../lib/api";
 import UpdateProjectCompetencies from "./UpdateProjectCompetencies";
 
 export default function ProjectStudents() {
+    const { user } = useAuthContext();
+
     const navigate = useNavigate();
 
     const projectId = getModalState().payload?.id;
-    const userRole = localStorage.getItem("userRole");
-
-    const { session } = useAuthContext();
+    const userRole = user.role;
 
     const [studentsData, setStudentsData] = useState([]);
     const [studentsLoading, setStudentsLoading] = useState(true);
 
     const assignedStudents = useGetFilterData("project_students", "project_id", projectId);
     const assignedStudentEmails = assignedStudents.data.map((student) => student.student_email);
-
+    console.log(user);
     const getStudentData = async () => {
         try {
             const { data } = await supabase.from("student").select().in("email", assignedStudentEmails);
@@ -88,7 +88,7 @@ export default function ProjectStudents() {
                                 </div>
                             </div>
                             <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                                {userRole === "student" && student.email === session.user.email ? (
+                                {userRole === "student" && student.email === user.email ? (
                                     <Button
                                         onClick={() => handleViewStudent(student.code)}
                                         className="!p-2 !rounded-full"

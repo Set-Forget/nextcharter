@@ -12,6 +12,7 @@ import { setModalState } from "../../store/modalState";
 import NewProject from "./modal-views/NewProject";
 import ProjectDetails from "./modal-views/ProjectDetails";
 import ProjectStudents from "./modal-views/ProjectStudents";
+import { useAuthContext } from "../../context/AuthProvider";
 
 const columns = [
     {
@@ -37,10 +38,12 @@ const TABLE_SUBTITLE =
     "A list of all the projects in your account including their name, assigned teacher and compentencies.";
 
 export default function Projects() {
+    const { user } = useAuthContext();
+
     const projects = useGetData("project", true);
     const projectsCompetencies = useGetData("project_competencies", true);
 
-    const userRole = localStorage.getItem("userRole");
+    const userRole = user.role;
 
     const isAllowedToCreateProject = userRole === "admin" || userRole === "teacher";
 
