@@ -37,7 +37,8 @@ export default function StudentProgress() {
         if (registers.length === 0) return null;
 
         const formattedRegisters = registers.filter((register) => register.is_deleted === false);
-        const student = students.data.find((student) => student.code === studentId);
+        const student =
+            user.role === "student" ? user : students.data.find((student) => student.code === studentId);
 
         const domainMap = new Map();
 
