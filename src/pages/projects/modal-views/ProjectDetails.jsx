@@ -18,13 +18,12 @@ export default function ProjectDetails({ data }) {
 
     const userRole = user.role;
 
-    const { session } = useAuthContext();
     const { insertToDatabase, deleteFromDatabase } = useInfo();
 
     const teacher = useGetDataById("teacher", teacher_id);
 
     const teacher_email = !teacher.isLoading && teacher.data[0].email;
-    const auth_email = session?.user?.email;
+    const auth_email = user.email;
 
     const isAllowed = userRole === "admin" || teacher_email === auth_email;
 
@@ -84,7 +83,7 @@ export default function ProjectDetails({ data }) {
             await insertToDatabase(
                 {
                     project_id: data.id,
-                    student_email: session.user.email,
+                    student_email: user.email,
                 },
                 "project_students"
             );
@@ -94,7 +93,7 @@ export default function ProjectDetails({ data }) {
                     {
                         competency_id: competency.id,
                         competency_name: competency.name,
-                        student_email: session.user.email,
+                        student_email: user.email,
                         project_id: data.id,
                         status: "plan to meet",
                     },
