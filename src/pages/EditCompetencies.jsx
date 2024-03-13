@@ -25,6 +25,7 @@ export default function EditCompetencies() {
         control,
         watch,
         reset,
+        setValue,
         formState: { errors },
     } = useForm();
 
@@ -139,6 +140,11 @@ export default function EditCompetencies() {
                     register={register("domains", { required: true })}
                     control={control}
                     errors={errors.domains && "Project domains are required"}
+                    onChange={(e) => {
+                        setValue("domains", e);
+                        setValue("courses", []);
+                        setValue("competencies", []);
+                    }}
                 />
                 <SearchSelect
                     name="courses"
@@ -148,6 +154,10 @@ export default function EditCompetencies() {
                     register={register("courses", { required: true })}
                     control={control}
                     errors={errors.courses && "Project courses are required"}
+                    onChange={(e) => {
+                        setValue("courses", e);
+                        setValue("competencies", []);
+                    }}
                 />
                 <MultiSelect
                     name="competencies"

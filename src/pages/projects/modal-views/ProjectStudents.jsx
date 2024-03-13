@@ -28,7 +28,7 @@ export default function ProjectStudents() {
 
     const assignedStudents = useGetFilterData("project_students", "project_id", projectId);
     const assignedStudentEmails = assignedStudents.data.map((student) => student.student_email);
-    console.log(user);
+
     const getStudentData = async () => {
         try {
             const { data } = await supabase.from("student").select().in("email", assignedStudentEmails);

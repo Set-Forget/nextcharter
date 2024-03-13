@@ -11,7 +11,6 @@ import * as pdfMake from "pdfmake/build/pdfmake";
 };
 
 export default async function getStudentProgressPDF(data) {
-    console.log(data);
     var dd = {
         content: [
 
